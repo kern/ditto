@@ -13,6 +13,10 @@
 		FA70EAB819F5A49D00960EE2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAB719F5A49D00960EE2 /* Images.xcassets */; };
 		FA70EABB19F5A49D00960EE2 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAB919F5A49D00960EE2 /* LaunchScreen.xib */; };
 		FA70EAC719F5A49D00960EE2 /* TempoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA70EAC619F5A49D00960EE2 /* TempoTests.swift */; };
+		FA70EAD919F5A56300960EE2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA70EAD819F5A56300960EE2 /* KeyboardViewController.swift */; };
+		FA70EADC19F5A56300960EE2 /* TempoKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA70EAD419F5A56300960EE2 /* TempoKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FA70EAE419F5A7BC00960EE2 /* Keyboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAE319F5A7BC00960EE2 /* Keyboard.xib */; };
+		FA70EAEA19F5C17700960EE2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAE919F5C17700960EE2 /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,7 +27,35 @@
 			remoteGlobalIDString = FA70EAAA19F5A49D00960EE2;
 			remoteInfo = Tempo;
 		};
+		FA70EADA19F5A56300960EE2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA70EAA319F5A49D00960EE2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA70EAD319F5A56300960EE2;
+			remoteInfo = TempoKeyboard;
+		};
+		FA70EADD19F5A56300960EE2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA70EAA319F5A49D00960EE2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA70EAD319F5A56300960EE2;
+			remoteInfo = TempoKeyboard;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FA70EAE219F5A56300960EE2 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				FA70EADC19F5A56300960EE2 /* TempoKeyboard.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		FA70EAAB19F5A49D00960EE2 /* Tempo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tempo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -36,6 +68,11 @@
 		FA70EAC019F5A49D00960EE2 /* TempoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TempoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA70EAC519F5A49D00960EE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA70EAC619F5A49D00960EE2 /* TempoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempoTests.swift; sourceTree = "<group>"; };
+		FA70EAD419F5A56300960EE2 /* TempoKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TempoKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA70EAD719F5A56300960EE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA70EAD819F5A56300960EE2 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
+		FA70EAE319F5A7BC00960EE2 /* Keyboard.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Keyboard.xib; sourceTree = "<group>"; };
+		FA70EAE919F5C17700960EE2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +90,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA70EAD119F5A56300960EE2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -61,6 +105,7 @@
 			children = (
 				FA70EAAD19F5A49D00960EE2 /* Tempo */,
 				FA70EAC319F5A49D00960EE2 /* TempoTests */,
+				FA70EAD519F5A56300960EE2 /* TempoKeyboard */,
 				FA70EAAC19F5A49D00960EE2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -70,6 +115,7 @@
 			children = (
 				FA70EAAB19F5A49D00960EE2 /* Tempo.app */,
 				FA70EAC019F5A49D00960EE2 /* TempoTests.xctest */,
+				FA70EAD419F5A56300960EE2 /* TempoKeyboard.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,6 +158,25 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		FA70EAD519F5A56300960EE2 /* TempoKeyboard */ = {
+			isa = PBXGroup;
+			children = (
+				FA70EAE919F5C17700960EE2 /* Images.xcassets */,
+				FA70EAE319F5A7BC00960EE2 /* Keyboard.xib */,
+				FA70EAD819F5A56300960EE2 /* KeyboardViewController.swift */,
+				FA70EAD619F5A56300960EE2 /* Supporting Files */,
+			);
+			path = TempoKeyboard;
+			sourceTree = "<group>";
+		};
+		FA70EAD619F5A56300960EE2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FA70EAD719F5A56300960EE2 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -122,10 +187,13 @@
 				FA70EAA719F5A49D00960EE2 /* Sources */,
 				FA70EAA819F5A49D00960EE2 /* Frameworks */,
 				FA70EAA919F5A49D00960EE2 /* Resources */,
+				FA70EAE219F5A56300960EE2 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FA70EADB19F5A56300960EE2 /* PBXTargetDependency */,
+				FA70EADE19F5A56300960EE2 /* PBXTargetDependency */,
 			);
 			name = Tempo;
 			productName = Tempo;
@@ -150,6 +218,23 @@
 			productReference = FA70EAC019F5A49D00960EE2 /* TempoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		FA70EAD319F5A56300960EE2 /* TempoKeyboard */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA70EADF19F5A56300960EE2 /* Build configuration list for PBXNativeTarget "TempoKeyboard" */;
+			buildPhases = (
+				FA70EAD019F5A56300960EE2 /* Sources */,
+				FA70EAD119F5A56300960EE2 /* Frameworks */,
+				FA70EAD219F5A56300960EE2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TempoKeyboard;
+			productName = TempoKeyboard;
+			productReference = FA70EAD419F5A56300960EE2 /* TempoKeyboard.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -160,10 +245,15 @@
 				TargetAttributes = {
 					FA70EAAA19F5A49D00960EE2 = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = G8DHPYJA37;
 					};
 					FA70EABF19F5A49D00960EE2 = {
 						CreatedOnToolsVersion = 6.0.1;
 						TestTargetID = FA70EAAA19F5A49D00960EE2;
+					};
+					FA70EAD319F5A56300960EE2 = {
+						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = G8DHPYJA37;
 					};
 				};
 			};
@@ -182,6 +272,7 @@
 			targets = (
 				FA70EAAA19F5A49D00960EE2 /* Tempo */,
 				FA70EABF19F5A49D00960EE2 /* TempoTests */,
+				FA70EAD319F5A56300960EE2 /* TempoKeyboard */,
 			);
 		};
 /* End PBXProject section */
@@ -201,6 +292,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA70EAD219F5A56300960EE2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA70EAEA19F5C17700960EE2 /* Images.xcassets in Resources */,
+				FA70EAE419F5A7BC00960EE2 /* Keyboard.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +324,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA70EAD019F5A56300960EE2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA70EAD919F5A56300960EE2 /* KeyboardViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -231,6 +339,16 @@
 			isa = PBXTargetDependency;
 			target = FA70EAAA19F5A49D00960EE2 /* Tempo */;
 			targetProxy = FA70EAC119F5A49D00960EE2 /* PBXContainerItemProxy */;
+		};
+		FA70EADB19F5A56300960EE2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA70EAD319F5A56300960EE2 /* TempoKeyboard */;
+			targetProxy = FA70EADA19F5A56300960EE2 /* PBXContainerItemProxy */;
+		};
+		FA70EADE19F5A56300960EE2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA70EAD319F5A56300960EE2 /* TempoKeyboard */;
+			targetProxy = FA70EADD19F5A56300960EE2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -335,9 +453,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Tempo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -345,9 +466,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Tempo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -385,6 +509,36 @@
 			};
 			name = Release;
 		};
+		FA70EAE019F5A56300960EE2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = TempoKeyboard/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		FA70EAE119F5A56300960EE2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = TempoKeyboard/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -410,6 +564,14 @@
 			buildConfigurations = (
 				FA70EACE19F5A49D00960EE2 /* Debug */,
 				FA70EACF19F5A49D00960EE2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		FA70EADF19F5A56300960EE2 /* Build configuration list for PBXNativeTarget "TempoKeyboard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA70EAE019F5A56300960EE2 /* Debug */,
+				FA70EAE119F5A56300960EE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};

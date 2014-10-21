@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="KeyboardViewController" customModule="TempoKeyboard" customModuleProvider="target">
+            <connections>
+                <outlet property="keyboardView" destination="Cqv-DZ-iYE" id="8hi-gV-Kud"/>
+                <outlet property="nextKeyboardButton" destination="rcC-gG-3xF" id="Pkb-Pf-Ezx"/>
+                <outlet property="notesTableView" destination="M9F-sQ-ald" id="PJO-gE-Tjd"/>
+                <outlet property="returnButton" destination="amV-PB-41n" id="Aev-gS-G9g"/>
+                <outlet property="spaceButton" destination="OeD-6m-9LM" id="m8r-Ac-bQQ"/>
+                <outlet property="view" destination="Cqv-DZ-iYE" id="ivH-b0-sDA"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="Cqv-DZ-iYE" userLabel="Keyboard View">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jDi-uR-9hd" userLabel="Bottom Bar">
+                    <rect key="frame" x="0.0" y="172" width="320" height="44"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="rcC-gG-3xF" userLabel="Next Keyboard Button">
+                            <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+                            <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="44" id="ACk-EC-KOA"/>
+                            </constraints>
+                            <inset key="imageEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                            <state key="normal" image="globe">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleShadowColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="nextKeyboardButtonClicked" destination="-1" eventType="touchUpInside" id="kPT-l9-Aol"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="amV-PB-41n" userLabel="Return Button">
+                            <rect key="frame" x="44" y="0.0" width="44" height="44"/>
+                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="44" id="uu7-Ep-cXO"/>
+                            </constraints>
+                            <inset key="imageEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                            <state key="normal" image="return">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="returnButtonClicked" destination="-1" eventType="touchUpInside" id="T8d-0V-2Jn"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="OeD-6m-9LM" userLabel="Space Button">
+                            <rect key="frame" x="88" y="0.0" width="44" height="44"/>
+                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="44" id="b7P-TW-XHc"/>
+                            </constraints>
+                            <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <inset key="imageEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                            <state key="normal" image="space">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="spaceButtonClicked" destination="-1" eventType="touchUpInside" id="cjk-R7-qOy"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                    <constraints>
+                        <constraint firstItem="amV-PB-41n" firstAttribute="top" secondItem="jDi-uR-9hd" secondAttribute="top" id="E6N-mR-uQt"/>
+                        <constraint firstItem="rcC-gG-3xF" firstAttribute="trailing" secondItem="amV-PB-41n" secondAttribute="leading" id="GTl-ix-83p"/>
+                        <constraint firstItem="OeD-6m-9LM" firstAttribute="leading" secondItem="amV-PB-41n" secondAttribute="trailing" id="PAF-JG-7Jf"/>
+                        <constraint firstAttribute="bottom" secondItem="rcC-gG-3xF" secondAttribute="bottom" id="YT2-9G-uH9"/>
+                        <constraint firstAttribute="bottom" secondItem="amV-PB-41n" secondAttribute="bottom" id="aKW-uH-JeO"/>
+                        <constraint firstAttribute="bottom" secondItem="OeD-6m-9LM" secondAttribute="bottom" id="c27-9k-2Wm"/>
+                        <constraint firstAttribute="height" constant="44" id="jcv-09-9Mr"/>
+                        <constraint firstItem="rcC-gG-3xF" firstAttribute="top" secondItem="jDi-uR-9hd" secondAttribute="top" id="ooB-H9-sNd"/>
+                        <constraint firstItem="OeD-6m-9LM" firstAttribute="top" secondItem="jDi-uR-9hd" secondAttribute="top" id="rnG-r2-WoJ"/>
+                        <constraint firstItem="rcC-gG-3xF" firstAttribute="leading" secondItem="jDi-uR-9hd" secondAttribute="leading" id="vkR-1C-7kN"/>
+                    </constraints>
+                </view>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="M9F-sQ-ald">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="172"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="rkC-cD-vaj"/>
+                        <outlet property="delegate" destination="-1" id="a4g-Nl-515"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="jDi-uR-9hd" secondAttribute="trailing" id="EKJ-0B-oXa"/>
+                <constraint firstItem="M9F-sQ-ald" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="HuH-Rh-f5L"/>
+                <constraint firstAttribute="trailing" secondItem="M9F-sQ-ald" secondAttribute="trailing" id="OxP-d0-hcD"/>
+                <constraint firstItem="M9F-sQ-ald" firstAttribute="top" secondItem="Cqv-DZ-iYE" secondAttribute="top" id="SMj-vp-R9P"/>
+                <constraint firstItem="jDi-uR-9hd" firstAttribute="top" secondItem="M9F-sQ-ald" secondAttribute="bottom" id="Tx4-4i-xFM"/>
+                <constraint firstItem="jDi-uR-9hd" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="kG5-et-lwV"/>
+                <constraint firstAttribute="bottom" secondItem="jDi-uR-9hd" secondAttribute="bottom" id="l3q-d0-itF"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="210" y="285"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="globe" width="28" height="28"/>
+        <image name="return" width="28" height="25"/>
+        <image name="space" width="28" height="28"/>
+    </resources>
+</document>
