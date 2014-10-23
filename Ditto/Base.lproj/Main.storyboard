@@ -7,7 +7,7 @@
         <!--Tempo-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController title="Tempo" id="vXZ-lx-hvc" customClass="ViewController" customModule="Tempo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Tempo" id="vXZ-lx-hvc" customClass="ListViewController" customModule="Ditto" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -16,11 +16,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="e3m-Vs-zbI">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="617"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="e3m-Vs-zbI">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" textLabel="Min-Cb-099" style="IBUITableViewCellStyleDefault" id="8D8-hZ-0O4">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NoteCell" textLabel="Min-Cb-099" style="IBUITableViewCellStyleDefault" id="8D8-hZ-0O4">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8D8-hZ-0O4" id="2Mu-Lb-Ttn">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -35,48 +35,35 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="vXZ-lx-hvc" id="7ma-UE-4o1"/>
+                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="7Jl-dH-nLc"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="e3m-Vs-zbI" firstAttribute="width" secondItem="kh9-bI-dsS" secondAttribute="width" id="15v-hy-ieG"/>
-                            <constraint firstItem="e3m-Vs-zbI" firstAttribute="height" secondItem="kh9-bI-dsS" secondAttribute="height" id="tqz-Vt-yn7"/>
+                            <constraint firstItem="e3m-Vs-zbI" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="313-mV-jjV"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="e3m-Vs-zbI" secondAttribute="bottom" id="WD6-h0-VqH"/>
+                            <constraint firstAttribute="trailing" secondItem="e3m-Vs-zbI" secondAttribute="trailing" id="p43-7R-Se1"/>
+                            <constraint firstItem="e3m-Vs-zbI" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="-64" id="rv3-hN-X5F"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Tempo" id="0Ya-1g-Muk">
+                    <navigationItem key="navigationItem" title="Ditto" id="0Ya-1g-Muk">
                         <barButtonItem key="leftBarButtonItem" systemItem="edit" id="smO-jb-u3T"/>
                         <barButtonItem key="rightBarButtonItem" title="Item" systemItem="add" id="1eA-gI-4LD">
                             <connections>
-                                <segue destination="PBt-Uy-O1d" kind="show" id="XG6-wY-XZS"/>
+                                <action selector="newButtonClicked" destination="vXZ-lx-hvc" id="7ti-EM-QIV"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="e3m-Vs-zbI" id="6Br-Y2-gro"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="951" y="136"/>
-        </scene>
-        <!--Editing Note-->
-        <scene sceneID="Fl9-Mw-IfK">
-            <objects>
-                <viewController id="PBt-Uy-O1d" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="EGc-nc-v5c"/>
-                        <viewControllerLayoutGuide type="bottom" id="e3O-nO-G9W"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="gfh-91-GaE">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Editing Note" id="hp8-zv-wDO">
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="7FI-6Y-jXc"/>
-                    </navigationItem>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="DGq-c8-ddP" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1595" y="136"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="YzL-Cf-7MZ">
@@ -86,6 +73,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="bRr-mP-LCk">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

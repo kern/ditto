@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  Tempo
-//
-//  Created by Alexander Kern on 10/20/14.
-//
-//
-
 import UIKit
 
 @UIApplicationMain
@@ -41,6 +33,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
 }
-

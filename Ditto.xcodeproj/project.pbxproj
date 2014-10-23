@@ -7,16 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA2ECD1119F8C207006B413E /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2ECD1019F8C207006B413E /* EditViewController.swift */; };
 		FA70EAB119F5A49D00960EE2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA70EAB019F5A49D00960EE2 /* AppDelegate.swift */; };
-		FA70EAB319F5A49D00960EE2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA70EAB219F5A49D00960EE2 /* ViewController.swift */; };
+		FA70EAB319F5A49D00960EE2 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA70EAB219F5A49D00960EE2 /* ListViewController.swift */; };
 		FA70EAB619F5A49D00960EE2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAB419F5A49D00960EE2 /* Main.storyboard */; };
 		FA70EAB819F5A49D00960EE2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAB719F5A49D00960EE2 /* Images.xcassets */; };
 		FA70EABB19F5A49D00960EE2 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAB919F5A49D00960EE2 /* LaunchScreen.xib */; };
-		FA70EAC719F5A49D00960EE2 /* TempoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA70EAC619F5A49D00960EE2 /* TempoTests.swift */; };
 		FA70EAD919F5A56300960EE2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA70EAD819F5A56300960EE2 /* KeyboardViewController.swift */; };
-		FA70EADC19F5A56300960EE2 /* TempoKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA70EAD419F5A56300960EE2 /* TempoKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		FA70EAE419F5A7BC00960EE2 /* Keyboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAE319F5A7BC00960EE2 /* Keyboard.xib */; };
+		FA70EADC19F5A56300960EE2 /* DittoKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA70EAD419F5A56300960EE2 /* DittoKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FA70EAE419F5A7BC00960EE2 /* KeyboardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAE319F5A7BC00960EE2 /* KeyboardViewController.xib */; };
 		FA70EAEA19F5C17700960EE2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAE919F5C17700960EE2 /* Images.xcassets */; };
+		FAFCAE7219F90BA6000F0318 /* NoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7119F90BA6000F0318 /* NoteStore.swift */; };
+		FAFCAE7419F98CF7000F0318 /* NewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7319F98CF7000F0318 /* NewViewController.swift */; };
+		FAFCAE7619F99C85000F0318 /* NewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAFCAE7519F99C85000F0318 /* NewViewController.xib */; };
+		FAFCAE7819F9A1DE000F0318 /* EditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAFCAE7719F9A1DE000F0318 /* EditViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,7 +54,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				FA70EADC19F5A56300960EE2 /* TempoKeyboard.appex in Embed App Extensions */,
+				FA70EADC19F5A56300960EE2 /* DittoKeyboard.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -58,21 +62,24 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		FA70EAAB19F5A49D00960EE2 /* Tempo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tempo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA2ECD1019F8C207006B413E /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
+		FA70EAAB19F5A49D00960EE2 /* Ditto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ditto.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA70EAAF19F5A49D00960EE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA70EAB019F5A49D00960EE2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		FA70EAB219F5A49D00960EE2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		FA70EAB219F5A49D00960EE2 /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		FA70EAB519F5A49D00960EE2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FA70EAB719F5A49D00960EE2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		FA70EABA19F5A49D00960EE2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		FA70EAC019F5A49D00960EE2 /* TempoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TempoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA70EAC519F5A49D00960EE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FA70EAC619F5A49D00960EE2 /* TempoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempoTests.swift; sourceTree = "<group>"; };
-		FA70EAD419F5A56300960EE2 /* TempoKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TempoKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA70EAC019F5A49D00960EE2 /* DittoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA70EAD419F5A56300960EE2 /* DittoKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DittoKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA70EAD719F5A56300960EE2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA70EAD819F5A56300960EE2 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
-		FA70EAE319F5A7BC00960EE2 /* Keyboard.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Keyboard.xib; sourceTree = "<group>"; };
+		FA70EAE319F5A7BC00960EE2 /* KeyboardViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KeyboardViewController.xib; sourceTree = "<group>"; };
 		FA70EAE919F5C17700960EE2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		FAFCAE7119F90BA6000F0318 /* NoteStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteStore.swift; sourceTree = "<group>"; };
+		FAFCAE7319F98CF7000F0318 /* NewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewViewController.swift; sourceTree = "<group>"; };
+		FAFCAE7519F99C85000F0318 /* NewViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewViewController.xib; sourceTree = "<group>"; };
+		FAFCAE7719F9A1DE000F0318 /* EditViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,9 +110,8 @@
 		FA70EAA219F5A49D00960EE2 = {
 			isa = PBXGroup;
 			children = (
-				FA70EAAD19F5A49D00960EE2 /* Tempo */,
-				FA70EAC319F5A49D00960EE2 /* TempoTests */,
-				FA70EAD519F5A56300960EE2 /* TempoKeyboard */,
+				FA70EAAD19F5A49D00960EE2 /* Ditto */,
+				FA70EAD519F5A56300960EE2 /* DittoKeyboard */,
 				FA70EAAC19F5A49D00960EE2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -113,24 +119,29 @@
 		FA70EAAC19F5A49D00960EE2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FA70EAAB19F5A49D00960EE2 /* Tempo.app */,
-				FA70EAC019F5A49D00960EE2 /* TempoTests.xctest */,
-				FA70EAD419F5A56300960EE2 /* TempoKeyboard.appex */,
+				FA70EAAB19F5A49D00960EE2 /* Ditto.app */,
+				FA70EAC019F5A49D00960EE2 /* DittoTests.xctest */,
+				FA70EAD419F5A56300960EE2 /* DittoKeyboard.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		FA70EAAD19F5A49D00960EE2 /* Tempo */ = {
+		FA70EAAD19F5A49D00960EE2 /* Ditto */ = {
 			isa = PBXGroup;
 			children = (
 				FA70EAB019F5A49D00960EE2 /* AppDelegate.swift */,
-				FA70EAB219F5A49D00960EE2 /* ViewController.swift */,
+				FA70EAB219F5A49D00960EE2 /* ListViewController.swift */,
+				FAFCAE7119F90BA6000F0318 /* NoteStore.swift */,
+				FA2ECD1019F8C207006B413E /* EditViewController.swift */,
+				FAFCAE7719F9A1DE000F0318 /* EditViewController.xib */,
+				FAFCAE7319F98CF7000F0318 /* NewViewController.swift */,
+				FAFCAE7519F99C85000F0318 /* NewViewController.xib */,
 				FA70EAB419F5A49D00960EE2 /* Main.storyboard */,
 				FA70EAB719F5A49D00960EE2 /* Images.xcassets */,
 				FA70EAB919F5A49D00960EE2 /* LaunchScreen.xib */,
 				FA70EAAE19F5A49D00960EE2 /* Supporting Files */,
 			);
-			path = Tempo;
+			path = Ditto;
 			sourceTree = "<group>";
 		};
 		FA70EAAE19F5A49D00960EE2 /* Supporting Files */ = {
@@ -141,32 +152,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		FA70EAC319F5A49D00960EE2 /* TempoTests */ = {
-			isa = PBXGroup;
-			children = (
-				FA70EAC619F5A49D00960EE2 /* TempoTests.swift */,
-				FA70EAC419F5A49D00960EE2 /* Supporting Files */,
-			);
-			path = TempoTests;
-			sourceTree = "<group>";
-		};
-		FA70EAC419F5A49D00960EE2 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				FA70EAC519F5A49D00960EE2 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		FA70EAD519F5A56300960EE2 /* TempoKeyboard */ = {
+		FA70EAD519F5A56300960EE2 /* DittoKeyboard */ = {
 			isa = PBXGroup;
 			children = (
 				FA70EAE919F5C17700960EE2 /* Images.xcassets */,
-				FA70EAE319F5A7BC00960EE2 /* Keyboard.xib */,
+				FA70EAE319F5A7BC00960EE2 /* KeyboardViewController.xib */,
 				FA70EAD819F5A56300960EE2 /* KeyboardViewController.swift */,
 				FA70EAD619F5A56300960EE2 /* Supporting Files */,
 			);
-			path = TempoKeyboard;
+			path = DittoKeyboard;
 			sourceTree = "<group>";
 		};
 		FA70EAD619F5A56300960EE2 /* Supporting Files */ = {
@@ -180,9 +174,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FA70EAAA19F5A49D00960EE2 /* Tempo */ = {
+		FA70EAAA19F5A49D00960EE2 /* Ditto */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FA70EACA19F5A49D00960EE2 /* Build configuration list for PBXNativeTarget "Tempo" */;
+			buildConfigurationList = FA70EACA19F5A49D00960EE2 /* Build configuration list for PBXNativeTarget "Ditto" */;
 			buildPhases = (
 				FA70EAA719F5A49D00960EE2 /* Sources */,
 				FA70EAA819F5A49D00960EE2 /* Frameworks */,
@@ -195,14 +189,14 @@
 				FA70EADB19F5A56300960EE2 /* PBXTargetDependency */,
 				FA70EADE19F5A56300960EE2 /* PBXTargetDependency */,
 			);
-			name = Tempo;
+			name = Ditto;
 			productName = Tempo;
-			productReference = FA70EAAB19F5A49D00960EE2 /* Tempo.app */;
+			productReference = FA70EAAB19F5A49D00960EE2 /* Ditto.app */;
 			productType = "com.apple.product-type.application";
 		};
-		FA70EABF19F5A49D00960EE2 /* TempoTests */ = {
+		FA70EABF19F5A49D00960EE2 /* DittoTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FA70EACD19F5A49D00960EE2 /* Build configuration list for PBXNativeTarget "TempoTests" */;
+			buildConfigurationList = FA70EACD19F5A49D00960EE2 /* Build configuration list for PBXNativeTarget "DittoTests" */;
 			buildPhases = (
 				FA70EABC19F5A49D00960EE2 /* Sources */,
 				FA70EABD19F5A49D00960EE2 /* Frameworks */,
@@ -213,14 +207,14 @@
 			dependencies = (
 				FA70EAC219F5A49D00960EE2 /* PBXTargetDependency */,
 			);
-			name = TempoTests;
+			name = DittoTests;
 			productName = TempoTests;
-			productReference = FA70EAC019F5A49D00960EE2 /* TempoTests.xctest */;
+			productReference = FA70EAC019F5A49D00960EE2 /* DittoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		FA70EAD319F5A56300960EE2 /* TempoKeyboard */ = {
+		FA70EAD319F5A56300960EE2 /* DittoKeyboard */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FA70EADF19F5A56300960EE2 /* Build configuration list for PBXNativeTarget "TempoKeyboard" */;
+			buildConfigurationList = FA70EADF19F5A56300960EE2 /* Build configuration list for PBXNativeTarget "DittoKeyboard" */;
 			buildPhases = (
 				FA70EAD019F5A56300960EE2 /* Sources */,
 				FA70EAD119F5A56300960EE2 /* Frameworks */,
@@ -230,9 +224,9 @@
 			);
 			dependencies = (
 			);
-			name = TempoKeyboard;
+			name = DittoKeyboard;
 			productName = TempoKeyboard;
-			productReference = FA70EAD419F5A56300960EE2 /* TempoKeyboard.appex */;
+			productReference = FA70EAD419F5A56300960EE2 /* DittoKeyboard.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -257,7 +251,7 @@
 					};
 				};
 			};
-			buildConfigurationList = FA70EAA619F5A49D00960EE2 /* Build configuration list for PBXProject "Tempo" */;
+			buildConfigurationList = FA70EAA619F5A49D00960EE2 /* Build configuration list for PBXProject "Ditto" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -270,9 +264,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FA70EAAA19F5A49D00960EE2 /* Tempo */,
-				FA70EABF19F5A49D00960EE2 /* TempoTests */,
-				FA70EAD319F5A56300960EE2 /* TempoKeyboard */,
+				FA70EAAA19F5A49D00960EE2 /* Ditto */,
+				FA70EABF19F5A49D00960EE2 /* DittoTests */,
+				FA70EAD319F5A56300960EE2 /* DittoKeyboard */,
 			);
 		};
 /* End PBXProject section */
@@ -284,7 +278,9 @@
 			files = (
 				FA70EAB619F5A49D00960EE2 /* Main.storyboard in Resources */,
 				FA70EABB19F5A49D00960EE2 /* LaunchScreen.xib in Resources */,
+				FAFCAE7819F9A1DE000F0318 /* EditViewController.xib in Resources */,
 				FA70EAB819F5A49D00960EE2 /* Images.xcassets in Resources */,
+				FAFCAE7619F99C85000F0318 /* NewViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,7 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA70EAEA19F5C17700960EE2 /* Images.xcassets in Resources */,
-				FA70EAE419F5A7BC00960EE2 /* Keyboard.xib in Resources */,
+				FA70EAE419F5A7BC00960EE2 /* KeyboardViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,8 +307,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA70EAB319F5A49D00960EE2 /* ViewController.swift in Sources */,
+				FA70EAB319F5A49D00960EE2 /* ListViewController.swift in Sources */,
+				FAFCAE7219F90BA6000F0318 /* NoteStore.swift in Sources */,
+				FAFCAE7419F98CF7000F0318 /* NewViewController.swift in Sources */,
 				FA70EAB119F5A49D00960EE2 /* AppDelegate.swift in Sources */,
+				FA2ECD1119F8C207006B413E /* EditViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -320,7 +319,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA70EAC719F5A49D00960EE2 /* TempoTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,17 +335,17 @@
 /* Begin PBXTargetDependency section */
 		FA70EAC219F5A49D00960EE2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = FA70EAAA19F5A49D00960EE2 /* Tempo */;
+			target = FA70EAAA19F5A49D00960EE2 /* Ditto */;
 			targetProxy = FA70EAC119F5A49D00960EE2 /* PBXContainerItemProxy */;
 		};
 		FA70EADB19F5A56300960EE2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = FA70EAD319F5A56300960EE2 /* TempoKeyboard */;
+			target = FA70EAD319F5A56300960EE2 /* DittoKeyboard */;
 			targetProxy = FA70EADA19F5A56300960EE2 /* PBXContainerItemProxy */;
 		};
 		FA70EADE19F5A56300960EE2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = FA70EAD319F5A56300960EE2 /* TempoKeyboard */;
+			target = FA70EAD319F5A56300960EE2 /* DittoKeyboard */;
 			targetProxy = FA70EADD19F5A56300960EE2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -455,9 +453,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = Tempo/Info.plist;
+				INFOPLIST_FILE = Ditto/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Ditto;
 				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
@@ -468,9 +466,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = Tempo/Info.plist;
+				INFOPLIST_FILE = Ditto/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Ditto;
 				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
@@ -489,7 +487,7 @@
 				);
 				INFOPLIST_FILE = TempoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = DittoTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tempo.app/Tempo";
 			};
 			name = Debug;
@@ -504,7 +502,7 @@
 				);
 				INFOPLIST_FILE = TempoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = DittoTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tempo.app/Tempo";
 			};
 			name = Release;
@@ -518,9 +516,9 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = TempoKeyboard/Info.plist;
+				INFOPLIST_FILE = DittoKeyboard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = DittoKeyboard;
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
@@ -531,9 +529,9 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = TempoKeyboard/Info.plist;
+				INFOPLIST_FILE = DittoKeyboard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = DittoKeyboard;
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 			};
@@ -542,7 +540,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FA70EAA619F5A49D00960EE2 /* Build configuration list for PBXProject "Tempo" */ = {
+		FA70EAA619F5A49D00960EE2 /* Build configuration list for PBXProject "Ditto" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FA70EAC819F5A49D00960EE2 /* Debug */,
@@ -551,29 +549,32 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FA70EACA19F5A49D00960EE2 /* Build configuration list for PBXNativeTarget "Tempo" */ = {
+		FA70EACA19F5A49D00960EE2 /* Build configuration list for PBXNativeTarget "Ditto" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FA70EACB19F5A49D00960EE2 /* Debug */,
 				FA70EACC19F5A49D00960EE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
-		FA70EACD19F5A49D00960EE2 /* Build configuration list for PBXNativeTarget "TempoTests" */ = {
+		FA70EACD19F5A49D00960EE2 /* Build configuration list for PBXNativeTarget "DittoTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FA70EACE19F5A49D00960EE2 /* Debug */,
 				FA70EACF19F5A49D00960EE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
-		FA70EADF19F5A56300960EE2 /* Build configuration list for PBXNativeTarget "TempoKeyboard" */ = {
+		FA70EADF19F5A56300960EE2 /* Build configuration list for PBXNativeTarget "DittoKeyboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FA70EAE019F5A56300960EE2 /* Debug */,
 				FA70EAE119F5A56300960EE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -2,6 +2,8 @@ import UIKit
 
 class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITableViewDataSource {
 
+    let defaults = NSUserDefaults(suiteName: "io.kern.ditto")
+    
     @IBOutlet var keyboardView: UIView!
     @IBOutlet var notesTableView: UITableView!
     
@@ -9,18 +11,10 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var returnButton: UIButton!
     @IBOutlet var spaceButton: UIButton!
     
-    var notes: [String] = [
-        "Hello!\n\nMy name is Alex Kern, and I'm a third year CS student at UC Berkeley.",
-        "Please don't hesitate to reach out if you have any questions or concerns.",
-        "Cheers,\nAlex Kern",
-        "               🌟\n               🎄\n             🎄🎄\n           🎄🎄🎄\n         🎄🎄🎄🎄\n       🎄🎄🎄🎄🎄\n           🎁🎁🎁",
-        "Never gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you"
-    ]
+    var notes: [String] = []
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        let xib = NSBundle.mainBundle().loadNibNamed("Keyboard", owner: self, options: nil);
+    override func loadView() {
+        let xib = NSBundle.mainBundle().loadNibNamed("KeyboardViewController", owner: self, options: nil);
         self.notesTableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "NoteCell")
         
         var borderColor = UIColor(red: 0, green: 0, blue:0, alpha: 0.25)
@@ -31,6 +25,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         nextKeyboardButton.layer.borderColor = borderColor.CGColor
         returnButton.layer.borderColor = borderColor.CGColor
         spaceButton.layer.borderColor = borderColor.CGColor
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        notes = getNotes();
+        notesTableView.reloadData()
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -67,4 +67,13 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         let proxy = self.textDocumentProxy as UITextDocumentProxy
         proxy.insertText(" ")
     }
+    
+    func getNotes() -> [String] {
+        if let notes = defaults.arrayForKey("notes") as? [String] {
+            return notes
+        } else {
+            return []
+        }
+    }
+    
 }
