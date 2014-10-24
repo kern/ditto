@@ -23,7 +23,7 @@ class NoteStore: NSObject {
         return notes[index]
     }
     
-    func edit(index: Int, text: String) {
+    func set(index: Int, text: String) {
         var notes = getAll()
         notes[index] = text
         defaults.setObject(notes, forKey: "notes")

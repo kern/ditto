@@ -37,7 +37,7 @@ class EditViewController: UIViewController {
     }
     
     func saveButtonClicked() {
-        noteStore.edit(index, text: textView.text)
+        noteStore.set(index, text: textView.text)
         textView.resignFirstResponder()
         navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }

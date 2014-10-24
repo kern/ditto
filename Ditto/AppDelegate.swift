@@ -7,7 +7,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        application.statusBarStyle = .LightContent
+        UINavigationBar.appearance().titleTextAttributes = [ NSForegroundColorAttributeName: UIColor.whiteColor() ]
+
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        let listViewController = ListViewController()
+        let navController = NavigationController(rootViewController: listViewController)
+        window?.rootViewController = navController
+        window?.makeKeyAndVisible()
+        
         return true
     }
 

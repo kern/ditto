@@ -6,9 +6,28 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     let noteStore = NoteStore()
     var notes: [String] = []
-
+    
+    override init() {
+        super.init(nibName: "ListViewController", bundle: nil)
+        
+        let logo = UIImage(named: "logo")
+        navigationItem.titleView = UIImageView(image: logo)
+        
+        let editButton = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "editButtonClicked")
+        navigationItem.leftBarButtonItem = editButton
+        
+        let newButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "newButtonClicked")
+        navigationItem.rightBarButtonItem = newButton
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "NoteCell")
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -43,16 +62,18 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let editViewController = EditViewController(index: indexPath.row)
-        let subnavController = UINavigationController(rootViewController: editViewController)
-        subnavController.navigationBar.tintColor = UIColor.purpleColor()
+        let subnavController = NavigationController(rootViewController: editViewController)
         presentViewController(subnavController, animated: true, completion: nil)
     }
     
-    @IBAction func newButtonClicked() {
+    func newButtonClicked() {
         let newViewController = NewViewController()
-        let subnavController = UINavigationController(rootViewController: newViewController)
-        subnavController.navigationBar.tintColor = UIColor.purpleColor()
+        let subnavController = NavigationController(rootViewController: newViewController)
         presentViewController(subnavController, animated: true, completion: nil)
+    }
+    
+    func editButtonClicked() {
+        
     }
     
 }

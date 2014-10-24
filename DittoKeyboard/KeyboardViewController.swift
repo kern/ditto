@@ -15,7 +15,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
 
     override func loadView() {
         let xib = NSBundle.mainBundle().loadNibNamed("KeyboardViewController", owner: self, options: nil);
-        self.notesTableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "NoteCell")
+        notesTableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "NoteCell")
         
         var borderColor = UIColor(red: 0, green: 0, blue:0, alpha: 0.25)
         nextKeyboardButton.layer.borderWidth = 0.25
