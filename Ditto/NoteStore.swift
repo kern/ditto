@@ -8,6 +8,7 @@ class NoteStore: NSObject {
         var notes = getAll()
         notes.append(note)
         defaults.setObject(notes, forKey: "notes")
+        defaults.synchronize()
     }
     
     func getAll() -> [String] {
@@ -27,6 +28,7 @@ class NoteStore: NSObject {
         var notes = getAll()
         notes[index] = text
         defaults.setObject(notes, forKey: "notes")
+        defaults.synchronize()
     }
     
 }
