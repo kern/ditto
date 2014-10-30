@@ -2,7 +2,7 @@ import Foundation
 
 class NoteStore: NSObject {
     
-    let defaults = NSUserDefaults(suiteName: "io.kern.ditto")!
+    let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
     
     func add(note: String) {
         var notes = getAll()
@@ -12,6 +12,7 @@ class NoteStore: NSObject {
     }
     
     func getAll() -> [String] {
+        defaults.synchronize()
         if let notes = defaults.arrayForKey("notes") as? [String] {
             return notes
         } else {

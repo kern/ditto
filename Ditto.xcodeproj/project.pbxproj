@@ -63,6 +63,8 @@
 		FA70EAD819F5A56300960EE2 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		FA70EAE319F5A7BC00960EE2 /* KeyboardViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = KeyboardViewController.xib; sourceTree = "<group>"; };
 		FA70EAE919F5C17700960EE2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		FA83FA931A01ED5D0061192A /* Ditto.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Ditto.entitlements; sourceTree = "<group>"; };
+		FA83FA941A01ED7F0061192A /* DittoKeyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = DittoKeyboard.entitlements; sourceTree = "<group>"; };
 		FAFCAE7119F90BA6000F0318 /* NoteStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteStore.swift; sourceTree = "<group>"; };
 		FAFCAE7319F98CF7000F0318 /* NewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewViewController.swift; sourceTree = "<group>"; };
 		FAFCAE7519F99C85000F0318 /* NewViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewViewController.xib; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 		FA70EAAD19F5A49D00960EE2 /* Ditto */ = {
 			isa = PBXGroup;
 			children = (
+				FA83FA931A01ED5D0061192A /* Ditto.entitlements */,
 				FA70EAB019F5A49D00960EE2 /* AppDelegate.swift */,
 				FAFCAE7119F90BA6000F0318 /* NoteStore.swift */,
 				FA237AB619F9CAB0007E67D5 /* NavigationController.swift */,
@@ -143,6 +146,7 @@
 		FA70EAD519F5A56300960EE2 /* DittoKeyboard */ = {
 			isa = PBXGroup;
 			children = (
+				FA83FA941A01ED7F0061192A /* DittoKeyboard.entitlements */,
 				FA70EAE919F5C17700960EE2 /* Images.xcassets */,
 				FA70EAE319F5A7BC00960EE2 /* KeyboardViewController.xib */,
 				FA70EAD819F5A56300960EE2 /* KeyboardViewController.swift */,
@@ -209,10 +213,20 @@
 					FA70EAAA19F5A49D00960EE2 = {
 						CreatedOnToolsVersion = 6.0.1;
 						DevelopmentTeam = G8DHPYJA37;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					FA70EAD319F5A56300960EE2 = {
 						CreatedOnToolsVersion = 6.0.1;
 						DevelopmentTeam = G8DHPYJA37;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -384,6 +398,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Ditto/Ditto.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -398,6 +413,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Ditto/Ditto.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -411,6 +427,7 @@
 		FA70EAE019F5A56300960EE2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = DittoKeyboard/DittoKeyboard.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -428,6 +445,7 @@
 		FA70EAE119F5A56300960EE2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = DittoKeyboard/DittoKeyboard.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = DittoKeyboard/Info.plist;

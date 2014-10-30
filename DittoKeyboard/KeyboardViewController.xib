@@ -20,14 +20,21 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="221"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2AC-bL-k82" userLabel="Top Bar">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="4"/>
+                    <color key="backgroundColor" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="4" id="0Ea-IS-IG1"/>
+                    </constraints>
+                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jDi-uR-9hd" userLabel="Bottom Bar">
-                    <rect key="frame" x="0.0" y="177" width="320" height="44"/>
+                    <rect key="frame" x="0.0" y="174" width="320" height="47"/>
                     <subviews>
                         <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="rcC-gG-3xF" userLabel="Next Keyboard Button">
-                            <rect key="frame" x="0.0" y="0.0" width="46" height="44"/>
+                            <rect key="frame" x="0.0" y="0.0" width="47" height="47"/>
                             <color key="backgroundColor" red="0.57647061347961426" green="0.14509804546833038" blue="0.57647061347961426" alpha="1" colorSpace="deviceRGB"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="46" id="ACk-EC-KOA"/>
+                                <constraint firstAttribute="width" constant="47" id="ACk-EC-KOA"/>
                             </constraints>
                             <color key="tintColor" red="0.92941182851791382" green="0.92941182851791382" blue="0.92941182851791382" alpha="1" colorSpace="deviceRGB"/>
                             <inset key="imageEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
@@ -39,23 +46,9 @@
                                 <action selector="nextKeyboardButtonClicked" destination="-1" eventType="touchUpInside" id="kPT-l9-Aol"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" placeholderIntrinsicWidth="46" placeholderIntrinsicHeight="44" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kec-yT-Es7">
-                            <rect key="frame" x="274" y="0.0" width="46" height="44"/>
-                            <color key="backgroundColor" red="0.49806680484693877" green="0.0" blue="0.47022465668973357" alpha="1" colorSpace="calibratedRGB"/>
-                            <inset key="contentEdgeInsets" minX="4" minY="3" maxX="4" maxY="0.0"/>
-                            <state key="normal" title="Button" image="backspace">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="backspaceButtonClicked" destination="-1" eventType="touchUpInside" id="vbV-nu-EsA"/>
-                            </connections>
-                        </button>
                         <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="OeD-6m-9LM" userLabel="Space Button">
-                            <rect key="frame" x="48" y="0.0" width="111" height="44"/>
+                            <rect key="frame" x="49" y="0.0" width="110" height="47"/>
                             <color key="backgroundColor" red="0.57647061347961426" green="0.14509804546833038" blue="0.57647061347961426" alpha="1" colorSpace="deviceRGB"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="111" id="b7P-TW-XHc"/>
-                            </constraints>
                             <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                             <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="4"/>
                             <inset key="imageEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
@@ -65,11 +58,8 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="amV-PB-41n" userLabel="Return Button">
-                            <rect key="frame" x="161" y="0.0" width="111" height="44"/>
+                            <rect key="frame" x="161" y="0.0" width="110" height="47"/>
                             <color key="backgroundColor" red="0.57647061347961426" green="0.14509804546833038" blue="0.57647061347961426" alpha="1" colorSpace="deviceRGB"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="111" id="uu7-Ep-cXO"/>
-                            </constraints>
                             <inset key="contentEdgeInsets" minX="3" minY="4" maxX="3" maxY="3"/>
                             <inset key="imageEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                             <state key="normal" image="return">
@@ -80,15 +70,34 @@
                                 <action selector="returnButtonClicked" destination="-1" eventType="touchUpInside" id="T8d-0V-2Jn"/>
                             </connections>
                         </button>
+                        <button opaque="NO" contentMode="center" placeholderIntrinsicWidth="46" placeholderIntrinsicHeight="44" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kec-yT-Es7" userLabel="Delete Button">
+                            <rect key="frame" x="273" y="0.0" width="47" height="47"/>
+                            <color key="backgroundColor" red="0.49806680484693877" green="0.0" blue="0.47022465668973357" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="47" id="phk-gX-LQ2"/>
+                            </constraints>
+                            <inset key="contentEdgeInsets" minX="4" minY="3" maxX="4" maxY="0.0"/>
+                            <state key="normal" title="Button" image="backspace">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="backspaceButtonClicked" destination="-1" eventType="touchUpInside" id="vbV-nu-EsA"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                     <constraints>
+                        <constraint firstAttribute="trailing" secondItem="kec-yT-Es7" secondAttribute="trailing" id="0fc-t3-oSl"/>
                         <constraint firstAttribute="bottom" secondItem="amV-PB-41n" secondAttribute="bottom" id="62W-Jk-698"/>
                         <constraint firstItem="OeD-6m-9LM" firstAttribute="leading" secondItem="rcC-gG-3xF" secondAttribute="trailing" constant="2" id="IXJ-BP-DyS"/>
+                        <constraint firstAttribute="bottom" secondItem="kec-yT-Es7" secondAttribute="bottom" id="J1x-j2-xnn"/>
                         <constraint firstItem="amV-PB-41n" firstAttribute="top" secondItem="jDi-uR-9hd" secondAttribute="top" id="Y40-Be-Spo"/>
                         <constraint firstAttribute="bottom" secondItem="rcC-gG-3xF" secondAttribute="bottom" id="YT2-9G-uH9"/>
+                        <constraint firstItem="kec-yT-Es7" firstAttribute="top" secondItem="jDi-uR-9hd" secondAttribute="top" id="ZiI-VL-IMH"/>
+                        <constraint firstItem="amV-PB-41n" firstAttribute="width" secondItem="OeD-6m-9LM" secondAttribute="width" id="atY-Yy-F5d"/>
                         <constraint firstAttribute="bottom" secondItem="OeD-6m-9LM" secondAttribute="bottom" id="c27-9k-2Wm"/>
-                        <constraint firstAttribute="height" constant="44" id="jcv-09-9Mr"/>
+                        <constraint firstItem="kec-yT-Es7" firstAttribute="leading" secondItem="amV-PB-41n" secondAttribute="trailing" constant="2" id="fUN-Md-1n6"/>
+                        <constraint firstAttribute="height" constant="47" id="jcv-09-9Mr"/>
                         <constraint firstItem="amV-PB-41n" firstAttribute="leading" secondItem="OeD-6m-9LM" secondAttribute="trailing" constant="2" id="mbB-lf-GvL"/>
                         <constraint firstItem="rcC-gG-3xF" firstAttribute="top" secondItem="jDi-uR-9hd" secondAttribute="top" id="ooB-H9-sNd"/>
                         <constraint firstItem="OeD-6m-9LM" firstAttribute="top" secondItem="jDi-uR-9hd" secondAttribute="top" id="rnG-r2-WoJ"/>
@@ -96,7 +105,7 @@
                     </constraints>
                 </view>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="M9F-sQ-ald">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="177"/>
+                    <rect key="frame" x="0.0" y="4" width="320" height="170"/>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="rkC-cD-vaj"/>
@@ -106,11 +115,14 @@
             </subviews>
             <color key="backgroundColor" red="0.36744998763515291" green="0.43221640586853027" blue="0.038427555042039874" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
+                <constraint firstItem="M9F-sQ-ald" firstAttribute="top" secondItem="2AC-bL-k82" secondAttribute="bottom" id="3SC-04-sTh"/>
+                <constraint firstItem="M9F-sQ-ald" firstAttribute="bottom" secondItem="jDi-uR-9hd" secondAttribute="top" id="67e-Fr-8Br"/>
                 <constraint firstAttribute="trailing" secondItem="jDi-uR-9hd" secondAttribute="trailing" id="EKJ-0B-oXa"/>
                 <constraint firstItem="M9F-sQ-ald" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="HuH-Rh-f5L"/>
                 <constraint firstAttribute="trailing" secondItem="M9F-sQ-ald" secondAttribute="trailing" id="OxP-d0-hcD"/>
-                <constraint firstItem="M9F-sQ-ald" firstAttribute="top" secondItem="Cqv-DZ-iYE" secondAttribute="top" id="SMj-vp-R9P"/>
-                <constraint firstItem="jDi-uR-9hd" firstAttribute="top" secondItem="M9F-sQ-ald" secondAttribute="bottom" id="Tx4-4i-xFM"/>
+                <constraint firstItem="2AC-bL-k82" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="WRY-JC-Usz"/>
+                <constraint firstAttribute="trailing" secondItem="2AC-bL-k82" secondAttribute="trailing" id="ehb-x8-1oD"/>
+                <constraint firstItem="2AC-bL-k82" firstAttribute="top" secondItem="Cqv-DZ-iYE" secondAttribute="top" id="h1y-nG-oHm"/>
                 <constraint firstItem="jDi-uR-9hd" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="kG5-et-lwV"/>
                 <constraint firstAttribute="bottom" secondItem="jDi-uR-9hd" secondAttribute="bottom" id="l3q-d0-itF"/>
             </constraints>

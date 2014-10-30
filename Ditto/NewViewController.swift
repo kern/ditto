@@ -6,6 +6,8 @@ class NewViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet var textView: UITextView!
     
+    // @IBOutlet NSLayoutConstraint * _textViewSpaceToBottomConstraint
+    
     override init() {
         super.init(nibName: "NewViewController", bundle: nil)
         
@@ -23,9 +25,33 @@ class NewViewController: UIViewController, UITextViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         textView.textContainerInset = UIEdgeInsetsMake(0, -4, 0, -4)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    }
+
+    func keyboardWillShow(n: NSNotification) {
+        let v = n.userInfo?[UIKeyboardFrameEndUserInfoKey] as NSValue
+        let height = v.CGRectValue().size.height
+        var insets = textView.contentInset
+        insets.bottom = height
+        textView.contentInset = insets
+        textView.scrollIndicatorInsets = insets
+    }
+    
+    func keyboardWillHide(n: NSNotification) {
+        var insets = textView.contentInset
+        insets.bottom = 0
+        textView.contentInset = insets
+        textView.scrollIndicatorInsets = insets
     }
     
     override func viewWillAppear(animated: Bool) {

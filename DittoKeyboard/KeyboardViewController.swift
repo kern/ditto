@@ -2,8 +2,8 @@ import UIKit
 
 class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITableViewDataSource {
 
-    let defaults = NSUserDefaults(suiteName: "io.kern.ditto")!
-    
+    let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
+
     @IBOutlet var keyboardView: UIView!
     @IBOutlet var notesTableView: UITableView!
     
