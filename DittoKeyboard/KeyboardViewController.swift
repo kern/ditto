@@ -7,6 +7,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var keyboardView: UIView!
     @IBOutlet var notesTableView: UITableView!
     
+    @IBOutlet var backspaceButton: UIButton!
     @IBOutlet var nextKeyboardButton: UIButton!
     @IBOutlet var returnButton: UIButton!
     @IBOutlet var spaceButton: UIButton!
@@ -61,6 +62,11 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBAction func returnButtonClicked() {
         let proxy = self.textDocumentProxy as UITextDocumentProxy
         proxy.insertText("\n")
+    }
+    
+    @IBAction func backspaceButtonClicked() {
+        let proxy = self.textDocumentProxy as UITextDocumentProxy
+        proxy.deleteBackward()
     }
     
     @IBAction func spaceButtonClicked() {
