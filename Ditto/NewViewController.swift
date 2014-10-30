@@ -2,16 +2,14 @@ import UIKit
 
 class NewViewController: UIViewController, UITextViewDelegate {
     
-    let noteStore = NoteStore()
+    let dittoStore = DittoStore()
     
     @IBOutlet var textView: UITextView!
-    
-    // @IBOutlet NSLayoutConstraint * _textViewSpaceToBottomConstraint
     
     override init() {
         super.init(nibName: "NewViewController", bundle: nil)
         
-        navigationItem.title = "New Snippet"
+        navigationItem.title = "New Ditto"
         
         let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonClicked")
         navigationItem.leftBarButtonItem = cancelButton
@@ -60,7 +58,7 @@ class NewViewController: UIViewController, UITextViewDelegate {
     }
     
     func saveButtonClicked() {
-        noteStore.add(textView.text)
+        dittoStore.add(textView.text)
         textView.resignFirstResponder()
         navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }

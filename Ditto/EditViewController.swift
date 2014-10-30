@@ -2,7 +2,7 @@ import UIKit
 
 class EditViewController: UIViewController {
     
-    let noteStore = NoteStore()
+    let dittoStore = DittoStore()
     let index: Int
     
     @IBOutlet var textView: UITextView!
@@ -11,7 +11,7 @@ class EditViewController: UIViewController {
         self.index = index
         super.init(nibName: "EditViewController", bundle: nil)
         
-        navigationItem.title = "Edit Snippet"
+        navigationItem.title = "Edit Ditto"
         
         let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonClicked")
         navigationItem.leftBarButtonItem = cancelButton
@@ -56,12 +56,12 @@ class EditViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         navigationItem.rightBarButtonItem?.enabled = true
-        textView.text = noteStore.get(index)
+        textView.text = dittoStore.get(index)
         textView.becomeFirstResponder()
     }
     
     func saveButtonClicked() {
-        noteStore.set(index, text: textView.text)
+        dittoStore.set(index, ditto: textView.text)
         textView.resignFirstResponder()
         navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }

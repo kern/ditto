@@ -4,8 +4,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     @IBOutlet var tableView: UITableView!
     
-    let noteStore = NoteStore()
-    var notes: [String] = []
+    let dittoStore = DittoStore()
     
     var editButton: UIBarButtonItem!
     var newButton: UIBarButtonItem!
@@ -27,8 +26,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "NoteCell")
+        tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "DittoCell")
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -36,28 +34,21 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewWillAppear(animated: Bool) {
-        notes = noteStore.getAll()
+        dittoStore.reload()
         tableView.reloadData()
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let editViewController = segue.destinationViewController as UINavigationController
-        
-        if segue.identifier == "New" {
-            editViewController.visibleViewController.navigationItem.title = "New Note"
-        } else {
-            editViewController.visibleViewController.navigationItem.title = "Editing Note"
-        }
-    }
+    // Table View Callbacks
+    // --------------------
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return notes.count
+        return dittoStore.count()
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("NoteCell", forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as UITableViewCell
         
-        var text = notes[indexPath.row]
+        var text = dittoStore.get(indexPath.row)
         text = text.stringByReplacingOccurrencesOfString("\n", withString: "↩")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
         cell.textLabel.text = text
@@ -76,8 +67,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        noteStore.move(sourceIndexPath.row, to: destinationIndexPath.row)
-        notes = noteStore.getAll()
+        dittoStore.move(sourceIndexPath.row, to: destinationIndexPath.row)
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -86,12 +76,13 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == .Delete) {
-            noteStore.remove(indexPath.row)
-            notes = noteStore.getAll()
-            
+            dittoStore.remove(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
         }
     }
+    
+    // Button Callbacks
+    // ----------------
     
     func newButtonClicked() {
         let newViewController = NewViewController()

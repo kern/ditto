@@ -17,8 +17,9 @@
 		FA70EAD919F5A56300960EE2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA70EAD819F5A56300960EE2 /* KeyboardViewController.swift */; };
 		FA70EAE419F5A7BC00960EE2 /* KeyboardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAE319F5A7BC00960EE2 /* KeyboardViewController.xib */; };
 		FA70EAEA19F5C17700960EE2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAE919F5C17700960EE2 /* Images.xcassets */; };
+		FA83FA951A01FFD80061192A /* DittoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7119F90BA6000F0318 /* DittoStore.swift */; };
 		FAC467A51A01D37E006B8088 /* DittoKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA70EAD419F5A56300960EE2 /* DittoKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		FAFCAE7219F90BA6000F0318 /* NoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7119F90BA6000F0318 /* NoteStore.swift */; };
+		FAFCAE7219F90BA6000F0318 /* DittoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7119F90BA6000F0318 /* DittoStore.swift */; };
 		FAFCAE7419F98CF7000F0318 /* NewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7319F98CF7000F0318 /* NewViewController.swift */; };
 		FAFCAE7619F99C85000F0318 /* NewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAFCAE7519F99C85000F0318 /* NewViewController.xib */; };
 		FAFCAE7819F9A1DE000F0318 /* EditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAFCAE7719F9A1DE000F0318 /* EditViewController.xib */; };
@@ -65,7 +66,7 @@
 		FA70EAE919F5C17700960EE2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		FA83FA931A01ED5D0061192A /* Ditto.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Ditto.entitlements; sourceTree = "<group>"; };
 		FA83FA941A01ED7F0061192A /* DittoKeyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = DittoKeyboard.entitlements; sourceTree = "<group>"; };
-		FAFCAE7119F90BA6000F0318 /* NoteStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteStore.swift; sourceTree = "<group>"; };
+		FAFCAE7119F90BA6000F0318 /* DittoStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DittoStore.swift; sourceTree = "<group>"; };
 		FAFCAE7319F98CF7000F0318 /* NewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewViewController.swift; sourceTree = "<group>"; };
 		FAFCAE7519F99C85000F0318 /* NewViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewViewController.xib; sourceTree = "<group>"; };
 		FAFCAE7719F9A1DE000F0318 /* EditViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditViewController.xib; sourceTree = "<group>"; };
@@ -125,8 +126,8 @@
 			children = (
 				FA83FA931A01ED5D0061192A /* Ditto.entitlements */,
 				FA70EAB019F5A49D00960EE2 /* AppDelegate.swift */,
-				FAFCAE7119F90BA6000F0318 /* NoteStore.swift */,
 				FA237AB619F9CAB0007E67D5 /* NavigationController.swift */,
+				FAFCAE7119F90BA6000F0318 /* DittoStore.swift */,
 				FA237AB519F9C70F007E67D5 /* View Controllers */,
 				FA70EAB919F5A49D00960EE2 /* LaunchScreen.xib */,
 				FA70EAB719F5A49D00960EE2 /* Images.xcassets */,
@@ -280,7 +281,7 @@
 			files = (
 				FA70EAB319F5A49D00960EE2 /* ListViewController.swift in Sources */,
 				FA237AB719F9CAB0007E67D5 /* NavigationController.swift in Sources */,
-				FAFCAE7219F90BA6000F0318 /* NoteStore.swift in Sources */,
+				FAFCAE7219F90BA6000F0318 /* DittoStore.swift in Sources */,
 				FAFCAE7419F98CF7000F0318 /* NewViewController.swift in Sources */,
 				FA70EAB119F5A49D00960EE2 /* AppDelegate.swift in Sources */,
 				FA2ECD1119F8C207006B413E /* EditViewController.swift in Sources */,
@@ -291,6 +292,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA83FA951A01FFD80061192A /* DittoStore.swift in Sources */,
 				FA70EAD919F5A56300960EE2 /* KeyboardViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
