@@ -15,9 +15,9 @@
 		FA70EAB819F5A49D00960EE2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAB719F5A49D00960EE2 /* Images.xcassets */; };
 		FA70EABB19F5A49D00960EE2 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAB919F5A49D00960EE2 /* LaunchScreen.xib */; };
 		FA70EAD919F5A56300960EE2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA70EAD819F5A56300960EE2 /* KeyboardViewController.swift */; };
-		FA70EADC19F5A56300960EE2 /* DittoKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA70EAD419F5A56300960EE2 /* DittoKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FA70EAE419F5A7BC00960EE2 /* KeyboardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAE319F5A7BC00960EE2 /* KeyboardViewController.xib */; };
 		FA70EAEA19F5C17700960EE2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAE919F5C17700960EE2 /* Images.xcassets */; };
+		FAC467A51A01D37E006B8088 /* DittoKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA70EAD419F5A56300960EE2 /* DittoKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FAFCAE7219F90BA6000F0318 /* NoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7119F90BA6000F0318 /* NoteStore.swift */; };
 		FAFCAE7419F98CF7000F0318 /* NewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7319F98CF7000F0318 /* NewViewController.swift */; };
 		FAFCAE7619F99C85000F0318 /* NewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAFCAE7519F99C85000F0318 /* NewViewController.xib */; };
@@ -25,30 +25,23 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		FA70EADA19F5A56300960EE2 /* PBXContainerItemProxy */ = {
+		FAC467A61A01D387006B8088 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA70EAA319F5A49D00960EE2 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = FA70EAD319F5A56300960EE2;
-			remoteInfo = TempoKeyboard;
-		};
-		FA70EADD19F5A56300960EE2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA70EAA319F5A49D00960EE2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = FA70EAD319F5A56300960EE2;
-			remoteInfo = TempoKeyboard;
+			remoteInfo = DittoKeyboard;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		FA70EAE219F5A56300960EE2 /* Embed App Extensions */ = {
+		FAC467A41A01D365006B8088 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				FA70EADC19F5A56300960EE2 /* DittoKeyboard.appex in Embed App Extensions */,
+				FAC467A51A01D37E006B8088 /* DittoKeyboard.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -176,13 +169,12 @@
 				FA70EAA719F5A49D00960EE2 /* Sources */,
 				FA70EAA819F5A49D00960EE2 /* Frameworks */,
 				FA70EAA919F5A49D00960EE2 /* Resources */,
-				FA70EAE219F5A56300960EE2 /* Embed App Extensions */,
+				FAC467A41A01D365006B8088 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				FA70EADB19F5A56300960EE2 /* PBXTargetDependency */,
-				FA70EADE19F5A56300960EE2 /* PBXTargetDependency */,
+				FAC467A71A01D387006B8088 /* PBXTargetDependency */,
 			);
 			name = Ditto;
 			productName = Tempo;
@@ -292,15 +284,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		FA70EADB19F5A56300960EE2 /* PBXTargetDependency */ = {
+		FAC467A71A01D387006B8088 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FA70EAD319F5A56300960EE2 /* DittoKeyboard */;
-			targetProxy = FA70EADA19F5A56300960EE2 /* PBXContainerItemProxy */;
-		};
-		FA70EADE19F5A56300960EE2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = FA70EAD319F5A56300960EE2 /* DittoKeyboard */;
-			targetProxy = FA70EADD19F5A56300960EE2 /* PBXContainerItemProxy */;
+			targetProxy = FAC467A61A01D387006B8088 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
