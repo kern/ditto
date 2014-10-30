@@ -2,7 +2,7 @@ import UIKit
 
 class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITableViewDataSource {
 
-    let defaults = NSUserDefaults(suiteName: "io.kern.ditto")
+    let defaults = NSUserDefaults(suiteName: "io.kern.ditto")!
     
     @IBOutlet var keyboardView: UIView!
     @IBOutlet var notesTableView: UITableView!
@@ -43,7 +43,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         var text = notes[indexPath.row]
         text = text.stringByReplacingOccurrencesOfString("\n", withString: "↩")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
-        cell.textLabel?.text = text
+        cell.textLabel.text = text
         
         return cell
     }
