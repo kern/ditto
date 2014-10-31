@@ -47,6 +47,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as UITableViewCell
+        cell.accessoryType = .DisclosureIndicator
         
         var text = dittoStore.get(indexPath.row)
         text = text.stringByReplacingOccurrencesOfString("\n", withString: "↩")

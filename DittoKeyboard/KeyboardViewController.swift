@@ -48,9 +48,15 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let proxy = self.textDocumentProxy as UITextDocumentProxy
-        proxy.insertText(dittoStore.get(indexPath.row))
+        let proxy = textDocumentProxy as UITextDocumentProxy
+        let ditto = dittoStore.get(indexPath.row)
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        let (newDitto, cursorRewind) = findCursorRange(ditto)
+        proxy.insertText(newDitto)
+        dispatch_async(dispatch_get_main_queue(), {
+            proxy.adjustTextPositionByCharacterOffset(-cursorRewind)
+        })
     }
     
     @IBAction func nextKeyboardButtonClicked() {
@@ -58,18 +64,34 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func returnButtonClicked() {
-        let proxy = self.textDocumentProxy as UITextDocumentProxy
+        let proxy = textDocumentProxy as UITextDocumentProxy
         proxy.insertText("\n")
     }
     
     @IBAction func backspaceButtonClicked() {
-        let proxy = self.textDocumentProxy as UITextDocumentProxy
+        let proxy = textDocumentProxy as UITextDocumentProxy
         proxy.deleteBackward()
     }
     
     @IBAction func spaceButtonClicked() {
-        let proxy = self.textDocumentProxy as UITextDocumentProxy
+        let proxy = textDocumentProxy as UITextDocumentProxy
         proxy.insertText(" ")
+    }
+    
+    func findCursorRange(s: String) -> (String, Int) {
+        let length = countElements(s)
+        let regex = NSRegularExpression(pattern: "___+", options: nil, error: nil)!
+        let match = regex.rangeOfFirstMatchInString(s, options: nil, range: NSMakeRange(0, length))
+        
+        if (match.location == NSNotFound) {
+            return (s, 0)
+        } else {
+            let start = advance(s.startIndex, match.location)
+            let end = advance(start, match.length)
+            let range = Range(start: start, end: end)
+            let newS = s.stringByReplacingCharactersInRange(range, withString: "")
+            return (newS, length - match.location - match.length)
+        }
     }
     
 }
