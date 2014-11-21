@@ -4,6 +4,7 @@ class EditViewController: UIViewController {
     
     let dittoStore = DittoStore()
     let index: Int
+    let keyboardAccessory = KeyboardAccessory()
     
     @IBOutlet var textView: UITextView!
 
@@ -31,8 +32,9 @@ class EditViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        textView.textContainerInset = UIEdgeInsetsMake(0, -4, 0, -4)
-        
+        textView.textContainerInset = UIEdgeInsetsMake(10, 6, 10, 6)
+        textView.inputAccessoryView = keyboardAccessory
+
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)

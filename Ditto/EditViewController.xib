@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
@@ -16,7 +16,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rpQ-k3-RBY">
-                    <rect key="frame" x="10" y="10" width="580" height="580"/>
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <color key="tintColor" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -28,10 +28,10 @@
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstItem="rpQ-k3-RBY" firstAttribute="top" secondItem="T44-cK-Ukb" secondAttribute="top" constant="10" id="Plp-uU-SC5"/>
-                <constraint firstItem="rpQ-k3-RBY" firstAttribute="leading" secondItem="T44-cK-Ukb" secondAttribute="leading" constant="10" id="U1F-Yd-9ij"/>
-                <constraint firstAttribute="bottom" secondItem="rpQ-k3-RBY" secondAttribute="bottom" constant="10" id="fdq-ib-VEF"/>
-                <constraint firstAttribute="trailing" secondItem="rpQ-k3-RBY" secondAttribute="trailing" constant="10" id="jxs-7u-niR"/>
+                <constraint firstItem="rpQ-k3-RBY" firstAttribute="top" secondItem="T44-cK-Ukb" secondAttribute="top" id="Plp-uU-SC5"/>
+                <constraint firstItem="rpQ-k3-RBY" firstAttribute="leading" secondItem="T44-cK-Ukb" secondAttribute="leading" id="U1F-Yd-9ij"/>
+                <constraint firstAttribute="bottom" secondItem="rpQ-k3-RBY" secondAttribute="bottom" id="fdq-ib-VEF"/>
+                <constraint firstAttribute="trailing" secondItem="rpQ-k3-RBY" secondAttribute="trailing" id="jxs-7u-niR"/>
             </constraints>
             <point key="canvasLocation" x="196" y="-179"/>
         </view>

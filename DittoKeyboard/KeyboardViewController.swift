@@ -4,6 +4,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
 
     @IBOutlet var keyboardView: UIView!
     @IBOutlet var tableView: UITableView!
+    @IBOutlet var infoView: UIView!
     
     @IBOutlet var backspaceButton: UIButton!
     @IBOutlet var nextKeyboardButton: UIButton!
@@ -11,19 +12,11 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var spaceButton: UIButton!
     
     let dittoStore = DittoStore()
+    var backspaceTimer: DelayedRepeatTimer!
 
     override func loadView() {
         let xib = NSBundle.mainBundle().loadNibNamed("KeyboardViewController", owner: self, options: nil);
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "DittoCell")
-        
-        var borderColor = UIColor(red: 0, green: 0, blue:0, alpha: 0.25)
-        nextKeyboardButton.layer.borderWidth = 0.25
-        returnButton.layer.borderWidth = 0.25
-        spaceButton.layer.borderWidth = 0.25
-        
-        nextKeyboardButton.layer.borderColor = borderColor.CGColor
-        returnButton.layer.borderColor = borderColor.CGColor
-        spaceButton.layer.borderColor = borderColor.CGColor
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -43,6 +36,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         text = text.stringByReplacingOccurrencesOfString("\n", withString: "↩")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
         cell.textLabel.text = text
+        cell.textLabel.numberOfLines = 2
         
         return cell
     }
@@ -63,19 +57,33 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         self.advanceToNextInputMode()
     }
     
+    @IBAction func dittoButtonClicked() {
+        infoView.hidden = !infoView.hidden
+    }
+    
     @IBAction func returnButtonClicked() {
         let proxy = textDocumentProxy as UITextDocumentProxy
         proxy.insertText("\n")
     }
     
-    @IBAction func backspaceButtonClicked() {
-        let proxy = textDocumentProxy as UITextDocumentProxy
-        proxy.deleteBackward()
+    @IBAction func backspaceButtonDown() {
+        backspaceFire()
+        backspaceTimer = DelayedRepeatTimer(delay: 0.5, ti: 0.1, target: self, selector: Selector("backspaceFire"))
+    }
+    
+    @IBAction func backspaceButtonUp() {
+        backspaceTimer.invalidate()
+        backspaceTimer = nil
     }
     
     @IBAction func spaceButtonClicked() {
         let proxy = textDocumentProxy as UITextDocumentProxy
         proxy.insertText(" ")
+    }
+    
+    func backspaceFire() {
+        let proxy = textDocumentProxy as UITextDocumentProxy
+        proxy.deleteBackward()
     }
     
     func findCursorRange(s: String) -> (String, Int) {

@@ -5,11 +5,15 @@ class DittoStore : NSObject {
     let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
     
     let presetDittos = [
-        "Hello there!\n\nI'm a student at UC Berkeley.",
-        "Please don't hesitate to reach out if you have any questions.",
-        "Cheers!",
-        "Never gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you",
-        "💙💙💙💙💙❤❤❤❤❤❤❤\n💙💙💙💙💙❤❤❤❤❤❤❤\n💙💙💙💙💙❤❤❤❤❤❤❤\n💙💙💙💙💙❤❤❤❤❤❤❤\n💙💙💙💙💙❤❤❤❤❤❤❤\n❤❤❤❤❤❤❤❤❤❤❤❤\n❤❤❤❤❤❤❤❤❤❤❤❤\n❤❤❤❤❤❤❤❤❤❤❤❤\n❤❤❤❤❤❤❤❤❤❤❤❤"
+        "Welcome to Ditto. 👋",
+        "Add Ditto in Settings > General > Keyboard > Keyboards.",
+        "You must Allow Full Access for Ditto to work properly.",
+        "Use the Ditto app to customize.",
+        "Made with ♥ and ☕️ by 5️⃣ students at UC Berkeley.",
+        "Dear ___,",
+        "Best Regards,\n",
+        "¯\\_(ツ)_/¯",
+        "Never gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you"
     ]
     
     var cached : [String] = []

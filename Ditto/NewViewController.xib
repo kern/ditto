@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
@@ -16,7 +16,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UEi-m2-AWV">
-                    <rect key="frame" x="10" y="10" width="580" height="580"/>
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <color key="tintColor" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -28,10 +28,10 @@
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="UEi-m2-AWV" secondAttribute="trailing" constant="10" id="aYf-nC-WwO"/>
-                <constraint firstAttribute="bottom" secondItem="UEi-m2-AWV" secondAttribute="bottom" constant="10" id="adB-Nm-BH0"/>
-                <constraint firstItem="UEi-m2-AWV" firstAttribute="leading" secondItem="t5w-pz-8Y1" secondAttribute="leading" constant="10" id="ehh-LD-xyk"/>
-                <constraint firstItem="UEi-m2-AWV" firstAttribute="top" secondItem="t5w-pz-8Y1" secondAttribute="top" constant="10" id="pTv-RK-1Uk"/>
+                <constraint firstAttribute="trailing" secondItem="UEi-m2-AWV" secondAttribute="trailing" id="aYf-nC-WwO"/>
+                <constraint firstAttribute="bottom" secondItem="UEi-m2-AWV" secondAttribute="bottom" id="adB-Nm-BH0"/>
+                <constraint firstItem="UEi-m2-AWV" firstAttribute="leading" secondItem="t5w-pz-8Y1" secondAttribute="leading" id="ehh-LD-xyk"/>
+                <constraint firstItem="UEi-m2-AWV" firstAttribute="top" secondItem="t5w-pz-8Y1" secondAttribute="top" id="pTv-RK-1Uk"/>
             </constraints>
             <point key="canvasLocation" x="196" y="-179"/>
         </view>

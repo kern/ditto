@@ -53,6 +53,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         text = text.stringByReplacingOccurrencesOfString("\n", withString: "↩")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
         cell.textLabel.text = text
+        cell.textLabel.numberOfLines = 2
         
         return cell
     }

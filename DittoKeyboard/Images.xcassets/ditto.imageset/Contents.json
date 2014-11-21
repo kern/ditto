@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "return-1.png"
+      "filename" : "ditto.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "return2.png"
+      "filename" : "ditto2.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "return3.png"
+      "filename" : "ditto3.png"
     }
   ],
   "info" : {
