@@ -9,7 +9,7 @@ class DittoStore : NSObject {
         "Add Ditto in Settings > General > Keyboard > Keyboards.",
         "You must Allow Full Access for Ditto to work properly.",
         "Use the Ditto app to customize your Dittos.",
-        "Made with ♥ and ☕️ by 5️⃣ students at UC Berkeley.",
+        "Made with ♥ and ☕️ by 5️⃣ students at UC Berkeley. 🐻",
         "Dear ___,",
         "Best Regards,\n",
         "¯\\_(ツ)_/¯",

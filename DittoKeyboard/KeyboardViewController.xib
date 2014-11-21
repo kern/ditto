@@ -38,7 +38,7 @@
                                 <constraint firstAttribute="width" constant="47" id="ACk-EC-KOA"/>
                             </constraints>
                             <color key="tintColor" red="0.92941182851791382" green="0.92941182851791382" blue="0.92941182851791382" alpha="1" colorSpace="deviceRGB"/>
-                            <inset key="imageEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                            <inset key="imageEdgeInsets" minX="4" minY="0.0" maxX="0.0" maxY="0.0"/>
                             <state key="normal" image="globe">
                                 <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="titleShadowColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -53,8 +53,8 @@
                             <constraints>
                                 <constraint firstAttribute="width" constant="47" id="5DH-j7-M66"/>
                             </constraints>
-                            <inset key="contentEdgeInsets" minX="3" minY="4" maxX="3" maxY="3"/>
-                            <inset key="imageEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
+                            <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="3" maxY="0.0"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="3" maxY="0.0"/>
                             <state key="normal" image="ditto">
                                 <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -67,8 +67,6 @@
                             <rect key="frame" x="94" y="0.0" width="132" height="47"/>
                             <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
-                            <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="4"/>
-                            <inset key="imageEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
                             <state key="normal" image="space">
                                 <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -77,29 +75,13 @@
                                 <action selector="spaceButtonClicked" destination="-1" eventType="touchUpInside" id="cjk-R7-qOy"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="amV-PB-41n" userLabel="Return Button" customClass="DarkKeyboardButton" customModule="DittoKeyboard" customModuleProvider="target">
-                            <rect key="frame" x="226" y="0.0" width="47" height="47"/>
-                            <color key="backgroundColor" red="0.83921568627450982" green="0.83921568627450982" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="47" id="zbz-8Y-UcJ"/>
-                            </constraints>
-                            <inset key="contentEdgeInsets" minX="3" minY="4" maxX="3" maxY="3"/>
-                            <inset key="imageEdgeInsets" minX="8" minY="8" maxX="8" maxY="8"/>
-                            <state key="normal" image="return">
-                                <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            </state>
-                            <connections>
-                                <action selector="returnButtonClicked" destination="-1" eventType="touchUpInside" id="s8K-KV-4iw"/>
-                            </connections>
-                        </button>
                         <button opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="46" placeholderIntrinsicHeight="44" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kec-yT-Es7" userLabel="Delete Button" customClass="DarkKeyboardButton" customModule="DittoKeyboard" customModuleProvider="target">
                             <rect key="frame" x="273" y="0.0" width="47" height="47"/>
                             <color key="backgroundColor" red="0.83921568627450982" green="0.83921568627450982" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="47" id="phk-gX-LQ2"/>
                             </constraints>
-                            <inset key="contentEdgeInsets" minX="4" minY="3" maxX="4" maxY="0.0"/>
+                            <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="4" maxY="0.0"/>
                             <state key="normal" image="backspace">
                                 <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -108,6 +90,22 @@
                                 <action selector="backspaceButtonDown" destination="-1" eventType="touchDown" id="ojK-5g-9rs"/>
                                 <action selector="backspaceButtonUp" destination="-1" eventType="touchUpOutside" id="BBV-AL-JKB"/>
                                 <action selector="backspaceButtonUp" destination="-1" eventType="touchUpInside" id="Kud-13-MuM"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="clip" translatesAutoresizingMaskIntoConstraints="NO" id="amV-PB-41n" userLabel="Return Button" customClass="DarkKeyboardButton" customModule="DittoKeyboard" customModuleProvider="target">
+                            <rect key="frame" x="226" y="0.0" width="47" height="47"/>
+                            <color key="backgroundColor" red="0.83921568627450982" green="0.83921568627450982" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="47" id="zbz-8Y-UcJ"/>
+                            </constraints>
+                            <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="3" maxY="0.0"/>
+                            <inset key="imageEdgeInsets" minX="8" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <state key="normal" image="return">
+                                <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="returnButtonClicked" destination="-1" eventType="touchUpInside" id="s8K-KV-4iw"/>
                             </connections>
                         </button>
                     </subviews>
@@ -142,7 +140,30 @@
                 </tableView>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s0W-gi-0Tl" userLabel="Info View">
                     <rect key="frame" x="0.0" y="1" width="320" height="173"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="small-logo" translatesAutoresizingMaskIntoConstraints="NO" id="Cfn-Qc-ZTH" userLabel="Logo">
+                            <rect key="frame" x="91" y="22" width="138" height="44"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="44" id="0Kd-pr-7gY"/>
+                                <constraint firstAttribute="width" constant="138" id="Dh8-g3-5ZV"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use the Ditto app to customize your Dittos." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A1q-0A-KNX">
+                            <rect key="frame" x="60" y="66" width="200" height="99"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="centerX" secondItem="Cfn-Qc-ZTH" secondAttribute="centerX" id="6sd-Ec-ofe"/>
+                        <constraint firstAttribute="trailing" secondItem="A1q-0A-KNX" secondAttribute="trailing" constant="60" id="KiG-1V-ikG"/>
+                        <constraint firstItem="A1q-0A-KNX" firstAttribute="top" secondItem="Cfn-Qc-ZTH" secondAttribute="bottom" id="eFl-a0-Htb"/>
+                        <constraint firstItem="A1q-0A-KNX" firstAttribute="leading" secondItem="s0W-gi-0Tl" secondAttribute="leading" constant="60" id="ppj-pc-rr5"/>
+                        <constraint firstItem="Cfn-Qc-ZTH" firstAttribute="top" secondItem="s0W-gi-0Tl" secondAttribute="top" constant="22" id="r2S-uu-Qhj"/>
+                        <constraint firstAttribute="bottom" secondItem="A1q-0A-KNX" secondAttribute="bottom" constant="8" id="xSI-6w-DzG"/>
+                    </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" red="0.36744998763515291" green="0.43221640586853027" blue="0.038427555042039874" alpha="1" colorSpace="calibratedRGB"/>
@@ -171,10 +192,11 @@
         </view>
     </objects>
     <resources>
-        <image name="backspace" width="28" height="28"/>
-        <image name="ditto" width="28" height="28"/>
-        <image name="globe" width="28" height="28"/>
-        <image name="return" width="28" height="28"/>
+        <image name="backspace" width="32" height="32"/>
+        <image name="ditto" width="32" height="32"/>
+        <image name="globe" width="32" height="32"/>
+        <image name="return" width="32" height="32"/>
+        <image name="small-logo" width="138" height="44"/>
         <image name="space" width="68" height="15"/>
     </resources>
 </document>
