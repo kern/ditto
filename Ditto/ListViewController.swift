@@ -50,7 +50,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.accessoryType = .DisclosureIndicator
         
         var text = dittoStore.get(indexPath.row)
-        text = text.stringByReplacingOccurrencesOfString("\n", withString: "↩")
+        text = text.stringByReplacingOccurrencesOfString("\n", withString: " ")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
         cell.textLabel.text = text
         cell.textLabel.numberOfLines = 2

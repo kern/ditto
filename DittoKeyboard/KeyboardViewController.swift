@@ -33,7 +33,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as UITableViewCell
         
         var text = dittoStore.get(indexPath.row)
-        text = text.stringByReplacingOccurrencesOfString("\n", withString: "↩")
+        text = text.stringByReplacingOccurrencesOfString("\n", withString: " ")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
         cell.textLabel.text = text
         cell.textLabel.numberOfLines = 2
