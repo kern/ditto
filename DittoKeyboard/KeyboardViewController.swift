@@ -5,17 +5,21 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var keyboardView: UIView!
     @IBOutlet var tableView: UITableView!
     @IBOutlet var infoView: UIView!
+    @IBOutlet var numericKeys: UIView!
+    @IBOutlet var bottomBar: UIView!
     
     @IBOutlet var backspaceButton: UIButton!
     @IBOutlet var nextKeyboardButton: UIButton!
     @IBOutlet var returnButton: UIButton!
     @IBOutlet var spaceButton: UIButton!
+    @IBOutlet var decimalButton: UIButton!
     
     let dittoStore = DittoStore()
     var backspaceTimer: DelayedRepeatTimer!
 
     override func loadView() {
         let xib = NSBundle.mainBundle().loadNibNamed("KeyboardViewController", owner: self, options: nil);
+        bottomBar.backgroundColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1)
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "DittoCell")
     }
     
@@ -23,6 +27,30 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         super.viewWillAppear(animated)
         dittoStore.reload()
         tableView.reloadData()
+    }
+    
+    override func textDidChange(textInput: UITextInput) {
+        let proxy = textDocumentProxy as UITextDocumentProxy
+        
+        switch proxy.keyboardType! {
+        case .NumberPad:
+            numericKeys.hidden = false
+            spaceButton.hidden = true
+            returnButton.hidden = true
+            decimalButton.hidden = true
+
+        case .DecimalPad:
+            numericKeys.hidden = false
+            spaceButton.hidden = true
+            returnButton.hidden = true
+            decimalButton.hidden = false
+            
+        default:
+            numericKeys.hidden = true
+            spaceButton.hidden = false
+            returnButton.hidden = false
+            
+        }
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -35,8 +63,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         var text = dittoStore.get(indexPath.row)
         text = text.stringByReplacingOccurrencesOfString("\n", withString: " ")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
-        cell.textLabel.text = text
-        cell.textLabel.numberOfLines = 2
+        cell.textLabel?.text = text
+        cell.textLabel?.numberOfLines = 2
         
         return cell
     }
@@ -79,6 +107,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBAction func spaceButtonClicked() {
         let proxy = textDocumentProxy as UITextDocumentProxy
         proxy.insertText(" ")
+    }
+    
+    @IBAction func numberClicked(button: UIButton) {
+        let proxy = textDocumentProxy as UITextDocumentProxy
+        let char = button.titleLabel?.text
+        proxy.insertText(char!)
     }
     
     func backspaceFire() {
