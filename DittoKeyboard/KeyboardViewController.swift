@@ -49,6 +49,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             numericKeys.hidden = true
             spaceButton.hidden = false
             returnButton.hidden = false
+            decimalButton.hidden = false
             
         }
     }
@@ -86,7 +87,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func dittoButtonClicked() {
-        infoView.hidden = !infoView.hidden
+        numericKeys.hidden = !numericKeys.hidden
     }
     
     @IBAction func returnButtonClicked() {

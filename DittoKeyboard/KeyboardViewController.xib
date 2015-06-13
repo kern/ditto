@@ -143,7 +143,7 @@
                         <outlet property="delegate" destination="-1" id="a4g-Nl-515"/>
                     </connections>
                 </tableView>
-                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Blc-h8-J6V" userLabel="Numeric Keys">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Blc-h8-J6V" userLabel="Numeric Keys">
                     <rect key="frame" x="0.0" y="1" width="320" height="173"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8iQ-tr-gST" userLabel="Top Rows">
