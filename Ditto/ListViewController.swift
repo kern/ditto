@@ -10,7 +10,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var newButton: UIBarButtonItem!
     var doneButton: UIBarButtonItem!
     
-    override init() {
+    init() {
         super.init(nibName: "ListViewController", bundle: nil)
         
         let logo = UIImage(named: "logo")
@@ -46,7 +46,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as! UITableViewCell
         cell.accessoryType = .DisclosureIndicator
         
         var text = dittoStore.get(indexPath.row)

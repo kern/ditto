@@ -4,7 +4,7 @@ class KeyboardAccessory: UIToolbar {
     
     var label: UILabel!
 
-    override init() {
+    init() {
         super.init(frame: CGRectMake(0, 0, 0, 44))
         
         label = UILabel(frame: CGRectMake(11, 11, 0, 22))

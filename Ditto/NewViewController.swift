@@ -7,7 +7,7 @@ class NewViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet var textView: UITextView!
     
-    override init() {
+    init() {
         super.init(nibName: "NewViewController", bundle: nil)
         
         navigationItem.title = "New Ditto"
@@ -39,7 +39,7 @@ class NewViewController: UIViewController, UITextViewDelegate {
     }
 
     func keyboardWillShow(n: NSNotification) {
-        let v = n.userInfo?[UIKeyboardFrameEndUserInfoKey] as NSValue
+        let v = n.userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue
         let height = v.CGRectValue().size.height
         var insets = textView.contentInset
         insets.bottom = height
@@ -71,7 +71,7 @@ class NewViewController: UIViewController, UITextViewDelegate {
     }
     
     func textViewDidChange(textView: UITextView) {
-        navigationItem.rightBarButtonItem?.enabled = countElements(textView.text) > 0
+        navigationItem.rightBarButtonItem?.enabled = count(textView.text) > 0
     }
     
 }

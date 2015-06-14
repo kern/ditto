@@ -41,7 +41,7 @@ class EditViewController: UIViewController {
     }
     
     func keyboardWillShow(n: NSNotification) {
-        let v = n.userInfo?[UIKeyboardFrameEndUserInfoKey] as NSValue
+        let v = n.userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue
         let height = v.CGRectValue().size.height
         var insets = textView.contentInset
         insets.bottom = height
@@ -74,7 +74,7 @@ class EditViewController: UIViewController {
     }
     
     func textViewDidChange(textView: UITextView) {
-        navigationItem.rightBarButtonItem?.enabled = countElements(textView.text) > 0
+        navigationItem.rightBarButtonItem?.enabled = count(textView.text) > 0
     }
 
 }

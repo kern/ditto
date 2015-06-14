@@ -30,7 +30,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     override func textDidChange(textInput: UITextInput) {
-        let proxy = textDocumentProxy as UITextDocumentProxy
+        let proxy = textDocumentProxy as! UITextDocumentProxy
         
         switch proxy.keyboardType! {
         case .NumberPad:
@@ -59,7 +59,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as! UITableViewCell
         
         var text = dittoStore.get(indexPath.row)
         text = text.stringByReplacingOccurrencesOfString("\n", withString: " ")
@@ -71,7 +71,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let proxy = textDocumentProxy as UITextDocumentProxy
+        let proxy = textDocumentProxy as! UITextDocumentProxy
         let ditto = dittoStore.get(indexPath.row)
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
@@ -91,7 +91,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func returnButtonClicked() {
-        let proxy = textDocumentProxy as UITextDocumentProxy
+        let proxy = textDocumentProxy as! UITextDocumentProxy
         proxy.insertText("\n")
     }
     
@@ -106,23 +106,23 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func spaceButtonClicked() {
-        let proxy = textDocumentProxy as UITextDocumentProxy
+        let proxy = textDocumentProxy as! UITextDocumentProxy
         proxy.insertText(" ")
     }
     
     @IBAction func numberClicked(button: UIButton) {
-        let proxy = textDocumentProxy as UITextDocumentProxy
+        let proxy = textDocumentProxy as! UITextDocumentProxy
         let char = button.titleLabel?.text
         proxy.insertText(char!)
     }
     
     func backspaceFire() {
-        let proxy = textDocumentProxy as UITextDocumentProxy
+        let proxy = textDocumentProxy as! UITextDocumentProxy
         proxy.deleteBackward()
     }
     
     func findCursorRange(s: String) -> (String, Int) {
-        let length = countElements(s)
+        let length = count(s)
         let regex = NSRegularExpression(pattern: "___+", options: nil, error: nil)!
         let match = regex.rangeOfFirstMatchInString(s, options: nil, range: NSMakeRange(0, length))
         
