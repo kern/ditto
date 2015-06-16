@@ -7,6 +7,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var infoView: UIView!
     @IBOutlet var numericKeys: UIView!
     @IBOutlet var bottomBar: UIView!
+    @IBOutlet weak var tabBar: UIView!
     
     @IBOutlet var backspaceButton: UIButton!
     @IBOutlet var nextKeyboardButton: UIButton!
@@ -16,17 +17,58 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     
     let dittoStore = DittoStore()
     var backspaceTimer: DelayedRepeatTimer!
-
+    
+    let categories = ["family","cabin","aepi","calhacks"]
+    let dittoLists = [ ["almog","asaf","ora","erez","ofek","efrat"],
+        ["jaso","ori","jason","sam"],
+        ["henry","adam"],
+        ["kern","rick","eve"]]
+    
+    var numCategories: Int  {
+        return categories.count
+    }
+    
+    var currentTabDittos: [String] = []
+    
     override func loadView() {
         let xib = NSBundle.mainBundle().loadNibNamed("KeyboardViewController", owner: self, options: nil);
         bottomBar.backgroundColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1)
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "DittoCell")
+        
+        currentTabDittos = dittoLists[0]
+        
+        let width = UIScreen.mainScreen().bounds.width / CGFloat(numCategories)
+        println(width)
+        for index in 0..<numCategories {
+            let button = UIButton(frame: CGRectMake(CGFloat(index) * width, 0, width, tabBar.bounds.height))
+            button.backgroundColor = UIColor(red: 153/255, green: 0, blue: 153/255, alpha: 1 - ((4 / (5 * CGFloat(numCategories))) * CGFloat(index)))
+            button.tag = index
+            button.addTarget(self, action: "tabButtonPressed:", forControlEvents: .TouchUpInside)
+            tabBar.addSubview(button)
+        }
     }
+    
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         dittoStore.reload()
         tableView.reloadData()
+        
+        let expandedHeight:CGFloat = 250
+        let heightConstraint = NSLayoutConstraint(item:keyboardView,
+            attribute: .Height,
+            relatedBy: .Equal,
+            toItem: nil,
+            attribute: .NotAnAttribute,
+            multiplier: 0.0,
+            constant: expandedHeight)
+        keyboardView.addConstraint(heightConstraint)
+    }
+    
+    func tabButtonPressed(sender: UIButton!) {
+        currentTabDittos = dittoLists[sender.tag]
+        tableView.reloadData()
+        numericKeys.hidden = true
     }
     
     override func textDidChange(textInput: UITextInput) {
@@ -55,13 +97,15 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dittoStore.count()
+//        return dittoStore.count()
+        return currentTabDittos.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as! UITableViewCell
         
-        var text = dittoStore.get(indexPath.row)
+//        var text = dittoStore.get(indexPath.row)
+        var text = currentTabDittos[indexPath.row]
         text = text.stringByReplacingOccurrencesOfString("\n", withString: " ")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
         cell.textLabel?.text = text
