@@ -6,16 +6,6 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     let dittoStore = DittoStore()
     
-    let categories = ["family askdlfj alsdf kla sdfj kasjdfljalskdfj lasdj flkajs dlfk a","cabin","aepi","calhacks"]
-    let dittoLists = [ ["almog","asaf","ora","erez","ofek","efrat"],
-        ["jaso","ori","jason","sam"],
-        ["henry","adam"],
-        ["kern","rick","eve"]]
-    
-    var numCategories: Int  {
-        return categories.count
-    }
-    
     var editButton: UIBarButtonItem!
     var newButton: UIBarButtonItem!
     var doneButton: UIBarButtonItem!
@@ -52,20 +42,18 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // --------------------
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return dittoStore.count()
-        return dittoLists[section].count
+        return dittoStore.count(section)
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return numCategories
+        return dittoStore.numCategories()
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as! UITableViewCell
         cell.accessoryType = .DisclosureIndicator
         
-//        var text = dittoStore.get(indexPath.row)
-        var text = dittoLists[indexPath.section][indexPath.row]
+        var text = dittoStore.get(indexPath.section, dittoIndex: indexPath.row)
         text = text.stringByReplacingOccurrencesOfString("\n", withString: " ")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
         cell.textLabel?.text = text
@@ -75,7 +63,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let editViewController = EditViewController(index: indexPath.row)
+        let editViewController = EditViewController(categoryIndex: indexPath.section, dittoIndex: indexPath.row)
         let subnavController = NavigationController(rootViewController: editViewController)
         presentViewController(subnavController, animated: true, completion: nil)
     }
@@ -85,7 +73,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        dittoStore.move(sourceIndexPath.row, to: destinationIndexPath.row)
+        dittoStore.move(sourceIndexPath.section, fromDittoIndex: sourceIndexPath.row, toCatogryIndex: destinationIndexPath.section, toDittoIndex: destinationIndexPath.row)
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -94,15 +82,15 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == .Delete) {
-            dittoStore.remove(indexPath.row)
+            dittoStore.remove(indexPath.section, dittoIndex: indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
         }
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 20))
-        headerLabel.backgroundColor = UIColor(red: 153/255, green: 0, blue: 153/255, alpha: 1 - ((4 / (4 * CGFloat(numCategories))) * CGFloat(section)))
-        headerLabel.text = categories[section]
+        headerLabel.backgroundColor = UIColor(red: 153/255, green: 0, blue: 153/255, alpha: 1 - ((4 / (4 * CGFloat(dittoStore.numCategories()))) * CGFloat(section)))
+        headerLabel.text = dittoStore.getCategory(section)
         headerLabel.textColor = UIColor.whiteColor()
         return headerLabel
     }

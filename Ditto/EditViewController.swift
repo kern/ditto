@@ -3,13 +3,15 @@ import UIKit
 class EditViewController: UIViewController {
     
     let dittoStore = DittoStore()
-    let index: Int
+    let dittoIndex: Int
+    let categoryIndex: Int
     let keyboardAccessory = KeyboardAccessory()
     
     @IBOutlet var textView: UITextView!
 
-    init(index: Int) {
-        self.index = index
+    init(categoryIndex : Int, dittoIndex: Int) {
+        self.dittoIndex = dittoIndex
+        self.categoryIndex = categoryIndex
         super.init(nibName: "EditViewController", bundle: nil)
         
         navigationItem.title = "Edit Ditto"
@@ -58,12 +60,13 @@ class EditViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         navigationItem.rightBarButtonItem?.enabled = true
-        textView.text = dittoStore.get(index)
+        textView.text = dittoStore.get(categoryIndex, dittoIndex: dittoIndex)
         textView.becomeFirstResponder()
     }
     
     func saveButtonClicked() {
-        dittoStore.set(index, ditto: textView.text)
+//        dittoStore.set(index, ditto: textView.text)
+        dittoStore.set(categoryIndex, dittoIndex: dittoIndex, ditto: textView.text)
         textView.resignFirstResponder()
         navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }

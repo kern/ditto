@@ -60,7 +60,8 @@ class NewViewController: UIViewController, UITextViewDelegate {
     }
     
     func saveButtonClicked() {
-        dittoStore.add(textView.text)
+//        dittoStore.add(textView.text)
+        dittoStore.add(0, ditto: textView.text)
         textView.resignFirstResponder()
         navigationController?.dismissViewControllerAnimated(true, completion: nil)
     }

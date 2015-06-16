@@ -18,16 +18,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     let dittoStore = DittoStore()
     var backspaceTimer: DelayedRepeatTimer!
     
-    let categories = ["family","cabin","aepi","calhacks"]
-    let dittoLists = [ ["almog","asaf","ora","erez","ofek","efrat"],
-        ["jaso","ori","jason","sam"],
-        ["henry","adam"],
-        ["kern","rick","eve"]]
-    
-    var numCategories: Int  {
-        return categories.count
-    }
-    
     var currentTabDittos: [String] = []
     
     override func loadView() {
@@ -35,8 +25,9 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         bottomBar.backgroundColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1)
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "DittoCell")
         
-        currentTabDittos = dittoLists[0]
+        currentTabDittos = dittoStore.getDittosByCategory(0)
         
+        var numCategories = dittoStore.numCategories()
         let width = UIScreen.mainScreen().bounds.width / CGFloat(numCategories)
         println(width)
         for index in 0..<numCategories {
@@ -66,7 +57,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func tabButtonPressed(sender: UIButton!) {
-        currentTabDittos = dittoLists[sender.tag]
+        currentTabDittos = dittoStore.getDittosByCategory(sender.tag)
         tableView.reloadData()
         numericKeys.hidden = true
     }
@@ -97,14 +88,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return dittoStore.count()
         return currentTabDittos.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as! UITableViewCell
         
-//        var text = dittoStore.get(indexPath.row)
         var text = currentTabDittos[indexPath.row]
         text = text.stringByReplacingOccurrencesOfString("\n", withString: " ")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
@@ -116,7 +105,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let proxy = textDocumentProxy as! UITextDocumentProxy
-        let ditto = dittoStore.get(indexPath.row)
+        let ditto = currentTabDittos[indexPath.row]
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         let (newDitto, cursorRewind) = findCursorRange(ditto)
