@@ -19,17 +19,20 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     var backspaceTimer: DelayedRepeatTimer!
     
     var currentTabDittos: [String] = []
+    var currentTabCells: [UITableViewCell] = []
+    var selectedCellRowIndex: Int = -1
     
     override func loadView() {
         let xib = NSBundle.mainBundle().loadNibNamed("KeyboardViewController", owner: self, options: nil);
         bottomBar.backgroundColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1)
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "DittoCell")
-        
         currentTabDittos = dittoStore.getDittosByCategory(0)
-        
+        loadTabButtons()
+    }
+    
+    func loadTabButtons() {
         var numCategories = dittoStore.numCategories()
         let width = UIScreen.mainScreen().bounds.width / CGFloat(numCategories)
-        println(width)
         for index in 0..<numCategories {
             let button = UIButton(frame: CGRectMake(CGFloat(index) * width, 0, width, tabBar.bounds.height))
             button.backgroundColor = UIColor(red: 153/255, green: 0, blue: 153/255, alpha: 1 - ((4 / (5 * CGFloat(numCategories))) * CGFloat(index)))
@@ -44,8 +47,13 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         super.viewWillAppear(animated)
         dittoStore.reload()
         tableView.reloadData()
-        
-        let expandedHeight:CGFloat = 250
+        currentTabCells = []
+//        setKeyboardHeight(max(250, UIScreen.mainScreen().bounds.height/2))
+        setKeyboardHeight(250)
+    }
+    
+    func setKeyboardHeight(height: CGFloat) {
+        let expandedHeight:CGFloat = height
         let heightConstraint = NSLayoutConstraint(item:keyboardView,
             attribute: .Height,
             relatedBy: .Equal,
@@ -58,6 +66,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     
     func tabButtonPressed(sender: UIButton!) {
         currentTabDittos = dittoStore.getDittosByCategory(sender.tag)
+        currentTabCells = []
+        selectedCellRowIndex = -1
         tableView.reloadData()
         numericKeys.hidden = true
     }
@@ -100,8 +110,34 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         cell.textLabel?.text = text
         cell.textLabel?.numberOfLines = 2
         
+        currentTabCells.append(cell)
+        
         return cell
     }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+//        if selectedCellRowIndex == indexPath.row {
+//            let cell = currentTabCells[indexPath.row]
+//            cell.textLabel?.numberOfLines = 0
+//            cell.textLabel!.sizeToFit()
+//            return cell.textLabel!.frame.height + 20
+//        }
+//        let x = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: CGFloat.max))
+//        x.text = currentTabDittos[indexPath.row]
+//        x.numberOfLines = 2
+//        x.sizeToFit()
+//    
+//        return x.frame.height + 20
+        
+        if selectedCellRowIndex == indexPath.row {
+            let cell = currentTabCells[indexPath.row]
+            cell.textLabel?.numberOfLines = 0
+            cell.textLabel!.sizeToFit()
+            return cell.textLabel!.frame.height + 20
+        }
+        return 60
+    }
+    
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let proxy = textDocumentProxy as! UITextDocumentProxy
@@ -113,6 +149,23 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         dispatch_async(dispatch_get_main_queue(), {
             proxy.adjustTextPositionByCharacterOffset(-cursorRewind)
         })
+    }
+    @IBAction func longPressCell(sender: UILongPressGestureRecognizer) {
+        let p: CGPoint = sender.locationInView(tableView)
+        if let indexPath = tableView.indexPathForRowAtPoint(p) {
+            if sender.state == UIGestureRecognizerState.Began {
+                if selectedCellRowIndex == indexPath.row {
+                    selectedCellRowIndex = -1
+                } else {
+                    selectedCellRowIndex = indexPath.row
+                }
+                
+                var cell: UITableViewCell = currentTabCells[indexPath.row]
+                tableView.beginUpdates()
+                tableView.endUpdates()
+                
+            }
+        }
     }
     
     @IBAction func nextKeyboardButtonClicked() {
@@ -168,6 +221,11 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             let newS = s.stringByReplacingCharactersInRange(range, withString: "")
             return (newS, length - match.location - match.length)
         }
+    }
+    
+    func addDittoFromClipboard(categoryIndex: Int) {
+        var pasteboardString = UIPasteboard.generalPasteboard().string
+        dittoStore.add(categoryIndex, ditto: pasteboardString!)
     }
     
 }

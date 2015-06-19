@@ -10,7 +10,8 @@ class DittoStore : NSObject {
                 "Add Ditto in Settings > General > Keyboard > Keyboards.",
                 "You must Allow Full Access for Ditto to work properly.",
                 "We DO NOT access ANYTHING that you say. Everythin is saved locally on your phone",
-                "Use the Ditto app to customize your Dittos."
+                "Use the Ditto app to customize your Dittos.",
+                "A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito.A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito.A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito."
             ],
             "Work" :
             [   "Dear ___",
