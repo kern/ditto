@@ -57,7 +57,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         text = text.stringByReplacingOccurrencesOfString("\n", withString: " ")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
         cell.textLabel?.text = text
-        cell.textLabel?.numberOfLines = 2
+        cell.textLabel?.numberOfLines = 0
         
         return cell
     }
@@ -88,13 +88,12 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 20))
-        headerLabel.backgroundColor = dittoStore.getColorForIndex(section)
+        let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 25))
+        headerLabel.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
         headerLabel.text = "  " + dittoStore.getCategory(section)
-        headerLabel.textColor = UIColor.whiteColor()
+        headerLabel.textColor = UIColor(red: 0.35, green: 0.35, blue: 0.35, alpha: 1)
         return headerLabel
     }
-    
    
     
     // Button Callbacks
