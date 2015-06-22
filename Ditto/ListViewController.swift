@@ -89,8 +89,8 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 20))
-        headerLabel.backgroundColor = UIColor(red: 153/255, green: 0, blue: 153/255, alpha: 1 - ((4 / (4 * CGFloat(dittoStore.numCategories()))) * CGFloat(section)))
-        headerLabel.text = dittoStore.getCategory(section)
+        headerLabel.backgroundColor = dittoStore.getColorForIndex(section)
+        headerLabel.text = "  " + dittoStore.getCategory(section)
         headerLabel.textColor = UIColor.whiteColor()
         return headerLabel
     }

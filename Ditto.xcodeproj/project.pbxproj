@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E84DB89F1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */; };
 		FA237AB419F9C6F8007E67D5 /* ListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA237AB319F9C6F8007E67D5 /* ListViewController.xib */; };
 		FA237AB719F9CAB0007E67D5 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA237AB619F9CAB0007E67D5 /* NavigationController.swift */; };
 		FA2ECD1119F8C207006B413E /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2ECD1019F8C207006B413E /* EditViewController.swift */; };
@@ -54,6 +55,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDittoFromClipboardViewController.swift; sourceTree = "<group>"; };
 		FA237AB319F9C6F8007E67D5 /* ListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListViewController.xib; sourceTree = "<group>"; };
 		FA237AB619F9CAB0007E67D5 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		FA2ECD1019F8C207006B413E /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				FA70EAE919F5C17700960EE2 /* Images.xcassets */,
 				FA70EAE319F5A7BC00960EE2 /* KeyboardViewController.xib */,
 				FA70EAD819F5A56300960EE2 /* KeyboardViewController.swift */,
+				E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */,
 				FAD454611A1EE04800D825EC /* DelayedRepeatTimer.swift */,
 				FAD4545D1A1ECF6400D825EC /* DarkKeyboardButton.swift */,
 				FAD4545F1A1ED40500D825EC /* LightKeyboardButton.swift */,
@@ -307,6 +310,7 @@
 			files = (
 				FAD4545E1A1ECF6400D825EC /* DarkKeyboardButton.swift in Sources */,
 				FAD454621A1EE04800D825EC /* DelayedRepeatTimer.swift in Sources */,
+				E84DB89F1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift in Sources */,
 				FAD454601A1ED40500D825EC /* LightKeyboardButton.swift in Sources */,
 				FA83FA951A01FFD80061192A /* DittoStore.swift in Sources */,
 				FA70EAD919F5A56300960EE2 /* KeyboardViewController.swift in Sources */,

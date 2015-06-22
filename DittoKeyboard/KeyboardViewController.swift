@@ -7,15 +7,19 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var infoView: UIView!
     @IBOutlet var numericKeys: UIView!
     @IBOutlet var bottomBar: UIView!
-    @IBOutlet weak var tabBar: UIView!
+    @IBOutlet var tabBar: UIView!
+    @IBOutlet var addDittoView: UIView!
     
     @IBOutlet var backspaceButton: UIButton!
     @IBOutlet var nextKeyboardButton: UIButton!
     @IBOutlet var returnButton: UIButton!
     @IBOutlet var spaceButton: UIButton!
     @IBOutlet var decimalButton: UIButton!
+    @IBOutlet var addDittoButton: UIButton!
+    @IBOutlet var categoryPicker: UIPickerView!
     
     let dittoStore = DittoStore()
+    let addDittoViewController = AddDittoFromClipboardViewController()
     var backspaceTimer: DelayedRepeatTimer!
     
     var currentTabDittos: [String] = []
@@ -28,6 +32,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "DittoCell")
         currentTabDittos = dittoStore.getDittosByCategory(0)
         loadTabButtons()
+        categoryPicker.delegate = addDittoViewController
+        categoryPicker.dataSource = addDittoViewController
     }
     
     func loadTabButtons() {
@@ -35,7 +41,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         let width = UIScreen.mainScreen().bounds.width / CGFloat(numCategories)
         for index in 0..<numCategories {
             let button = UIButton(frame: CGRectMake(CGFloat(index) * width, 0, width, tabBar.bounds.height))
-            button.backgroundColor = UIColor(red: 153/255, green: 0, blue: 153/255, alpha: 1 - ((4 / (5 * CGFloat(numCategories))) * CGFloat(index)))
+            button.backgroundColor = dittoStore.getColorForIndex(index)
             button.tag = index
             button.addTarget(self, action: "tabButtonPressed:", forControlEvents: .TouchUpInside)
             tabBar.addSubview(button)
@@ -81,18 +87,21 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             spaceButton.hidden = true
             returnButton.hidden = true
             decimalButton.hidden = true
+            addDittoView.hidden = true
 
         case .DecimalPad:
             numericKeys.hidden = false
             spaceButton.hidden = true
             returnButton.hidden = true
             decimalButton.hidden = false
+            addDittoView.hidden = true
             
         default:
             numericKeys.hidden = true
             spaceButton.hidden = false
             returnButton.hidden = false
             decimalButton.hidden = false
+            addDittoView.hidden = true
             
         }
     }
@@ -116,26 +125,26 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-//        if selectedCellRowIndex == indexPath.row {
-//            let cell = currentTabCells[indexPath.row]
-//            cell.textLabel?.numberOfLines = 0
-//            cell.textLabel!.sizeToFit()
-//            return cell.textLabel!.frame.height + 20
-//        }
-//        let x = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: CGFloat.max))
-//        x.text = currentTabDittos[indexPath.row]
-//        x.numberOfLines = 2
-//        x.sizeToFit()
-//    
-//        return x.frame.height + 20
-        
         if selectedCellRowIndex == indexPath.row {
             let cell = currentTabCells[indexPath.row]
             cell.textLabel?.numberOfLines = 0
             cell.textLabel!.sizeToFit()
             return cell.textLabel!.frame.height + 20
         }
-        return 60
+        let x = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: CGFloat.max))
+        x.text = currentTabDittos[indexPath.row]
+        x.numberOfLines = 2
+        x.sizeToFit()
+    
+        return x.frame.height + 20
+        
+//        if selectedCellRowIndex == indexPath.row {
+//            let cell = currentTabCells[indexPath.row]
+//            cell.textLabel?.numberOfLines = 0
+//            cell.textLabel!.sizeToFit()
+//            return cell.textLabel!.frame.height + 20
+//        }
+//        return 60
     }
     
     
@@ -174,6 +183,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     
     @IBAction func dittoButtonClicked() {
         numericKeys.hidden = !numericKeys.hidden
+//        addDittoView.hidden = !addDittoView.hidden
     }
     
     @IBAction func returnButtonClicked() {
@@ -222,10 +232,15 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             return (newS, length - match.location - match.length)
         }
     }
+    @IBAction func addDittoFromClipboard(sender: UIButton) {
+        let row = categoryPicker.selectedRowInComponent(0)
+        addDittoFromClipboardByCategory(row)
+    }
     
-    func addDittoFromClipboard(categoryIndex: Int) {
-        var pasteboardString = UIPasteboard.generalPasteboard().string
-        dittoStore.add(categoryIndex, ditto: pasteboardString!)
+    func addDittoFromClipboardByCategory(categoryIndex: Int) {
+        if let pasteboardString = UIPasteboard.generalPasteboard().string {
+            dittoStore.add(categoryIndex, ditto: pasteboardString)
+        }
     }
     
 }

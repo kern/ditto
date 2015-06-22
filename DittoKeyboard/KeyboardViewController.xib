@@ -8,8 +8,11 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="KeyboardViewController" customModule="DittoKeyboard" customModuleProvider="target">
             <connections>
+                <outlet property="addDittoButton" destination="grm-Cx-dkE" id="kc0-Nm-vvi"/>
+                <outlet property="addDittoView" destination="goJ-J0-xDn" id="iEW-1b-gSz"/>
                 <outlet property="backspaceButton" destination="kec-yT-Es7" id="gkN-4k-9A6"/>
                 <outlet property="bottomBar" destination="jDi-uR-9hd" id="2qg-Bc-MJE"/>
+                <outlet property="categoryPicker" destination="ZUV-yx-uZi" id="puP-JS-h8u"/>
                 <outlet property="decimalButton" destination="8hw-ri-UlD" id="5Ef-a6-6Yu"/>
                 <outlet property="infoView" destination="s0W-gi-0Tl" id="lUl-A3-gOn"/>
                 <outlet property="keyboardView" destination="Cqv-DZ-iYE" id="8hi-gV-Kud"/>
@@ -515,6 +518,34 @@
                         <constraint firstAttribute="trailing" secondItem="8iQ-tr-gST" secondAttribute="trailing" id="PHN-n0-cgh"/>
                     </constraints>
                 </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="goJ-J0-xDn" userLabel="Add Ditto View" customClass="AddDittoViewController">
+                    <rect key="frame" x="0.0" y="36" width="320" height="138"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="grm-Cx-dkE" userLabel="Add Ditto From Clipboard">
+                            <rect key="frame" x="0.0" y="108" width="320" height="30"/>
+                            <state key="normal" title="Add Ditto From Clipboard">
+                                <color key="titleColor" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="addDittoFromClipboard:" destination="-1" eventType="touchUpInside" id="DQo-1Y-VHr"/>
+                            </connections>
+                        </button>
+                        <pickerView contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="ZUV-yx-uZi">
+                            <rect key="frame" x="0.0" y="-27" width="320" height="162"/>
+                        </pickerView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="ZUV-yx-uZi" secondAttribute="trailing" id="3OV-1L-czo"/>
+                        <constraint firstItem="ZUV-yx-uZi" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="RpE-nG-u91"/>
+                        <constraint firstItem="ZUV-yx-uZi" firstAttribute="top" secondItem="goJ-J0-xDn" secondAttribute="top" id="Trd-tL-i2r"/>
+                        <constraint firstItem="grm-Cx-dkE" firstAttribute="top" secondItem="ZUV-yx-uZi" secondAttribute="bottom" id="Xph-VE-KWg"/>
+                        <constraint firstAttribute="bottom" secondItem="grm-Cx-dkE" secondAttribute="bottom" id="g7r-Db-Pfu"/>
+                        <constraint firstItem="grm-Cx-dkE" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="nNv-wj-TLb"/>
+                        <constraint firstAttribute="trailing" secondItem="grm-Cx-dkE" secondAttribute="trailing" id="yd0-Kd-7Z9"/>
+                    </constraints>
+                </view>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s0W-gi-0Tl" userLabel="Info View">
                     <rect key="frame" x="0.0" y="1" width="320" height="173"/>
                     <subviews>
@@ -549,6 +580,7 @@
                 <constraint firstItem="M9F-sQ-ald" firstAttribute="top" secondItem="2AC-bL-k82" secondAttribute="bottom" id="3SC-04-sTh"/>
                 <constraint firstItem="M9F-sQ-ald" firstAttribute="bottom" secondItem="jDi-uR-9hd" secondAttribute="top" id="67e-Fr-8Br"/>
                 <constraint firstItem="Blc-h8-J6V" firstAttribute="top" secondItem="mfm-wR-g33" secondAttribute="bottom" id="8Zh-bY-UQj"/>
+                <constraint firstItem="jDi-uR-9hd" firstAttribute="top" secondItem="goJ-J0-xDn" secondAttribute="bottom" id="C6q-v9-7ck"/>
                 <constraint firstAttribute="trailing" secondItem="jDi-uR-9hd" secondAttribute="trailing" id="EKJ-0B-oXa"/>
                 <constraint firstItem="s0W-gi-0Tl" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="H4h-JR-iqI"/>
                 <constraint firstItem="M9F-sQ-ald" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="HuH-Rh-f5L"/>
@@ -557,6 +589,7 @@
                 <constraint firstAttribute="trailing" secondItem="M9F-sQ-ald" secondAttribute="trailing" id="OxP-d0-hcD"/>
                 <constraint firstAttribute="trailing" secondItem="mfm-wR-g33" secondAttribute="trailing" id="PPx-qb-qvl"/>
                 <constraint firstItem="s0W-gi-0Tl" firstAttribute="top" secondItem="2AC-bL-k82" secondAttribute="bottom" id="Rx4-xU-P6S"/>
+                <constraint firstItem="goJ-J0-xDn" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="U0m-KA-w1A"/>
                 <constraint firstItem="mfm-wR-g33" firstAttribute="top" secondItem="M9F-sQ-ald" secondAttribute="bottom" constant="-107" id="Vvx-XO-BM2"/>
                 <constraint firstItem="2AC-bL-k82" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="WRY-JC-Usz"/>
                 <constraint firstItem="Blc-h8-J6V" firstAttribute="top" secondItem="Cqv-DZ-iYE" secondAttribute="top" id="WgQ-Vy-UNn"/>
@@ -567,6 +600,8 @@
                 <constraint firstItem="jDi-uR-9hd" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="kG5-et-lwV"/>
                 <constraint firstItem="jDi-uR-9hd" firstAttribute="top" secondItem="Blc-h8-J6V" secondAttribute="bottom" id="kot-5Q-cJ0"/>
                 <constraint firstAttribute="bottom" secondItem="jDi-uR-9hd" secondAttribute="bottom" id="l3q-d0-itF"/>
+                <constraint firstItem="goJ-J0-xDn" firstAttribute="top" secondItem="mfm-wR-g33" secondAttribute="bottom" id="oL5-6B-a5y"/>
+                <constraint firstAttribute="trailing" secondItem="goJ-J0-xDn" secondAttribute="trailing" id="oVB-tv-8tk"/>
                 <constraint firstItem="M9F-sQ-ald" firstAttribute="top" secondItem="mfm-wR-g33" secondAttribute="bottom" id="pBt-E1-KYS"/>
                 <constraint firstItem="mfm-wR-g33" firstAttribute="top" secondItem="M9F-sQ-ald" secondAttribute="bottom" constant="-107" id="us3-GT-ljB"/>
                 <constraint firstItem="jDi-uR-9hd" firstAttribute="top" secondItem="s0W-gi-0Tl" secondAttribute="bottom" id="wOi-X0-W3P"/>

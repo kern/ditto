@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 class DittoStore : NSObject {
     
@@ -9,7 +10,7 @@ class DittoStore : NSObject {
             [   "Welcome to Ditto. 👋",
                 "Add Ditto in Settings > General > Keyboard > Keyboards.",
                 "You must Allow Full Access for Ditto to work properly.",
-                "We DO NOT access ANYTHING that you say. Everythin is saved locally on your phone",
+                "We DO NOT access ANYTHING that you say. Everything is saved locally on your phone",
                 "Use the Ditto app to customize your Dittos.",
                 "A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito.A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito.A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito."
             ],
@@ -104,5 +105,11 @@ class DittoStore : NSObject {
         cachedDittos[category]!.removeAtIndex(dittoIndex)
         save()
     }
+    
+    func getColorForIndex(index: Int) -> UIColor {
+        return UIColor(red: 153/255, green: 0, blue: 153/255, alpha: 1 - ((4 / (4 * CGFloat(self.numCategories()))) * CGFloat(index)))
+    }
+    
+    
     
 }
