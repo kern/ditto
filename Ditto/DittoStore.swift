@@ -106,6 +106,11 @@ class DittoStore : NSObject {
         save()
     }
     
+    func removeCategory(categoryIndex: Int) {
+        cachedCategories.removeAtIndex(categoryIndex)
+        save()
+    }
+    
     func getColorForIndex(index: Int) -> UIColor {
         return UIColor(red: 153/255, green: 0, blue: 153/255, alpha: 1 - ((4 / (4 * CGFloat(self.numCategories()))) * CGFloat(index)))
     }

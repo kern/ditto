@@ -87,12 +87,34 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
+    // TODO: clean this up with a custom header
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 25))
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 25))
+        
+        let headerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width * 0.8, height: 25))
         headerLabel.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
         headerLabel.text = "  " + dittoStore.getCategory(section)
         headerLabel.textColor = UIColor(red: 0.35, green: 0.35, blue: 0.35, alpha: 1)
-        return headerLabel
+        
+        let deleteCategoryButton = UIButton(frame: CGRect(x: tableView.bounds.width * 0.8, y: 0, width: tableView.bounds.width * 0.2, height: 25))
+        deleteCategoryButton.setTitle("delete", forState: UIControlState.Normal)
+        deleteCategoryButton.addTarget(self, action: "deleteCategoryButtonAction:", forControlEvents: UIControlEvents.TouchUpInside)
+        deleteCategoryButton.tag = section
+        deleteCategoryButton.backgroundColor = UIColor.blackColor()
+        
+        headerView.addSubview(headerLabel)
+        headerView.addSubview(deleteCategoryButton)
+        return headerView
+    }
+    
+    func deleteCategoryButtonAction(sender: UIButton!) {
+        var alert = UIAlertController(title: "Warning!", message: "Deleting a category removes all of its dittos. Are you sure you want to continue?", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Delete", style: .Default, handler: { action in
+            self.dittoStore.removeCategory(sender.tag)
+            self.tableView.deleteSections(NSIndexSet(index: sender.tag), withRowAnimation: UITableViewRowAnimation(rawValue: 1)!)
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
     }
    
     
