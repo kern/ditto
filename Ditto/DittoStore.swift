@@ -28,7 +28,7 @@ class DittoStore : NSObject {
             ],
             "Tinder" :
             [
-                "I'm not a photographer, but I can picture as together.",
+                "I'm not a photographer, but I can picture us together.",
                 "Was your dad a thief? Because someone stole the stars from the sky and put them in your eyes.",
                 "Do you have a Band-Aid? Because I just scraped my knee falling for you."
             ]
