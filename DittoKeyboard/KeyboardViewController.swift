@@ -22,7 +22,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     let addDittoViewController = AddDittoFromClipboardViewController()
     var backspaceTimer: DelayedRepeatTimer!
     
+    // Cache for current tab dittos
     var currentTabDittos: [String] = []
+    
+    // Cache for trimmed dittos, used to display text in cell and calculate cell height
+    var currentTabDittosTrimmed: [String] = []
+    
     var selectedCellRowIndex: Int = -1
     
     override func loadView() {
@@ -36,7 +41,9 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func loadTabDittosByCategoryIndex(categoryIndex: Int) {
-        self.currentTabDittos = dittoStore.getDittosByCategory(categoryIndex).map({ $0.stringByReplacingOccurrencesOfString("\n", withString: " ").stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))})
+        
+        self.currentTabDittosTrimmed = dittoStore.getDittosByCategory(categoryIndex).map({ $0.stringByReplacingOccurrencesOfString("\n", withString: " ").stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))})
+        self.currentTabDittos = dittoStore.getDittosByCategory(categoryIndex)
     }
     
     func loadTabButtons() {
@@ -56,7 +63,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         super.viewWillAppear(animated)
         dittoStore.reload()
         tableView.reloadData()
-//        setKeyboardHeight(max(250, UIScreen.mainScreen().bounds.height/2))
         setKeyboardHeight(250)
     }
     
@@ -77,6 +83,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         selectedCellRowIndex = -1
         tableView.reloadData()
         numericKeys.hidden = true
+        addDittoView.hidden = true
     }
     
     override func textDidChange(textInput: UITextInput) {
@@ -114,7 +121,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as! UITableViewCell
         
-        var text = currentTabDittos[indexPath.row]
+        var text = currentTabDittosTrimmed[indexPath.row]
         cell.textLabel?.text = text
         cell.textLabel?.numberOfLines = 0
         
@@ -122,7 +129,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let size = (currentTabDittos[indexPath.row] as NSString).boundingRectWithSize(CGSizeMake(tableView.frame.width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 20)!], context: nil)
+        let size = (currentTabDittosTrimmed[indexPath.row] as NSString).boundingRectWithSize(CGSizeMake(tableView.frame.width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 20)!], context: nil)
         
         if selectedCellRowIndex == indexPath.row {
             return size.size.height + 14
@@ -170,8 +177,18 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func dittoButtonClicked() {
-        numericKeys.hidden = !numericKeys.hidden
-//        addDittoView.hidden = !addDittoView.hidden
+        // TODO nicer way to toggle?
+        if addDittoView.hidden && numericKeys.hidden {
+            addDittoView.hidden = false
+        }
+        else if !addDittoView.hidden {
+            addDittoView.hidden = true
+            numericKeys.hidden = false
+        }
+        else if !numericKeys.hidden {
+            numericKeys.hidden = true
+            tableView.hidden = false
+        }
     }
     
     @IBAction func returnButtonClicked() {
