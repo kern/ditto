@@ -57,9 +57,18 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         text = text.stringByReplacingOccurrencesOfString("\n", withString: " ")
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
         cell.textLabel?.text = text
-        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.numberOfLines = 2
         
         return cell
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        let size = (dittoStore.get(indexPath.section, dittoIndex: indexPath.row) as NSString).boundingRectWithSize(CGSizeMake(tableView.frame.width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 20)!], context: nil)
+        
+        let sizeTwo = ("\n" as NSString).boundingRectWithSize(CGSizeMake(tableView.frame.width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 20)!], context: nil)
+        
+        return min(size.size.height, sizeTwo.size.height) + 14
+        
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

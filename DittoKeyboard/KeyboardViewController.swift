@@ -23,17 +23,20 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     var backspaceTimer: DelayedRepeatTimer!
     
     var currentTabDittos: [String] = []
-    var currentTabCells: [UITableViewCell] = []
     var selectedCellRowIndex: Int = -1
     
     override func loadView() {
         let xib = NSBundle.mainBundle().loadNibNamed("KeyboardViewController", owner: self, options: nil);
         bottomBar.backgroundColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1)
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "DittoCell")
-        currentTabDittos = dittoStore.getDittosByCategory(0)
+        loadTabDittosByCategoryIndex(0)
         loadTabButtons()
         categoryPicker.delegate = addDittoViewController
         categoryPicker.dataSource = addDittoViewController
+    }
+    
+    func loadTabDittosByCategoryIndex(categoryIndex: Int) {
+        self.currentTabDittos = dittoStore.getDittosByCategory(categoryIndex).map({ $0.stringByReplacingOccurrencesOfString("\n", withString: " ").stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))})
     }
     
     func loadTabButtons() {
@@ -53,7 +56,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         super.viewWillAppear(animated)
         dittoStore.reload()
         tableView.reloadData()
-        currentTabCells = []
 //        setKeyboardHeight(max(250, UIScreen.mainScreen().bounds.height/2))
         setKeyboardHeight(250)
     }
@@ -71,8 +73,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func tabButtonPressed(sender: UIButton!) {
-        currentTabDittos = dittoStore.getDittosByCategory(sender.tag)
-        currentTabCells = []
+        loadTabDittosByCategoryIndex(sender.tag)
         selectedCellRowIndex = -1
         tableView.reloadData()
         numericKeys.hidden = true
@@ -114,37 +115,26 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as! UITableViewCell
         
         var text = currentTabDittos[indexPath.row]
-        text = text.stringByReplacingOccurrencesOfString("\n", withString: " ")
-        text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
         cell.textLabel?.text = text
-        cell.textLabel?.numberOfLines = 2
-        
-        currentTabCells.append(cell)
+        cell.textLabel?.numberOfLines = 0
         
         return cell
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if selectedCellRowIndex == indexPath.row {
-            let cell = currentTabCells[indexPath.row]
-            cell.textLabel?.numberOfLines = 0
-            cell.textLabel!.sizeToFit()
-            return cell.textLabel!.frame.height + 20
-        }
-        let x = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: CGFloat.max))
-        x.text = currentTabDittos[indexPath.row]
-        x.numberOfLines = 2
-        x.sizeToFit()
-    
-        return x.frame.height + 20
+        let size = (currentTabDittos[indexPath.row] as NSString).boundingRectWithSize(CGSizeMake(tableView.frame.width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 20)!], context: nil)
         
-//        if selectedCellRowIndex == indexPath.row {
-//            let cell = currentTabCells[indexPath.row]
-//            cell.textLabel?.numberOfLines = 0
-//            cell.textLabel!.sizeToFit()
-//            return cell.textLabel!.frame.height + 20
-//        }
-//        return 60
+        if selectedCellRowIndex == indexPath.row {
+            return size.size.height + 14
+        } else {
+            // TODO How do i guarantee the font type size is always right / what's currently the font type size of 
+            // the cell labels (otherwise both size and width can be slightly off for variable lengths of text)
+            
+            // Height for two rows of text
+            let sizeTwo = ("\n" as NSString).boundingRectWithSize(CGSizeMake(tableView.frame.width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 20)!], context: nil)
+            
+            return min(size.size.height, sizeTwo.size.height) + 14
+        }
     }
     
     
@@ -169,10 +159,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
                     selectedCellRowIndex = indexPath.row
                 }
                 
-                var cell: UITableViewCell = currentTabCells[indexPath.row]
                 tableView.beginUpdates()
                 tableView.endUpdates()
-                
             }
         }
     }

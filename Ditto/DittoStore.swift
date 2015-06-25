@@ -10,22 +10,33 @@ class DittoStore : NSObject {
             [   "Welcome to Ditto. 👋",
                 "Add Ditto in Settings > General > Keyboard > Keyboards.",
                 "You must Allow Full Access for Ditto to work properly.",
-                "We DO NOT access ANYTHING that you say. Everything is saved locally on your phone",
+                "We DO NOT access ANYTHING that you type on the Ditto keyboard.",
+                "Everything is saved privately on your device",
                 "Use the Ditto app to customize your Dittos.",
-                "A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito.A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito.A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito."
+                "\n\n\n\nA very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito.A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito.A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito. A very long dito."
             ],
-            "Work" :
-            [   "Dear ___",
-                "My name is Asaf Avidan Antonir. I am a fourth year Computer Science major at UC Berkeley."
-            ],
+            
             "Driving" :
-            [   "I'll be there in ___ minutes!",
-                "Can't talk, I'm driving"
+                [
+                    "Can't talk, I'm driving.",
+                    "Can you send me the address?",
+                    "I'll be there in ___ minutes!"
+            ],
+            "Business" :
+                [   "Hi ___,\n\nIt was great meeting you today. I'd love to chat in more detail about possible business opportinities. Please let me know your avilability.\n\nBest,\nAsaf",
+                    "My name is Asaf. I'm a recruiter at Shmoogle on the search team. We are always looking for talented candidates to join our team, and with your impressive background, we think you could be a great fit. Please let me know if you are interested, and if so, your availability to chat this week."
+            ],
+            "Tinder" :
+                [
+                    "Was your dad a thief? Because someone stole the stars from teh sky and put them in your eyes.",
+                    "I'm not a photographer, but I can picture as together.",
+                    "Do you have a Band-Aid? Because I just scraped my knee falling for you."
+                    
             ]
             
         ]
     
-    let presetCategories = ["Instructions", "Work", "Driving"]
+    let presetCategories = ["Instructions", "Driving", "Business", "Tinder"]
     
     var cachedDittos: [String: [String]] = [String:[String]]()
     var cachedCategories: [String] = []
