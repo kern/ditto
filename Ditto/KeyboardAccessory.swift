@@ -14,16 +14,16 @@ class KeyboardAccessory: UIToolbar {
         categoryLabel.textColor = UIColor.purpleColor()
         categoryLabel.text = "Category"
         categoryLabel.textAlignment = .Left
-        self.addSubview(categoryLabel)
-        self.addSubview(categoryField)
+        addSubview(categoryLabel)
+        addSubview(categoryField)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: Selector("accessoryClicked:"))
-        self.addGestureRecognizer(tapGesture)
-        self.userInteractionEnabled = true
+        addGestureRecognizer(tapGesture)
+        userInteractionEnabled = true
 
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
