@@ -3,6 +3,8 @@ import UIKit
 
 class DittoStore : NSObject {
     
+    let MAX_CATEGORIES = 8
+    
     let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
     
     let presetDittos = [
@@ -66,14 +68,24 @@ class DittoStore : NSObject {
         defaults.synchronize()
     }
     
-    func get(categoryIndex: Int, dittoIndex : Int) -> String {
+    func getColorForIndex(index: Int) -> UIColor {
+        return UIColor(red: 153/255,
+            green: 0,
+            blue: 153/255,
+            alpha: 1 - ((4 / (4 * CGFloat(countCategories()))) * CGFloat(index)))
+    }
+    
+    //===============
+    // MARK: Getters
+    
+    func getDittoInCategory(categoryIndex: Int, index dittoIndex : Int) -> String {
         let category: String = cachedCategories[categoryIndex]
         let dittos: [String] = cachedDittos[category]!
         return dittos[dittoIndex]
     }
     
-    func getDittosByCategory(categoryIndex: Int) -> [String] {
-        let category: String = cachedCategories[categoryIndex]
+    func getDittosInCategory(categoryIndex: Int) -> [String] {
+        let category = cachedCategories[categoryIndex]
         return cachedDittos[category]!
     }
     
@@ -81,33 +93,43 @@ class DittoStore : NSObject {
         return cachedCategories[categoryIndex]
     }
     
-    func count(categoryIndex: Int) -> Int {
+    //==================
+    // MARK: - Counting
+    
+    func isEmpty() -> Bool {
+        return cachedCategories.isEmpty
+    }
+    
+    func countInCategory(categoryIndex: Int) -> Int {
         let category = cachedCategories[categoryIndex]
         let dittos = cachedDittos[category]!
         return dittos.count
     }
     
-    func numCategories() -> Int {
+    func countCategories() -> Int {
         return cachedCategories.count
     }
     
-    func add(categoryIndex: Int, ditto: String) {
+    //==========================
+    // MARK: - Ditto Management
+    
+    func addDittoToCategory(categoryIndex: Int, text: String) {
         let category = cachedCategories[categoryIndex]
         var dittos = cachedDittos[category]!
-        dittos.append(ditto)
+        dittos.append(text)
         cachedDittos[category] = dittos
         save()
     }
     
-    func set(categoryIndex: Int, dittoIndex : Int, ditto : String) {
+    func removeDittoFromCategory(categoryIndex: Int, index dittoIndex: Int) {
         let category = cachedCategories[categoryIndex]
         var dittos = cachedDittos[category]!
-        dittos[dittoIndex] = ditto
+        dittos.removeAtIndex(dittoIndex)
         cachedDittos[category] = dittos
         save()
     }
     
-    func moveFromCategoryIndex(fromCategoryIndex: Int, fromDittoIndex: Int, toCategoryIndex: Int, toDittoIndex: Int) {
+    func moveDittoFromCategory(fromCategoryIndex: Int, index fromDittoIndex: Int, toCategory toCategoryIndex: Int, index toDittoIndex: Int) {
         let fromCategory = cachedCategories[fromCategoryIndex]
         let toCategory = cachedCategories[toCategoryIndex]
         let ditto = cachedDittos[fromCategory]![fromDittoIndex]
@@ -116,52 +138,54 @@ class DittoStore : NSObject {
         save()
     }
     
-    func moveFromCategory(fromCategory: Int, dittoIndex: Int, toCategory: Int) {
-        moveFromCategoryIndex(fromCategory, fromDittoIndex: dittoIndex, toCategoryIndex: toCategory, toDittoIndex: count(toCategory))
+    func moveDittoFromCategory(fromCategoryIndex: Int, index dittoIndex: Int, toCategory toCategoryIndex: Int) {
+        moveDittoFromCategory(fromCategoryIndex,
+            index: dittoIndex,
+            toCategory: toCategoryIndex,
+            index: countInCategory(toCategoryIndex))
     }
     
-    func remove(categoryIndex: Int, dittoIndex: Int) {
+    func editDittoInCategory(categoryIndex: Int, index dittoIndex: Int, text: String) {
         let category = cachedCategories[categoryIndex]
         var dittos = cachedDittos[category]!
-        dittos.removeAtIndex(dittoIndex)
+        dittos[dittoIndex] = text
         cachedDittos[category] = dittos
         save()
     }
     
-    func trimEmptyCategories() -> NSIndexSet {
-        
-        var categories: [String] = []
-        var trimmedCategories = NSMutableIndexSet()
-        
-        for (index, category) in enumerate(cachedCategories) {
-            var dittos = cachedDittos[category]!
-            
-            if (dittos.count == 0) {
-                trimmedCategories.addIndex(index)
-                cachedDittos.removeValueForKey(category)
-            } else {
-                categories.append(category)
-            }
-        }
-        
-        cachedCategories = categories
-        save()
-        
-        return trimmedCategories
-        
+    //=============================
+    // MARK: - Category Management
+    
+    func canCreateNewCategory() -> Bool {
+        return countCategories() < MAX_CATEGORIES
     }
     
-    func getColorForIndex(index: Int) -> UIColor {
-        return UIColor(red: 153/255, green: 0, blue: 153/255, alpha: 1 - ((4 / (4 * CGFloat(self.numCategories()))) * CGFloat(index)))
-    }
-    
-    func isEmpty() -> Bool {
-        return cachedCategories.isEmpty
-    }
-    
-    func addCategory(name: String) {
+    func addCategoryWithName(name: String) {
         cachedCategories.append(name)
         cachedDittos[name] = []
+        save()
+    }
+    
+    func removeCategoryAtIndex(categoryIndex: Int) {
+        let category = cachedCategories[categoryIndex]
+        cachedDittos.removeValueForKey(category)
+        cachedCategories.removeAtIndex(categoryIndex)
+        save()
+    }
+    
+    func moveCategoryFromIndex(fromIndex: Int, toIndex: Int) {
+        let category = cachedCategories[fromIndex]
+        cachedCategories.removeAtIndex(fromIndex)
+        cachedCategories.insert(category, atIndex: toIndex)
+        save()
+    }
+    
+    func editCategoryAtIndex(index: Int, name: String) {
+        let oldName = cachedCategories[index]
+        let dittos = cachedDittos[oldName]
+        cachedCategories[index] = name
+        cachedDittos.removeValueForKey(oldName)
+        cachedDittos[name] = dittos
         save()
     }
     

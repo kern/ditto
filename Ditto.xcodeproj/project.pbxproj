@@ -21,6 +21,7 @@
 		FA83FA951A01FFD80061192A /* DittoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7119F90BA6000F0318 /* DittoStore.swift */; };
 		FAAE729A1B474CC000F3696E /* CategoryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAE72991B474CC000F3696E /* CategoryPicker.swift */; };
 		FAAE729C1B47559200F3696E /* CategoryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAE729B1B47559200F3696E /* CategoryField.swift */; };
+		FAAE729E1B47874B00F3696E /* DittoObjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAE729D1B47874B00F3696E /* DittoObjectType.swift */; };
 		FAC467A51A01D37E006B8088 /* DittoKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA70EAD419F5A56300960EE2 /* DittoKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FAD4545C1A1EC16900D825EC /* KeyboardAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD4545B1A1EC16900D825EC /* KeyboardAccessory.swift */; };
 		FAD4545E1A1ECF6400D825EC /* DarkKeyboardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD4545D1A1ECF6400D825EC /* DarkKeyboardButton.swift */; };
@@ -76,6 +77,7 @@
 		FA83FA941A01ED7F0061192A /* DittoKeyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = DittoKeyboard.entitlements; sourceTree = "<group>"; };
 		FAAE72991B474CC000F3696E /* CategoryPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryPicker.swift; sourceTree = "<group>"; };
 		FAAE729B1B47559200F3696E /* CategoryField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryField.swift; sourceTree = "<group>"; };
+		FAAE729D1B47874B00F3696E /* DittoObjectType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DittoObjectType.swift; sourceTree = "<group>"; };
 		FAD4545B1A1EC16900D825EC /* KeyboardAccessory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardAccessory.swift; sourceTree = "<group>"; };
 		FAD4545D1A1ECF6400D825EC /* DarkKeyboardButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DarkKeyboardButton.swift; sourceTree = "<group>"; };
 		FAD4545F1A1ED40500D825EC /* LightKeyboardButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightKeyboardButton.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				FAAE729B1B47559200F3696E /* CategoryField.swift */,
 				FAAE72991B474CC000F3696E /* CategoryPicker.swift */,
 				FA237AB619F9CAB0007E67D5 /* NavigationController.swift */,
+				FAAE729D1B47874B00F3696E /* DittoObjectType.swift */,
 				FA237AB519F9C70F007E67D5 /* View Controllers */,
 				FA70EAB919F5A49D00960EE2 /* LaunchScreen.xib */,
 				FA70EAB719F5A49D00960EE2 /* Images.xcassets */,
@@ -309,6 +312,7 @@
 				FAFCAE7419F98CF7000F0318 /* NewViewController.swift in Sources */,
 				FA70EAB119F5A49D00960EE2 /* AppDelegate.swift in Sources */,
 				FA2ECD1119F8C207006B413E /* EditViewController.swift in Sources */,
+				FAAE729E1B47874B00F3696E /* DittoObjectType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -41,13 +41,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func loadTabDittosByCategoryIndex(categoryIndex: Int) {
-        
-        self.currentTabDittosTrimmed = dittoStore.getDittosByCategory(categoryIndex).map({ $0.stringByReplacingOccurrencesOfString("\n", withString: " ").stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))})
-        self.currentTabDittos = dittoStore.getDittosByCategory(categoryIndex)
+        self.currentTabDittosTrimmed = dittoStore.getDittosInCategory(categoryIndex).map({ $0.stringByReplacingOccurrencesOfString("\n", withString: " ").stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))})
+        self.currentTabDittos = dittoStore.getDittosInCategory(categoryIndex)
     }
     
     func loadTabButtons() {
-        var numCategories = dittoStore.numCategories()
+        var numCategories = dittoStore.countCategories()
         let width = UIScreen.mainScreen().bounds.width / CGFloat(numCategories)
         for index in 0..<numCategories {
             let button = UIButton(frame: CGRectMake(CGFloat(index) * width, 0, width, tabBar.bounds.height))
@@ -245,7 +244,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     
     func addDittoFromClipboardByCategory(categoryIndex: Int) {
         if let pasteboardString = UIPasteboard.generalPasteboard().string {
-            dittoStore.add(categoryIndex, ditto: pasteboardString)
+            dittoStore.addDittoToCategory(categoryIndex, text: pasteboardString)
         }
     }
     

@@ -2,24 +2,46 @@ import UIKit
 
 class EditViewController: UIViewController {
     
-    let categoryPicker: CategoryPicker
     let dittoStore: DittoStore
+    let objectType: DittoObjectType
+
     let dittoIndex: Int
     let categoryIndex: Int
-    let keyboardAccessory: KeyboardAccessory
+    
+    let categoryPicker: CategoryPicker?
+    let keyboardAccessory: KeyboardAccessory?
     
     @IBOutlet var textView: UITextView!
-
-    init(categoryIndex : Int, dittoIndex: Int) {
+    
+    init(categoryIndex: Int) {
         
-        self.dittoIndex = dittoIndex
-        self.categoryIndex = categoryIndex
         self.dittoStore = DittoStore()
-        self.categoryPicker = CategoryPicker(categories: dittoStore.cachedCategories, selected: categoryIndex)
-        self.keyboardAccessory = KeyboardAccessory(categoryPicker: categoryPicker)
-        super.init(nibName: "EditViewController", bundle: nil)
+        self.objectType = .Category
+        self.categoryIndex = categoryIndex
+        self.dittoIndex = 0
+        self.categoryPicker = nil
+        self.keyboardAccessory = nil
         
-        navigationItem.title = "Edit Ditto"
+        super.init(nibName: "EditViewController", bundle: nil)
+        initNavigationItem()
+        
+    }
+
+    init(categoryIndex: Int, dittoIndex: Int) {
+        
+        self.dittoStore = DittoStore()
+        self.objectType = .Ditto
+        self.categoryIndex = categoryIndex
+        self.dittoIndex = dittoIndex
+        self.categoryPicker = CategoryPicker(categories: dittoStore.cachedCategories, selected: categoryIndex)
+        self.keyboardAccessory = KeyboardAccessory(categoryPicker: categoryPicker!)
+        
+        super.init(nibName: "EditViewController", bundle: nil)
+        initNavigationItem()
+        
+    }
+    
+    func initNavigationItem() {
         
         let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonClicked")
         navigationItem.leftBarButtonItem = cancelButton
@@ -28,6 +50,14 @@ class EditViewController: UIViewController {
         saveButton.style = .Done
         navigationItem.rightBarButtonItem = saveButton
         
+        switch (objectType) {
+        case .Category:
+            navigationItem.title = "Edit Category"
+            
+        case .Ditto:
+            navigationItem.title = "Edit Ditto"
+        }
+
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -65,15 +95,31 @@ class EditViewController: UIViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
+        switch (objectType) {
+        case .Category:
+            textView.text = dittoStore.getCategory(categoryIndex)
+            
+        case .Ditto:
+            textView.text = dittoStore.getDittoInCategory(categoryIndex, index: dittoIndex)
+        }
+        
         navigationItem.rightBarButtonItem?.enabled = true
-        textView.text = dittoStore.get(categoryIndex, dittoIndex: dittoIndex)
         textView.becomeFirstResponder()
     }
     
     func saveButtonClicked() {
         
-        dittoStore.set(categoryIndex, dittoIndex: dittoIndex, ditto: textView.text)
-        dittoStore.moveFromCategory(categoryIndex, dittoIndex: dittoIndex, toCategory: categoryPicker.index)
+        switch (objectType) {
+        case .Category:
+            dittoStore.editCategoryAtIndex(categoryIndex, name: textView.text)
+
+        case .Ditto:
+            dittoStore.editDittoInCategory(categoryIndex, index: dittoIndex, text: textView.text)
+            
+            if categoryIndex != categoryPicker!.index {
+                dittoStore.moveDittoFromCategory(categoryIndex, index: dittoIndex, toCategory: categoryPicker!.index)
+            }
+        }
         
         textView.resignFirstResponder()
         navigationController?.dismissViewControllerAnimated(true, completion: nil)
