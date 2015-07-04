@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		E84DB89F1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */; };
-		FA237AB419F9C6F8007E67D5 /* ListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA237AB319F9C6F8007E67D5 /* ListViewController.xib */; };
 		FA237AB719F9CAB0007E67D5 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA237AB619F9CAB0007E67D5 /* NavigationController.swift */; };
 		FA2ECD1119F8C207006B413E /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2ECD1019F8C207006B413E /* EditViewController.swift */; };
 		FA70EAB119F5A49D00960EE2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA70EAB019F5A49D00960EE2 /* AppDelegate.swift */; };
@@ -59,7 +58,6 @@
 
 /* Begin PBXFileReference section */
 		E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDittoFromClipboardViewController.swift; sourceTree = "<group>"; };
-		FA237AB319F9C6F8007E67D5 /* ListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListViewController.xib; sourceTree = "<group>"; };
 		FA237AB619F9CAB0007E67D5 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		FA2ECD1019F8C207006B413E /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
 		FA70EAAB19F5A49D00960EE2 /* Ditto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ditto.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -110,7 +108,6 @@
 			isa = PBXGroup;
 			children = (
 				FA70EAB219F5A49D00960EE2 /* ListViewController.swift */,
-				FA237AB319F9C6F8007E67D5 /* ListViewController.xib */,
 				FA2ECD1019F8C207006B413E /* EditViewController.swift */,
 				FAFCAE7719F9A1DE000F0318 /* EditViewController.xib */,
 				FAFCAE7319F98CF7000F0318 /* NewViewController.swift */,
@@ -280,7 +277,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA70EABB19F5A49D00960EE2 /* LaunchScreen.xib in Resources */,
-				FA237AB419F9C6F8007E67D5 /* ListViewController.xib in Resources */,
 				FAFCAE7819F9A1DE000F0318 /* EditViewController.xib in Resources */,
 				FA70EAB819F5A49D00960EE2 /* Images.xcassets in Resources */,
 				FAFCAE7619F99C85000F0318 /* NewViewController.xib in Resources */,

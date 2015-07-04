@@ -2,22 +2,24 @@ import UIKit
 
 class ListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    @IBOutlet var tableView: UITableView!
+    var objectType: DittoObjectType
+    let dittoStore: DittoStore
     
-    let dittoStore = DittoStore()
-    
+    let dummyCell: UITableViewCell
+
+    let segmentedControl: UISegmentedControl
+    var tableView: UITableView!
     var editButton: UIBarButtonItem!
     var newButton: UIBarButtonItem!
     var doneButton: UIBarButtonItem!
     
-    let segmentedControl: UISegmentedControl
-    var objectType: DittoObjectType
-    
     init() {
         
-        self.segmentedControl = UISegmentedControl(items: ["Categories", "Dittos"])
-        self.objectType = .Ditto
-        super.init(nibName: "ListViewController", bundle: nil)
+        objectType = .Ditto
+        dittoStore = DittoStore()
+        dummyCell = UITableViewCell(style: .Default, reuseIdentifier: nil)
+        segmentedControl = UISegmentedControl(items: ["Categories", "Dittos"])
+        super.init(nibName: nil, bundle: nil)
         
         navigationItem.titleView = segmentedControl
         segmentedControl.selectedSegmentIndex = 1
@@ -30,14 +32,19 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         navigationItem.leftBarButtonItem = editButton
         navigationItem.rightBarButtonItem = newButton
         
+        dummyCell.accessoryType = .DisclosureIndicator
+
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func loadView() {
+        tableView = UITableView(frame: CGRectZero, style: .Plain)
+        tableView.delegate = self
+        tableView.dataSource = self
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "DittoCell")
+        view = tableView
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -64,7 +71,6 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
             
         default:
             fatalError("Unknown index")
-            
         }
         
         tableView.reloadData()
@@ -73,10 +79,13 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func textForCellAtIndexPath(indexPath: NSIndexPath) -> String {
         switch (objectType) {
         case .Category:
+            
             return dittoStore.getCategory(indexPath.row)
             
         case .Ditto:
+            
             return dittoStore.getDittoInCategory(indexPath.section, index: indexPath.row)
+            
         }
     }
     
@@ -85,21 +94,15 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         switch (objectType) {
-        case .Category:
-            return 1
-            
-        case .Ditto:
-            return dittoStore.countCategories()
+        case .Category: return 1
+        case .Ditto:    return dittoStore.countCategories()
         }
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch (objectType) {
-        case .Category:
-            return dittoStore.countCategories()
-
-        case .Ditto:
-            return dittoStore.countInCategory(section)
+        case .Category: return dittoStore.countCategories()
+        case .Ditto:    return dittoStore.countInCategory(section)
         }
     }
     
@@ -109,6 +112,43 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
+    }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch (objectType) {
+        case .Category: return 0
+        case .Ditto:    return 28
+        }
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        switch (objectType) {
+        case .Category:
+            return nil
+            
+        case .Ditto:
+            // TODO: Correct the alignment of these headers.
+            let headerLabel = UILabel(frame: CGRectZero)
+            headerLabel.backgroundColor = UIColor(white: 0.95, alpha: 1)
+            headerLabel.textColor = UIColor(white: 0.35, alpha: 1)
+            headerLabel.text = "  " + dittoStore.getCategory(section)
+            return headerLabel
+        }
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        
+        let cell = UITableViewCell(style: .Default, reuseIdentifier: nil)
+        cell.accessoryType = .DisclosureIndicator
+        
+        let text = textForCellAtIndexPath(indexPath)
+        let rect = text.boundingRectWithSize(CGSizeMake(dummyCell.contentView.frame.size.width, CGFloat.max),
+            options: NSStringDrawingOptions.UsesLineFragmentOrigin,
+            attributes: [NSFontAttributeName: UIFont.systemFontOfSize(UIFont.labelFontSize())],
+            context: nil)
+        
+        return min(rect.size.height, UIFont.labelFontSize() * 2) + 33
+        
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -121,67 +161,20 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
         cell.textLabel?.text = text
         cell.textLabel?.numberOfLines = 2
+        cell.textLabel?.sizeToFit()
         
         return cell
         
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        var text = textForCellAtIndexPath(indexPath)
-        let size = text.boundingRectWithSize(CGSizeMake(tableView.frame.width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 20)!], context: nil)
-        
-        let sizeTwo = ("\n" as NSString).boundingRectWithSize(CGSizeMake(tableView.frame.width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 20)!], context: nil)
-        
-        return min(size.size.height, sizeTwo.size.height) + 14
-    }
-    
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch (objectType) {
-        case .Category:
-            return 0
-            
-        case .Ditto:
-            return 28
-        }
-    }
-    
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        switch (objectType) {
-        case .Category:
-            return nil
-            
-        case .Ditto:
-            let headerLabel = UILabel(frame: CGRectZero)
-            headerLabel.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
-            headerLabel.text = "  " + dittoStore.getCategory(section)
-            headerLabel.textColor = UIColor(red: 0.35, green: 0.35, blue: 0.35, alpha: 1)
-            return headerLabel
-        }
-    }
-    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var editViewController: EditViewController
-        switch (objectType) {
-        case .Category:
-            editViewController = EditViewController(categoryIndex: indexPath.row)
-        case .Ditto:
-            editViewController = EditViewController(categoryIndex: indexPath.section, dittoIndex: indexPath.row)
-        }
-        
-        let subnavController = NavigationController(rootViewController: editViewController)
-        presentViewController(subnavController, animated: true, completion: nil)
+        presentEditViewController(indexPath)
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
         switch (objectType) {
-        case .Category:
-            dittoStore.moveCategoryFromIndex(sourceIndexPath.row, toIndex: destinationIndexPath.row)
-            
-        case .Ditto:
-            dittoStore.moveDittoFromCategory(sourceIndexPath.section,
-                index: sourceIndexPath.row,
-                toCategory: destinationIndexPath.section,
-                index: destinationIndexPath.row)
+        case .Category: dittoStore.moveCategoryFromIndex(sourceIndexPath.row, toIndex: destinationIndexPath.row)
+        case .Ditto: dittoStore.moveDittoFromCategory(sourceIndexPath.section, index: sourceIndexPath.row, toCategory: destinationIndexPath.section, index: destinationIndexPath.row)
         }
     }
     
@@ -189,20 +182,17 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if (editingStyle == .Delete) {
             switch (objectType) {
             case .Category:
-                let alert = UIAlertController(title: "Warning", message: "Deleting a category removes all of its Dittos. Are you sure you wish to continue?", preferredStyle: .Alert)
                 
-                alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: { action in
+                presentRemoveCategoryWarning({ action in
                     self.dittoStore.removeCategoryAtIndex(indexPath.row)
                     tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
-                }))
+                })
                 
-                alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-                
-                presentViewController(alert, animated: true, completion: nil)
-
             case .Ditto:
+                
                 dittoStore.removeDittoFromCategory(indexPath.section, index: indexPath.row)
                 tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+                
             }
         }
     }
@@ -213,13 +203,9 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func newButtonClicked() {
         
         if (objectType == .Category && !dittoStore.canCreateNewCategory()) {
-            let alert = UIAlertController(title: "Warning", message: "You can only create up to 8 categories. Please delete a category before creating a new one.", preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
-            presentViewController(alert, animated: true, completion: nil)
+            presentMaxCategoryWarning()
         } else {
-            let newViewController = NewViewController(objectType: objectType)
-            let subnavController = NavigationController(rootViewController: newViewController)
-            presentViewController(subnavController, animated: true, completion: nil)
+            presentNewViewController()
         }
         
     }
@@ -228,9 +214,9 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         segmentedControl.enabled = false
         segmentedControl.userInteractionEnabled = false
-        tableView.setEditing(true, animated: true)
         navigationItem.setLeftBarButtonItem(doneButton, animated: true)
         navigationItem.setRightBarButtonItem(nil, animated: true)
+        tableView.setEditing(true, animated: true)
         
     }
     
@@ -238,9 +224,56 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         segmentedControl.enabled = true
         segmentedControl.userInteractionEnabled = true
-        tableView.setEditing(false, animated: true)
         navigationItem.setLeftBarButtonItem(editButton, animated: true)
         navigationItem.setRightBarButtonItem(newButton, animated: true)
+        tableView.setEditing(false, animated: true)
+        
+    }
+    
+    //=====================================
+    // MARK: - Presenting View Controllers
+    
+    func presentNewViewController() {
+        let newViewController = NewViewController(objectType: objectType)
+        let subnavController = NavigationController(rootViewController: newViewController)
+        presentViewController(subnavController, animated: true, completion: nil)
+    }
+    
+    func presentEditViewController(indexPath: NSIndexPath) {
+        
+        var editViewController: EditViewController
+        switch (objectType) {
+        case .Category:
+            editViewController = EditViewController(categoryIndex: indexPath.row)
+        case .Ditto:
+            editViewController = EditViewController(categoryIndex: indexPath.section, dittoIndex: indexPath.row)
+        }
+        
+        let subnavController = NavigationController(rootViewController: editViewController)
+        presentViewController(subnavController, animated: true, completion: nil)
+        
+    }
+    
+    func presentMaxCategoryWarning() {
+
+        let alert = UIAlertController(title: "Warning",
+            message: "You can only create up to 8 categories. Delete a category before creating a new one.",
+            preferredStyle: .Alert)
+        
+        alert.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
+        presentViewController(alert, animated: true, completion: nil)
+
+    }
+    
+    func presentRemoveCategoryWarning(handler: ((UIAlertAction!) -> Void)) {
+        
+        let alert = UIAlertController(title: "Warning",
+            message: "Deleting a category removes all of its Dittos. Are you sure you wish to continue?",
+            preferredStyle: .Alert)
+        
+        alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: handler))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        presentViewController(alert, animated: true, completion: nil)
         
     }
     
