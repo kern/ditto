@@ -50,7 +50,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         let width = UIScreen.mainScreen().bounds.width / CGFloat(numCategories)
         for index in 0..<numCategories {
             let button = UIButton(frame: CGRectMake(CGFloat(index) * width, 0, width, tabBar.bounds.height))
-            button.backgroundColor = dittoStore.getColorForIndex(index)
+            button.backgroundColor = getColorForIndex(index)
             button.tag = index
             button.addTarget(self, action: "tabButtonPressed:", forControlEvents: .TouchUpInside)
             tabBar.addSubview(button)
@@ -245,6 +245,13 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         if let pasteboardString = UIPasteboard.generalPasteboard().string {
             dittoStore.addDittoToCategory(categoryIndex, text: pasteboardString)
         }
+    }
+
+    func getColorForIndex(index: Int) -> UIColor {
+        return UIColor(red: 153/255,
+            green: 0,
+            blue: 153/255,
+            alpha: 1 - ((4 / (4 * CGFloat(dittoStore.countCategories()))) * CGFloat(index)))
     }
     
 }

@@ -68,13 +68,6 @@ class DittoStore : NSObject {
         defaults.synchronize()
     }
     
-    func getColorForIndex(index: Int) -> UIColor {
-        return UIColor(red: 153/255,
-            green: 0,
-            blue: 153/255,
-            alpha: 1 - ((4 / (4 * CGFloat(countCategories()))) * CGFloat(index)))
-    }
-    
     //===============
     // MARK: Getters
     
