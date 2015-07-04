@@ -21,10 +21,8 @@ class CategoryPicker: NSObject, UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     convenience init(categories: [String], selected: Int) {
-        
         self.init(categories: categories)
         view.selectRow(selected, inComponent: 0, animated: false)
-        
     }
     
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
