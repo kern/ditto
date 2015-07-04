@@ -2,16 +2,21 @@ import UIKit
 
 class EditViewController: UIViewController {
     
-    let dittoStore = DittoStore()
+    let categoryPicker: CategoryPicker
+    let dittoStore: DittoStore
     let dittoIndex: Int
     let categoryIndex: Int
-    let keyboardAccessory = KeyboardAccessory()
+    let keyboardAccessory: KeyboardAccessory
     
     @IBOutlet var textView: UITextView!
 
     init(categoryIndex : Int, dittoIndex: Int) {
+        
         self.dittoIndex = dittoIndex
         self.categoryIndex = categoryIndex
+        self.dittoStore = DittoStore()
+        self.categoryPicker = CategoryPicker(categories: dittoStore.cachedCategories, selected: categoryIndex)
+        self.keyboardAccessory = KeyboardAccessory(categoryPicker: categoryPicker)
         super.init(nibName: "EditViewController", bundle: nil)
         
         navigationItem.title = "Edit Ditto"
@@ -22,6 +27,7 @@ class EditViewController: UIViewController {
         let saveButton = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: "saveButtonClicked")
         saveButton.style = .Done
         navigationItem.rightBarButtonItem = saveButton
+        
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -65,10 +71,13 @@ class EditViewController: UIViewController {
     }
     
     func saveButtonClicked() {
-//        dittoStore.set(index, ditto: textView.text)
+        
         dittoStore.set(categoryIndex, dittoIndex: dittoIndex, ditto: textView.text)
+        dittoStore.moveFromCategory(categoryIndex, dittoIndex: dittoIndex, toCategory: categoryPicker.index)
+        
         textView.resignFirstResponder()
         navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        
     }
     
     func cancelButtonClicked() {

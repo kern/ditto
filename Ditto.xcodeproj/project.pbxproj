@@ -19,6 +19,8 @@
 		FA70EAE419F5A7BC00960EE2 /* KeyboardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAE319F5A7BC00960EE2 /* KeyboardViewController.xib */; };
 		FA70EAEA19F5C17700960EE2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA70EAE919F5C17700960EE2 /* Images.xcassets */; };
 		FA83FA951A01FFD80061192A /* DittoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7119F90BA6000F0318 /* DittoStore.swift */; };
+		FAAE729A1B474CC000F3696E /* CategoryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAE72991B474CC000F3696E /* CategoryPicker.swift */; };
+		FAAE729C1B47559200F3696E /* CategoryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAE729B1B47559200F3696E /* CategoryField.swift */; };
 		FAC467A51A01D37E006B8088 /* DittoKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA70EAD419F5A56300960EE2 /* DittoKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FAD4545C1A1EC16900D825EC /* KeyboardAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD4545B1A1EC16900D825EC /* KeyboardAccessory.swift */; };
 		FAD4545E1A1ECF6400D825EC /* DarkKeyboardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD4545D1A1ECF6400D825EC /* DarkKeyboardButton.swift */; };
@@ -72,6 +74,8 @@
 		FA70EAE919F5C17700960EE2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		FA83FA931A01ED5D0061192A /* Ditto.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Ditto.entitlements; sourceTree = "<group>"; };
 		FA83FA941A01ED7F0061192A /* DittoKeyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = DittoKeyboard.entitlements; sourceTree = "<group>"; };
+		FAAE72991B474CC000F3696E /* CategoryPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryPicker.swift; sourceTree = "<group>"; };
+		FAAE729B1B47559200F3696E /* CategoryField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryField.swift; sourceTree = "<group>"; };
 		FAD4545B1A1EC16900D825EC /* KeyboardAccessory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardAccessory.swift; sourceTree = "<group>"; };
 		FAD4545D1A1ECF6400D825EC /* DarkKeyboardButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DarkKeyboardButton.swift; sourceTree = "<group>"; };
 		FAD4545F1A1ED40500D825EC /* LightKeyboardButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightKeyboardButton.swift; sourceTree = "<group>"; };
@@ -138,6 +142,8 @@
 				FA70EAB019F5A49D00960EE2 /* AppDelegate.swift */,
 				FAFCAE7119F90BA6000F0318 /* DittoStore.swift */,
 				FAD4545B1A1EC16900D825EC /* KeyboardAccessory.swift */,
+				FAAE729B1B47559200F3696E /* CategoryField.swift */,
+				FAAE72991B474CC000F3696E /* CategoryPicker.swift */,
 				FA237AB619F9CAB0007E67D5 /* NavigationController.swift */,
 				FA237AB519F9C70F007E67D5 /* View Controllers */,
 				FA70EAB919F5A49D00960EE2 /* LaunchScreen.xib */,
@@ -297,7 +303,9 @@
 				FA70EAB319F5A49D00960EE2 /* ListViewController.swift in Sources */,
 				FA237AB719F9CAB0007E67D5 /* NavigationController.swift in Sources */,
 				FAD4545C1A1EC16900D825EC /* KeyboardAccessory.swift in Sources */,
+				FAAE729A1B474CC000F3696E /* CategoryPicker.swift in Sources */,
 				FAFCAE7219F90BA6000F0318 /* DittoStore.swift in Sources */,
+				FAAE729C1B47559200F3696E /* CategoryField.swift in Sources */,
 				FAFCAE7419F98CF7000F0318 /* NewViewController.swift in Sources */,
 				FA70EAB119F5A49D00960EE2 /* AppDelegate.swift in Sources */,
 				FA2ECD1119F8C207006B413E /* EditViewController.swift in Sources */,

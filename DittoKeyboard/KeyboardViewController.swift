@@ -237,6 +237,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             return (newS, length - match.location - match.length)
         }
     }
+    
     @IBAction func addDittoFromClipboard(sender: UIButton) {
         let row = categoryPicker.selectedRowInComponent(0)
         addDittoFromClipboardByCategory(row)

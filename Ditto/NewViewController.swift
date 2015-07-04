@@ -2,12 +2,23 @@ import UIKit
 
 class NewViewController: UIViewController, UITextViewDelegate {
     
-    let dittoStore = DittoStore()
-    let keyboardAccessory = KeyboardAccessory()
+    let categoryPicker: CategoryPicker
+    let dittoStore: DittoStore
+    let keyboardAccessory: KeyboardAccessory
     
     @IBOutlet var textView: UITextView!
     
     init() {
+        
+        self.dittoStore = DittoStore()
+        
+        if dittoStore.isEmpty() {
+            self.categoryPicker = CategoryPicker(categories: ["General"])
+        } else {
+            self.categoryPicker = CategoryPicker(categories: dittoStore.cachedCategories)
+        }
+        
+        self.keyboardAccessory = KeyboardAccessory(categoryPicker: categoryPicker)
         super.init(nibName: "NewViewController", bundle: nil)
         
         navigationItem.title = "New Ditto"
@@ -18,6 +29,7 @@ class NewViewController: UIViewController, UITextViewDelegate {
         let saveButton = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: "saveButtonClicked")
         saveButton.style = .Done
         navigationItem.rightBarButtonItem = saveButton
+        
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -60,10 +72,16 @@ class NewViewController: UIViewController, UITextViewDelegate {
     }
     
     func saveButtonClicked() {
-//        dittoStore.add(textView.text)
-        dittoStore.add(0, ditto: textView.text)
+        
+        if dittoStore.isEmpty() {
+            dittoStore.addCategory("General")
+        }
+        
+        dittoStore.add(categoryPicker.index, ditto: textView.text)
+        
         textView.resignFirstResponder()
         navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        
     }
     
     func cancelButtonClicked() {
