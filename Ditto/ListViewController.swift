@@ -79,11 +79,9 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func textForCellAtIndexPath(indexPath: NSIndexPath) -> String {
         switch (objectType) {
         case .Category:
-            
-            return dittoStore.getCategory(indexPath.row)
+            return "\(dittoStore.getCategory(indexPath.row)) (\(dittoStore.countInCategory(indexPath.row)))"
             
         case .Ditto:
-            
             return dittoStore.getDittoInCategory(indexPath.section, index: indexPath.row)
             
         }
@@ -117,7 +115,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch (objectType) {
         case .Category: return 0
-        case .Ditto:    return 28
+        case .Ditto:    return 33
         }
     }
     
@@ -127,12 +125,9 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
             return nil
             
         case .Ditto:
-            // TODO: Correct the alignment of these headers.
-            let headerLabel = UILabel(frame: CGRectZero)
-            headerLabel.backgroundColor = UIColor(white: 0.95, alpha: 1)
-            headerLabel.textColor = UIColor(white: 0.35, alpha: 1)
-            headerLabel.text = "  " + dittoStore.getCategory(section)
-            return headerLabel
+            let v = CategoryHeaderView(frame: CGRectZero)
+            v.text = dittoStore.getCategory(section)
+            return v
         }
     }
     
