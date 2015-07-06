@@ -44,7 +44,7 @@ class NewViewController: UIViewController, UITextViewDelegate {
         saveButton.style = .Done
         navigationItem.rightBarButtonItem = saveButton
         
-        switch (objectType) {
+        switch objectType {
         case .Category:
             navigationItem.title = "New Category"
             
@@ -95,7 +95,7 @@ class NewViewController: UIViewController, UITextViewDelegate {
     
     func saveButtonClicked() {
         
-        switch (objectType) {
+        switch objectType {
         case .Category:
             dittoStore.addCategoryWithName(textView.text)
             

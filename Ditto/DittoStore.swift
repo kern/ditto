@@ -72,10 +72,8 @@ class DittoStore : NSObject {
     //===============
     // MARK: Getters
     
-    func getDittoInCategory(categoryIndex: Int, index dittoIndex : Int) -> String {
-        let category = cachedCategories[categoryIndex]
-        let dittos = cachedDittos[category]!
-        return dittos[dittoIndex]
+    func getCategory(categoryIndex: Int) -> String {
+        return cachedCategories[categoryIndex]
     }
     
     func getDittosInCategory(categoryIndex: Int) -> [String] {
@@ -83,8 +81,16 @@ class DittoStore : NSObject {
         return cachedDittos[category]!
     }
     
-    func getCategory(categoryIndex: Int) -> String {
-        return cachedCategories[categoryIndex]
+    func getDittoInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
+        let category = cachedCategories[categoryIndex]
+        let dittos = cachedDittos[category]!
+        return dittos[dittoIndex]
+    }
+    
+    func getDittoPreviewInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
+        return getDittoInCategory(categoryIndex, index: dittoIndex)
+            .stringByReplacingOccurrencesOfString("\n", withString: " ")
+            .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
     }
     
     //==================
@@ -181,6 +187,15 @@ class DittoStore : NSObject {
         dittos[dittoIndex] = text
         cachedDittos[category] = dittos
         save()
+    }
+    
+    //=================
+    // MARK: - Helpers
+    
+    func preview(ditto: String) -> String {
+        return ditto
+            .stringByReplacingOccurrencesOfString("\n", withString: " ")
+            .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
     }
     
 }

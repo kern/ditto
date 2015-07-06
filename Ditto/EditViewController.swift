@@ -50,7 +50,7 @@ class EditViewController: UIViewController {
         saveButton.style = .Done
         navigationItem.rightBarButtonItem = saveButton
         
-        switch (objectType) {
+        switch objectType {
         case .Category:
             navigationItem.title = "Edit Category"
             
@@ -95,7 +95,7 @@ class EditViewController: UIViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        switch (objectType) {
+        switch objectType {
         case .Category:
             textView.text = dittoStore.getCategory(categoryIndex)
             
@@ -109,7 +109,7 @@ class EditViewController: UIViewController {
     
     func saveButtonClicked() {
         
-        switch (objectType) {
+        switch objectType {
         case .Category:
             dittoStore.editCategoryAtIndex(categoryIndex, name: textView.text)
 

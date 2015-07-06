@@ -518,7 +518,7 @@
                         <constraint firstAttribute="trailing" secondItem="8iQ-tr-gST" secondAttribute="trailing" id="PHN-n0-cgh"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="goJ-J0-xDn" userLabel="Add Ditto View" customClass="AddDittoViewController">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="goJ-J0-xDn" userLabel="Add Ditto View">
                     <rect key="frame" x="0.0" y="36" width="320" height="138"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="grm-Cx-dkE" userLabel="Add Ditto From Clipboard">
@@ -528,7 +528,7 @@
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                             <connections>
-                                <action selector="addDittoFromClipboard:" destination="-1" eventType="touchUpInside" id="DQo-1Y-VHr"/>
+                                <action selector="addDittoClicked:" destination="-1" eventType="touchUpInside" id="Epu-PV-gAo"/>
                             </connections>
                         </button>
                         <pickerView contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="ZUV-yx-uZi">
@@ -625,7 +625,7 @@
         </view>
         <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="1XQ-jT-lyT">
             <connections>
-                <action selector="longPressCell:" destination="-1" id="YY5-FR-xXX"/>
+                <action selector="dittoLongPressed:" destination="-1" id="TSF-fT-8B7"/>
                 <outlet property="delegate" destination="M9F-sQ-ald" id="fHv-7e-ppT"/>
             </connections>
         </pongPressGestureRecognizer>

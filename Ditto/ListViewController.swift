@@ -5,8 +5,6 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var objectType: DittoObjectType
     let dittoStore: DittoStore
     
-    let dummyCell: UITableViewCell
-
     let segmentedControl: UISegmentedControl
     var tableView: UITableView!
     var editButton: UIBarButtonItem!
@@ -17,7 +15,6 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         objectType = .Ditto
         dittoStore = DittoStore()
-        dummyCell = UITableViewCell(style: .Default, reuseIdentifier: nil)
         segmentedControl = UISegmentedControl(items: ["Categories", "Dittos"])
         super.init(nibName: nil, bundle: nil)
         
@@ -31,8 +28,6 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
         navigationItem.leftBarButtonItem = editButton
         navigationItem.rightBarButtonItem = newButton
-        
-        dummyCell.accessoryType = .DisclosureIndicator
 
     }
     
@@ -40,7 +35,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         tableView = UITableView(frame: CGRectZero, style: .Plain)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "DittoCell")
+        tableView.registerClass(ObjectTableViewCell.classForCoder(), forCellReuseIdentifier: "ObjectTableViewCell")
         view = tableView
     }
 
@@ -54,15 +49,17 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewWillLayoutSubviews() {
+        
         super.viewWillLayoutSubviews()
         
         var segmentedFrame = segmentedControl.frame
         segmentedFrame.size.width = UIScreen.mainScreen().bounds.width * 0.5
         segmentedControl.frame = segmentedFrame
+        
     }
     
     func segmentedControlChanged(sender: AnyObject) {
-        switch (segmentedControl.selectedSegmentIndex) {
+        switch segmentedControl.selectedSegmentIndex {
         case 0:
             objectType = .Category
             
@@ -77,12 +74,12 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func textForCellAtIndexPath(indexPath: NSIndexPath) -> String {
-        switch (objectType) {
+        switch objectType {
         case .Category:
             return "\(dittoStore.getCategory(indexPath.row)) (\(dittoStore.countInCategory(indexPath.row)))"
             
         case .Ditto:
-            return dittoStore.getDittoInCategory(indexPath.section, index: indexPath.row)
+            return dittoStore.getDittoPreviewInCategory(indexPath.section, index: indexPath.row)
             
         }
     }
@@ -91,14 +88,14 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - Table View Callbacks
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        switch (objectType) {
+        switch objectType {
         case .Category: return 1
         case .Ditto:    return dittoStore.countCategories()
         }
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch (objectType) {
+        switch objectType {
         case .Category: return dittoStore.countCategories()
         case .Ditto:    return dittoStore.countInCategory(section)
         }
@@ -113,14 +110,14 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch (objectType) {
+        switch objectType {
         case .Category: return 0
         case .Ditto:    return 33
         }
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        switch (objectType) {
+        switch objectType {
         case .Category:
             return nil
             
@@ -132,34 +129,15 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        
-        let cell = UITableViewCell(style: .Default, reuseIdentifier: nil)
-        cell.accessoryType = .DisclosureIndicator
-        
         let text = textForCellAtIndexPath(indexPath)
-        let rect = text.boundingRectWithSize(CGSizeMake(dummyCell.contentView.frame.size.width, CGFloat.max),
-            options: NSStringDrawingOptions.UsesLineFragmentOrigin,
-            attributes: [NSFontAttributeName: UIFont.systemFontOfSize(UIFont.labelFontSize())],
-            context: nil)
-        
-        return min(rect.size.height, UIFont.labelFontSize() * 2) + 33
-        
+        return ObjectTableViewCell.heightForText(text, truncated: true, disclosure: true)
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as! UITableViewCell
-        cell.accessoryType = .DisclosureIndicator
-        
-        var text = textForCellAtIndexPath(indexPath)
-        text = text.stringByReplacingOccurrencesOfString("\n", withString: " ")
-        text = text.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
-        cell.textLabel?.text = text
-        cell.textLabel?.numberOfLines = 2
-        cell.textLabel?.sizeToFit()
-        
+        let cell = tableView.dequeueReusableCellWithIdentifier("ObjectTableViewCell", forIndexPath: indexPath) as! ObjectTableViewCell
+        let text = textForCellAtIndexPath(indexPath)
+        cell.setText(text, disclosure: true)
         return cell
-        
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -167,15 +145,15 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        switch (objectType) {
+        switch objectType {
         case .Category: dittoStore.moveCategoryFromIndex(sourceIndexPath.row, toIndex: destinationIndexPath.row)
         case .Ditto: dittoStore.moveDittoFromCategory(sourceIndexPath.section, index: sourceIndexPath.row, toCategory: destinationIndexPath.section, index: destinationIndexPath.row)
         }
     }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if (editingStyle == .Delete) {
-            switch (objectType) {
+        if editingStyle == .Delete {
+            switch objectType {
             case .Category:
                 
                 presentRemoveCategoryWarning({ action in
@@ -197,7 +175,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func newButtonClicked() {
         
-        if (objectType == .Category && !dittoStore.canCreateNewCategory()) {
+        if objectType == .Category && !dittoStore.canCreateNewCategory() {
             presentMaxCategoryWarning()
         } else {
             presentNewViewController()
@@ -237,7 +215,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func presentEditViewController(indexPath: NSIndexPath) {
         
         var editViewController: EditViewController
-        switch (objectType) {
+        switch objectType {
         case .Category:
             editViewController = EditViewController(categoryIndex: indexPath.row)
         case .Ditto:

@@ -22,6 +22,8 @@
 		FAAE729C1B47559200F3696E /* CategoryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAE729B1B47559200F3696E /* CategoryField.swift */; };
 		FAAE729E1B47874B00F3696E /* DittoObjectType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAE729D1B47874B00F3696E /* DittoObjectType.swift */; };
 		FABFBD321B49ECCD004BF2F9 /* CategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABFBD311B49ECCD004BF2F9 /* CategoryHeaderView.swift */; };
+		FABFBD361B4A140F004BF2F9 /* ObjectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABFBD351B4A140F004BF2F9 /* ObjectTableViewCell.swift */; };
+		FABFBD371B4A259D004BF2F9 /* ObjectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABFBD351B4A140F004BF2F9 /* ObjectTableViewCell.swift */; };
 		FAC467A51A01D37E006B8088 /* DittoKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FA70EAD419F5A56300960EE2 /* DittoKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FAD4545C1A1EC16900D825EC /* KeyboardAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD4545B1A1EC16900D825EC /* KeyboardAccessory.swift */; };
 		FAD4545E1A1ECF6400D825EC /* DarkKeyboardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD4545D1A1ECF6400D825EC /* DarkKeyboardButton.swift */; };
@@ -78,6 +80,7 @@
 		FAAE729B1B47559200F3696E /* CategoryField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryField.swift; sourceTree = "<group>"; };
 		FAAE729D1B47874B00F3696E /* DittoObjectType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DittoObjectType.swift; sourceTree = "<group>"; };
 		FABFBD311B49ECCD004BF2F9 /* CategoryHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryHeaderView.swift; sourceTree = "<group>"; };
+		FABFBD351B4A140F004BF2F9 /* ObjectTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectTableViewCell.swift; sourceTree = "<group>"; };
 		FAD4545B1A1EC16900D825EC /* KeyboardAccessory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardAccessory.swift; sourceTree = "<group>"; };
 		FAD4545D1A1ECF6400D825EC /* DarkKeyboardButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DarkKeyboardButton.swift; sourceTree = "<group>"; };
 		FAD4545F1A1ED40500D825EC /* LightKeyboardButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightKeyboardButton.swift; sourceTree = "<group>"; };
@@ -148,6 +151,7 @@
 				FA237AB619F9CAB0007E67D5 /* NavigationController.swift */,
 				FAAE729D1B47874B00F3696E /* DittoObjectType.swift */,
 				FABFBD311B49ECCD004BF2F9 /* CategoryHeaderView.swift */,
+				FABFBD351B4A140F004BF2F9 /* ObjectTableViewCell.swift */,
 				FA237AB519F9C70F007E67D5 /* View Controllers */,
 				FA70EAB919F5A49D00960EE2 /* LaunchScreen.xib */,
 				FA70EAB719F5A49D00960EE2 /* Images.xcassets */,
@@ -304,6 +308,7 @@
 			files = (
 				FA70EAB319F5A49D00960EE2 /* ListViewController.swift in Sources */,
 				FA237AB719F9CAB0007E67D5 /* NavigationController.swift in Sources */,
+				FABFBD361B4A140F004BF2F9 /* ObjectTableViewCell.swift in Sources */,
 				FAD4545C1A1EC16900D825EC /* KeyboardAccessory.swift in Sources */,
 				FAAE729A1B474CC000F3696E /* CategoryPicker.swift in Sources */,
 				FAFCAE7219F90BA6000F0318 /* DittoStore.swift in Sources */,
@@ -320,6 +325,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FABFBD371B4A259D004BF2F9 /* ObjectTableViewCell.swift in Sources */,
 				FAD4545E1A1ECF6400D825EC /* DarkKeyboardButton.swift in Sources */,
 				FAD454621A1EE04800D825EC /* DelayedRepeatTimer.swift in Sources */,
 				E84DB89F1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift in Sources */,

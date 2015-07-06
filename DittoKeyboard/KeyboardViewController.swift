@@ -18,70 +18,75 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var addDittoButton: UIButton!
     @IBOutlet var categoryPicker: UIPickerView!
     
-    let dittoStore = DittoStore()
+    let dittoStore: DittoStore
     let addDittoViewController = AddDittoFromClipboardViewController()
     var backspaceTimer: DelayedRepeatTimer!
     
-    // Cache for current tab dittos
-    var currentTabDittos: [String] = []
+    var tabViews: [UIView]
+    var selectedTab: Int
+    var selectedRow: Int
     
-    // Cache for trimmed dittos, used to display text in cell and calculate cell height
-    var currentTabDittosTrimmed: [String] = []
+    init() {
+        
+        dittoStore = DittoStore()
+        tabViews = []
+        selectedTab = 0
+        selectedRow = -1
+        
+        super.init(nibName: "KeyboardViewController", bundle: nil)
+        
+    }
+
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
-    var selectedCellRowIndex: Int = -1
-    
-    override func loadView() {
-        let xib = NSBundle.mainBundle().loadNibNamed("KeyboardViewController", owner: self, options: nil);
-        bottomBar.backgroundColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1)
-        tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: "DittoCell")
-        loadTabDittosByCategoryIndex(0)
-        loadTabButtons()
+    override func viewDidLoad() {
+        
+        super.viewDidLoad()
+        
+        bottomBar.backgroundColor = UIColor(white: 0.85, alpha: 1)
+        tableView.registerClass(ObjectTableViewCell.classForCoder(), forCellReuseIdentifier: "ObjectTableViewCell")
+        
         categoryPicker.delegate = addDittoViewController
         categoryPicker.dataSource = addDittoViewController
-    }
-    
-    func loadTabDittosByCategoryIndex(categoryIndex: Int) {
-        self.currentTabDittosTrimmed = dittoStore.getDittosInCategory(categoryIndex).map({ $0.stringByReplacingOccurrencesOfString("\n", withString: " ").stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))})
-        self.currentTabDittos = dittoStore.getDittosInCategory(categoryIndex)
-    }
-    
-    func loadTabButtons() {
-        var numCategories = dittoStore.countCategories()
-        let width = UIScreen.mainScreen().bounds.width / CGFloat(numCategories)
-        for index in 0..<numCategories {
-            let button = UIButton(frame: CGRectMake(CGFloat(index) * width, 0, width, tabBar.bounds.height))
-            button.backgroundColor = getColorForIndex(index)
-            button.tag = index
-            button.addTarget(self, action: "tabButtonPressed:", forControlEvents: .TouchUpInside)
-            tabBar.addSubview(button)
-        }
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: Selector("tabDragged:"))
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("tabDragged:"))
+        let panGesture = UIPanGestureRecognizer(target: self, action: Selector("tabDragged:"))
+        tabBar.addGestureRecognizer(tapGesture)
+        tabBar.addGestureRecognizer(longPressGesture)
+        tabBar.addGestureRecognizer(panGesture)
+        
+        refreshTabButtons()
+        
     }
     
     override func viewWillAppear(animated: Bool) {
+        
         super.viewWillAppear(animated)
         dittoStore.reload()
         tableView.reloadData()
         setKeyboardHeight(250)
+        
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        refreshTabButtons()
+        tableView.beginUpdates()
+        tableView.endUpdates()
     }
     
     func setKeyboardHeight(height: CGFloat) {
-        let expandedHeight:CGFloat = height
-        let heightConstraint = NSLayoutConstraint(item:keyboardView,
+        keyboardView.addConstraint(NSLayoutConstraint(
+            item: keyboardView,
             attribute: .Height,
             relatedBy: .Equal,
             toItem: nil,
             attribute: .NotAnAttribute,
             multiplier: 0.0,
-            constant: expandedHeight)
-        keyboardView.addConstraint(heightConstraint)
-    }
-    
-    func tabButtonPressed(sender: UIButton!) {
-        loadTabDittosByCategoryIndex(sender.tag)
-        selectedCellRowIndex = -1
-        tableView.reloadData()
-        numericKeys.hidden = true
-        addDittoView.hidden = true
+            constant: height))
     }
     
     override func textDidChange(textInput: UITextInput) {
@@ -112,40 +117,104 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         }
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currentTabDittos.count
-    }
+    //==============
+    // MARK: - Tabs
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("DittoCell", forIndexPath: indexPath) as! UITableViewCell
+    func tabDragged(recognizer: UIGestureRecognizer) {
+        let tab = Int(floor(recognizer.locationInView(tabBar).x / tabWidth()))
         
-        var text = currentTabDittosTrimmed[indexPath.row]
-        cell.textLabel?.text = text
-        cell.textLabel?.numberOfLines = 0
-        
-        return cell
-    }
-    
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let size = (currentTabDittosTrimmed[indexPath.row] as NSString).boundingRectWithSize(CGSizeMake(tableView.frame.width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 20)!], context: nil)
-        
-        if selectedCellRowIndex == indexPath.row {
-            return size.size.height + 14
-        } else {
-            // TODO How do i guarantee the font type size is always right / what's currently the font type size of 
-            // the cell labels (otherwise both size and width can be slightly off for variable lengths of text)
-            
-            // Height for two rows of text
-            let sizeTwo = ("\n" as NSString).boundingRectWithSize(CGSizeMake(tableView.frame.width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: UIFont(name: "HelveticaNeue-Light", size: 20)!], context: nil)
-            
-            return min(size.size.height, sizeTwo.size.height) + 14
+        if selectedTab != tab {
+            selectedTab = tab
+            selectedRow = -1
+            tableView.reloadData()
         }
     }
     
+    func refreshTabButtons() {
+        
+        for tv in tabViews {
+            tv.removeFromSuperview()
+        }
+        
+        let w = tabWidth()
+        let h = tabBar.bounds.height
+        
+        tabViews = (0..<countTabs()).map({ i in
+            
+            let button = UIView(frame: CGRectMake(CGFloat(i) * w, 0, w, h))
+            button.backgroundColor = self.colorForTab(i)
+            self.tabBar.addSubview(button)
+            return button
+            
+        })
+        
+    }
+    
+    func countTabs() -> Int {
+        return dittoStore.countCategories()
+    }
+    
+    func tabWidth() -> CGFloat {
+        return UIScreen.mainScreen().bounds.width / CGFloat(countTabs())
+    }
+    
+    func colorForTab(index: Int) -> UIColor {
+        return UIColor(
+            red: 0.6,
+            green: 0,
+            blue: 0.6,
+            alpha: 1 - (CGFloat(index) / CGFloat(dittoStore.countCategories())))
+    }
+    
+    //=======================
+    // MARK: - Row Selection
+    
+    var selectedIndexPath: NSIndexPath {
+        return NSIndexPath(forRow: selectedRow, inSection: 0)
+    }
+    
+    func selectRow(row: Int) {
+        
+        if selectedRow == row { return }
+        
+        if selectedRow >= 0 {
+            let cell = tableView.cellForRowAtIndexPath(selectedIndexPath) as? ObjectTableViewCell
+            cell?.truncated = true
+        }
+        
+        selectedRow = row
+        let cell = tableView.cellForRowAtIndexPath(selectedIndexPath) as! ObjectTableViewCell
+        cell.truncated = false
+        
+        tableView.beginUpdates()
+        tableView.endUpdates()
+
+    }
+    
+    //==============================
+    // MARK: - Table View Callbacks
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dittoStore.countInCategory(selectedTab)
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        var text = dittoStore.getDittoPreviewInCategory(selectedTab, index: indexPath.row)
+        return ObjectTableViewCell.heightForText(text, truncated: selectedRow != indexPath.row, disclosure: false)
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("ObjectTableViewCell", forIndexPath: indexPath) as! ObjectTableViewCell
+        let text = dittoStore.getDittoPreviewInCategory(selectedTab, index: indexPath.row)
+        cell.setText(text, disclosure: false)
+        cell.truncated = selectedRow != indexPath.row
+        return cell
+    }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
         let proxy = textDocumentProxy as! UITextDocumentProxy
-        let ditto = currentTabDittos[indexPath.row]
+        let ditto = dittoStore.getDittoInCategory(selectedTab, index: indexPath.row)
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         let (newDitto, cursorRewind) = findCursorRange(ditto)
@@ -153,38 +222,32 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         dispatch_async(dispatch_get_main_queue(), {
             proxy.adjustTextPositionByCharacterOffset(-cursorRewind)
         })
+        
     }
-    @IBAction func longPressCell(sender: UILongPressGestureRecognizer) {
-        let p: CGPoint = sender.locationInView(tableView)
+    
+    @IBAction func dittoLongPressed(sender: UILongPressGestureRecognizer) {
+        if sender.state != .Began { return }
+        let p = sender.locationInView(tableView)
         if let indexPath = tableView.indexPathForRowAtPoint(p) {
-            if sender.state == UIGestureRecognizerState.Began {
-                if selectedCellRowIndex == indexPath.row {
-                    selectedCellRowIndex = -1
-                } else {
-                    selectedCellRowIndex = indexPath.row
-                }
-                
-                tableView.beginUpdates()
-                tableView.endUpdates()
-            }
+            selectRow(indexPath.row)
         }
     }
     
+    //==========================
+    // MARK: - Button Callbacks
+    
     @IBAction func nextKeyboardButtonClicked() {
-        self.advanceToNextInputMode()
+        advanceToNextInputMode()
     }
     
     @IBAction func dittoButtonClicked() {
-        // TODO nicer way to toggle?
-        if addDittoView.hidden && numericKeys.hidden {
+        if !numericKeys.hidden { return }
+        
+        if addDittoView.hidden {
             addDittoView.hidden = false
-        }
-        else if !addDittoView.hidden {
+            tableView.hidden = true
+        } else {
             addDittoView.hidden = true
-            numericKeys.hidden = false
-        }
-        else if !numericKeys.hidden {
-            numericKeys.hidden = true
             tableView.hidden = false
         }
     }
@@ -215,9 +278,23 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         proxy.insertText(char!)
     }
     
+    @IBAction func addDittoClicked(sender: UIButton) {
+        let row = categoryPicker.selectedRowInComponent(0)
+        addDittoFromClipboardToCategory(row)
+    }
+    
+    //=================
+    // MARK: - Helpers
+    
     func backspaceFire() {
         let proxy = textDocumentProxy as! UITextDocumentProxy
         proxy.deleteBackward()
+    }
+    
+    func addDittoFromClipboardToCategory(categoryIndex: Int) {
+        if let pasteboardString = UIPasteboard.generalPasteboard().string {
+            dittoStore.addDittoToCategory(categoryIndex, text: pasteboardString)
+        }
     }
     
     func findCursorRange(s: String) -> (String, Int) {
@@ -234,24 +311,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             let newS = s.stringByReplacingCharactersInRange(range, withString: "")
             return (newS, length - match.location - match.length)
         }
-    }
-    
-    @IBAction func addDittoFromClipboard(sender: UIButton) {
-        let row = categoryPicker.selectedRowInComponent(0)
-        addDittoFromClipboardByCategory(row)
-    }
-    
-    func addDittoFromClipboardByCategory(categoryIndex: Int) {
-        if let pasteboardString = UIPasteboard.generalPasteboard().string {
-            dittoStore.addDittoToCategory(categoryIndex, text: pasteboardString)
-        }
-    }
-
-    func getColorForIndex(index: Int) -> UIColor {
-        return UIColor(red: 153/255,
-            green: 0,
-            blue: 153/255,
-            alpha: 1 - ((4 / (4 * CGFloat(dittoStore.countCategories()))) * CGFloat(index)))
     }
     
 }
