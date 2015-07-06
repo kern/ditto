@@ -57,6 +57,11 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         }
     }
     
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        tabBar.subviews.map({ $0.removeFromSuperview() })
+        loadTabButtons()
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         dittoStore.reload()
