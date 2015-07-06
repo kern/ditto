@@ -57,6 +57,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         }
     }
     
+    //TODO do this the right way 
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         tabBar.subviews.map({ $0.removeFromSuperview() })
         loadTabButtons()
