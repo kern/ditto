@@ -60,6 +60,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         
         refreshTabButtons()
         
+        loadAddDittoView()
+        
+    }
+    
+    func loadAddDittoView() {
+        categoryPicker.hidden = true
     }
     
     override func viewWillAppear(animated: Bool) {
