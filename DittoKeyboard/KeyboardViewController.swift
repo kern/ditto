@@ -132,8 +132,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             selectedRow = -1
             tableView.reloadData()
         }
-        
-    
     }
     
     func refreshTabButtons() {
