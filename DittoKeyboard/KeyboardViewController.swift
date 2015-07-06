@@ -123,11 +123,17 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     func tabDragged(recognizer: UIGestureRecognizer) {
         let tab = Int(floor(recognizer.locationInView(tabBar).x / tabWidth()))
         
+        addDittoView.hidden = true
+        numericKeys.hidden = true
+        tableView.hidden = false
+        
         if selectedTab != tab {
             selectedTab = tab
             selectedRow = -1
             tableView.reloadData()
         }
+        
+    
     }
     
     func refreshTabButtons() {
@@ -241,13 +247,15 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func dittoButtonClicked() {
-        if !numericKeys.hidden { return }
-        
-        if addDittoView.hidden {
+        if addDittoView.hidden && numericKeys.hidden {
             addDittoView.hidden = false
-            tableView.hidden = true
-        } else {
+        }
+        else if !addDittoView.hidden {
             addDittoView.hidden = true
+            numericKeys.hidden = false
+        }
+        else if !numericKeys.hidden {
+            numericKeys.hidden = true
             tableView.hidden = false
         }
     }
