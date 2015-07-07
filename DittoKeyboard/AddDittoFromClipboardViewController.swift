@@ -10,11 +10,16 @@ class AddDittoFromClipboardViewController: UIViewController,UIPickerViewDataSour
     }
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        if dittoStore.isEmpty() {
+            return 1
+        }
         return dataSource.count
     }
     
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+        if dittoStore.isEmpty() {
+            return "General"
+        }
         return dataSource[row]
     }
-    
 }

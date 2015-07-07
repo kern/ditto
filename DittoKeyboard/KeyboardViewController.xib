@@ -8,6 +8,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="KeyboardViewController" customModule="DittoKeyboard" customModuleProvider="target">
             <connections>
+                <outlet property="addDittoButtons" destination="rfM-bI-v6T" id="4ni-f2-JQa"/>
+                <outlet property="addDittoTextInput" destination="Pmm-WZ-9Ub" id="JyF-uc-Pi8"/>
+                <outlet property="addDittoTextView" destination="h8p-Ed-zUg" id="CsI-qF-6I0"/>
                 <outlet property="addDittoView" destination="goJ-J0-xDn" id="iEW-1b-gSz"/>
                 <outlet property="backspaceButton" destination="kec-yT-Es7" id="gkN-4k-9A6"/>
                 <outlet property="bottomBar" destination="jDi-uR-9hd" id="2qg-Bc-MJE"/>
@@ -18,6 +21,7 @@
                 <outlet property="nextKeyboardButton" destination="rcC-gG-3xF" id="Pkb-Pf-Ezx"/>
                 <outlet property="numericKeys" destination="Blc-h8-J6V" id="q56-R2-VtM"/>
                 <outlet property="returnButton" destination="amV-PB-41n" id="Aev-gS-G9g"/>
+                <outlet property="selectedCategory" destination="W2g-Hn-LWs" id="YOF-6m-Cth"/>
                 <outlet property="spaceButton" destination="OeD-6m-9LM" id="m8r-Ac-bQQ"/>
                 <outlet property="tabBar" destination="mfm-wR-g33" id="Lkw-ib-uqB"/>
                 <outlet property="tableView" destination="M9F-sQ-ald" id="LYn-O6-FaH"/>
@@ -520,6 +524,9 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="goJ-J0-xDn" userLabel="Add Ditto View">
                     <rect key="frame" x="0.0" y="36" width="320" height="138"/>
                     <subviews>
+                        <pickerView contentMode="scaleToFill" verticalHuggingPriority="240" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="ZUV-yx-uZi">
+                            <rect key="frame" x="-0.5" y="8" width="320" height="162"/>
+                        </pickerView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nXn-z1-n5H" userLabel="Category Bar">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="40"/>
                             <subviews>
@@ -537,6 +544,7 @@
                                 </label>
                             </subviews>
                             <color key="backgroundColor" red="0.94901960780000005" green="0.94901960780000005" blue="0.94901960780000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <gestureRecognizers/>
                             <constraints>
                                 <constraint firstItem="0nG-FC-isx" firstAttribute="leading" secondItem="nXn-z1-n5H" secondAttribute="leading" constant="11" id="73V-oE-hKx"/>
                                 <constraint firstAttribute="height" constant="40" id="9nl-vp-JUU"/>
@@ -545,13 +553,15 @@
                                 <constraint firstAttribute="centerY" secondItem="W2g-Hn-LWs" secondAttribute="centerY" id="pRd-JZ-BNd"/>
                                 <constraint firstItem="W2g-Hn-LWs" firstAttribute="leading" secondItem="0nG-FC-isx" secondAttribute="trailing" id="rQW-wv-11q"/>
                             </constraints>
+                            <connections>
+                                <outletCollection property="gestureRecognizers" destination="4PQ-7E-aeq" appends="YES" id="FqE-Y6-Buz"/>
+                            </connections>
                         </view>
                         <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h8p-Ed-zUg" userLabel="Ditto Text Scroll View">
                             <rect key="frame" x="0.0" y="40" width="320" height="58"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pmm-WZ-9Ub" userLabel="Ditto Text">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pmm-WZ-9Ub">
                                     <rect key="frame" x="11" y="11" width="298" height="20.5"/>
-                                    <string key="text">Copy desired text and click paste... and some really long place holder text and some really long place holder text and some really long place holder text and some really long place holder text and some really long place holder text and some really long place holder text </string>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                     <nil key="highlightedColor"/>
@@ -573,6 +583,9 @@
                                         <color key="titleColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
+                                    <connections>
+                                        <action selector="pasteButtonClicked:" destination="-1" eventType="touchUpInside" id="UoA-OV-eNx"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZrH-2I-kfL" userLabel="Add Ditto">
                                     <rect key="frame" x="160" y="5" width="160" height="30"/>
@@ -580,6 +593,9 @@
                                         <color key="titleColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
+                                    <connections>
+                                        <action selector="addDittoButtonClicked:" destination="-1" eventType="touchUpInside" id="Ouq-1q-xeh"/>
+                                    </connections>
                                 </button>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -593,9 +609,6 @@
                                 <constraint firstAttribute="height" constant="40" id="u06-KC-lZQ"/>
                             </constraints>
                         </view>
-                        <pickerView contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="ZUV-yx-uZi">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="162"/>
-                        </pickerView>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
@@ -605,15 +618,22 @@
                         <constraint firstItem="h8p-Ed-zUg" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="IyL-Nu-wDe"/>
                         <constraint firstItem="Pmm-WZ-9Ub" firstAttribute="width" secondItem="goJ-J0-xDn" secondAttribute="width" constant="-22" id="L5R-aN-p2X"/>
                         <constraint firstAttribute="trailing" secondItem="nXn-z1-n5H" secondAttribute="trailing" id="Qvs-5c-uJr"/>
+                        <constraint firstAttribute="bottom" secondItem="ZUV-yx-uZi" secondAttribute="bottom" id="RYS-8A-KTd"/>
                         <constraint firstItem="ZUV-yx-uZi" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="RpE-nG-u91"/>
                         <constraint firstItem="rfM-bI-v6T" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="SVm-Th-1to"/>
                         <constraint firstItem="ZUV-yx-uZi" firstAttribute="top" secondItem="goJ-J0-xDn" secondAttribute="top" id="Trd-tL-i2r"/>
                         <constraint firstAttribute="bottom" secondItem="rfM-bI-v6T" secondAttribute="bottom" id="Vng-cc-XsL"/>
                         <constraint firstItem="rfM-bI-v6T" firstAttribute="top" secondItem="h8p-Ed-zUg" secondAttribute="bottom" id="at2-XI-zt3"/>
+                        <constraint firstItem="ZUV-yx-uZi" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="bNE-Hk-rz9"/>
                         <constraint firstAttribute="trailing" secondItem="h8p-Ed-zUg" secondAttribute="trailing" id="eRI-Az-3OM"/>
                         <constraint firstItem="h8p-Ed-zUg" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="odZ-fz-zZ3"/>
                         <constraint firstItem="nXn-z1-n5H" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="wnc-nf-Iek"/>
                     </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="Trd-tL-i2r"/>
+                        </mask>
+                    </variation>
                 </view>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s0W-gi-0Tl" userLabel="Info View">
                     <rect key="frame" x="0.0" y="1" width="320" height="173"/>
@@ -698,6 +718,11 @@
                 <outlet property="delegate" destination="M9F-sQ-ald" id="fHv-7e-ppT"/>
             </connections>
         </pongPressGestureRecognizer>
+        <tapGestureRecognizer id="4PQ-7E-aeq">
+            <connections>
+                <action selector="categoryBarTapped:" destination="-1" id="S1J-4R-sYz"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <image name="backspace" width="32" height="32"/>

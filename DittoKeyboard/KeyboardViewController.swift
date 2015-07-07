@@ -8,19 +8,24 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var numericKeys: UIView!
     @IBOutlet var bottomBar: UIView!
     @IBOutlet var tabBar: UIView!
-    @IBOutlet var addDittoView: UIView!
     
     @IBOutlet var backspaceButton: UIButton!
     @IBOutlet var nextKeyboardButton: UIButton!
     @IBOutlet var returnButton: UIButton!
     @IBOutlet var spaceButton: UIButton!
     @IBOutlet var decimalButton: UIButton!
-    @IBOutlet var addDittoButton: UIButton!
+    
+    @IBOutlet var addDittoView: UIView!
     @IBOutlet var categoryPicker: UIPickerView!
+    @IBOutlet var addDittoTextInput: UILabel!
+    @IBOutlet var addDittoTextView: UIScrollView!
+    @IBOutlet var selectedCategory: UILabel!
+    @IBOutlet var addDittoButtons: UIView!
     
     let dittoStore: DittoStore
     let addDittoViewController = AddDittoFromClipboardViewController()
     var backspaceTimer: DelayedRepeatTimer!
+    let ADD_DITTO_TEXT_INPUT_PLACEHOLDER = "Copy desired text and click paste..."
     
     var tabViews: [UIView]
     var selectedTab: Int
@@ -60,12 +65,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         
         refreshTabButtons()
         
-        loadAddDittoView()
-        
-    }
-    
-    func loadAddDittoView() {
-        categoryPicker.hidden = true
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -93,6 +92,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             attribute: .NotAnAttribute,
             multiplier: 0.0,
             constant: height))
+    }
+    
+    func loadAddDittoView() {
+        categoryPicker.hidden = true
+        selectedCategory.text = selectedCategoryFromPicker()
+        addDittoTextInput.text = ADD_DITTO_TEXT_INPUT_PLACEHOLDER
     }
     
     override func textDidChange(textInput: UITextInput) {
@@ -252,6 +257,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     
     @IBAction func dittoButtonClicked() {
         if addDittoView.hidden && numericKeys.hidden {
+            loadAddDittoView()
             addDittoView.hidden = false
         }
         else if !addDittoView.hidden {
@@ -290,23 +296,38 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         proxy.insertText(char!)
     }
     
-    @IBAction func addDittoClicked(sender: UIButton) {
-        let row = categoryPicker.selectedRowInComponent(0)
-        addDittoFromClipboardToCategory(row)
+    @IBAction func pasteButtonClicked(sender: UIButton) {
+        if let pasteBoardString = UIPasteboard.generalPasteboard().string {
+            addDittoTextInput.text = pasteBoardString
+        }
     }
     
+    @IBAction func addDittoButtonClicked(sender: UIButton) {
+        if addDittoTextInput.text != ADD_DITTO_TEXT_INPUT_PLACEHOLDER {
+            let categoryIndex = categoryPicker.selectedRowInComponent(0)
+            dittoStore.addDittoToCategory(categoryIndex, text: addDittoTextInput.text!)
+        }
+    }
+    
+    @IBAction func categoryBarTapped(sender: UITapGestureRecognizer) {
+        if categoryPicker.hidden {
+            selectedCategory.text = "Done"
+            categoryPicker.hidden = false
+            addDittoButtons.hidden = true
+            addDittoTextView.hidden = true
+        } else {
+            selectedCategory.text = selectedCategoryFromPicker()
+            categoryPicker.hidden = true
+            addDittoButtons.hidden = false
+            addDittoTextView.hidden = false
+        }
+    }
     //=================
     // MARK: - Helpers
     
     func backspaceFire() {
         let proxy = textDocumentProxy as! UITextDocumentProxy
         proxy.deleteBackward()
-    }
-    
-    func addDittoFromClipboardToCategory(categoryIndex: Int) {
-        if let pasteboardString = UIPasteboard.generalPasteboard().string {
-            dittoStore.addDittoToCategory(categoryIndex, text: pasteboardString)
-        }
     }
     
     func findCursorRange(s: String) -> (String, Int) {
@@ -325,4 +346,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         }
     }
     
+    func selectedCategoryFromPicker() -> String {
+        let categoryIndex = categoryPicker.selectedRowInComponent(0)
+        return dittoStore.getCategory(categoryIndex)
+    }
 }
