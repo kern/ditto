@@ -9,7 +9,7 @@ class KeyboardAccessory: UIToolbar {
         
         categoryLabel = UILabel(frame: CGRectZero)
         categoryField = CategoryField(frame: CGRectZero, categoryPicker: categoryPicker)
-        super.init(frame: CGRectMake(0, 0, 0, 44))
+        super.init(frame: CGRectMake(0, 0, 0, 35))
         
         categoryLabel.textColor = UIColor.purpleColor()
         categoryLabel.text = "Category"

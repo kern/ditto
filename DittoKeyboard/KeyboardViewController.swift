@@ -26,6 +26,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     let addDittoViewController = AddDittoFromClipboardViewController()
     var backspaceTimer: DelayedRepeatTimer!
     let ADD_DITTO_TEXT_INPUT_PLACEHOLDER = "Copy desired text and click paste..."
+    var heightConstraint: NSLayoutConstraint = NSLayoutConstraint()
     
     var tabViews: [UIView]
     var selectedTab: Int
@@ -72,8 +73,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         super.viewWillAppear(animated)
         dittoStore.reload()
         tableView.reloadData()
-        setKeyboardHeight(250)
+        setKeyboardHeight()
         
+    }
+    
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        resetKeyboardHeight()
     }
     
     override func viewWillLayoutSubviews() {
@@ -81,17 +86,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         refreshTabButtons()
         tableView.beginUpdates()
         tableView.endUpdates()
-    }
-    
-    func setKeyboardHeight(height: CGFloat) {
-        keyboardView.addConstraint(NSLayoutConstraint(
-            item: keyboardView,
-            attribute: .Height,
-            relatedBy: .Equal,
-            toItem: nil,
-            attribute: .NotAnAttribute,
-            multiplier: 0.0,
-            constant: height))
     }
     
     func loadAddDittoView() {
@@ -306,6 +300,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         if addDittoTextInput.text != ADD_DITTO_TEXT_INPUT_PLACEHOLDER {
             let categoryIndex = categoryPicker.selectedRowInComponent(0)
             dittoStore.addDittoToCategory(categoryIndex, text: addDittoTextInput.text!)
+          
         }
     }
     
@@ -349,5 +344,37 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     func selectedCategoryFromPicker() -> String {
         let categoryIndex = categoryPicker.selectedRowInComponent(0)
         return dittoStore.getCategory(categoryIndex)
+    }
+    
+    func setKeyboardHeight() {
+        
+        heightConstraint = NSLayoutConstraint(
+            item: keyboardView,
+            attribute: .Height,
+            relatedBy: .Equal,
+            toItem: nil,
+            attribute: .NotAnAttribute,
+            multiplier: 0.0,
+            constant: getHeightForKeyboard())
+        keyboardView.addConstraint(heightConstraint)
+    }
+    
+    func resetKeyboardHeight() {
+        heightConstraint.constant = getHeightForKeyboard()
+    }
+    
+    func getHeightForKeyboard() -> CGFloat {
+        
+        let screenHeight = UIScreen.mainScreen().bounds.height
+        let screenWidth = UIScreen.mainScreen().bounds.width
+        var height: CGFloat
+        
+        if screenWidth > screenHeight {
+            height = screenHeight * 0.6
+        } else {
+            height = min(260, screenHeight * 0.7)
+        }
+        
+        return height
     }
 }
