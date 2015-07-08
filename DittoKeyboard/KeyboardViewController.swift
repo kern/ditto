@@ -15,9 +15,9 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var spaceButton: UIButton!
     @IBOutlet var decimalButton: UIButton!
     
+    @IBOutlet var addDittoTextInput: UITextView!
     @IBOutlet var addDittoView: UIView!
     @IBOutlet var categoryPicker: UIPickerView!
-    @IBOutlet var addDittoTextInput: UILabel!
     @IBOutlet var addDittoTextView: UIScrollView!
     @IBOutlet var selectedCategory: UILabel!
     @IBOutlet var addDittoButtons: UIView!
@@ -25,7 +25,13 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     let dittoStore: DittoStore
     let addDittoViewController = AddDittoFromClipboardViewController()
     var backspaceTimer: DelayedRepeatTimer!
-    let ADD_DITTO_TEXT_INPUT_PLACEHOLDER = "Copy desired text and click paste..."
+    
+    let ADD_DITTO_TEXT_INPUT_PLACEHOLDERS = [
+        "PASTE_TEXT": "Copy desired text and click paste...",
+        "DITTO_ADDED": "New ditto has been added."
+    ]
+    
+    
     var heightConstraint: NSLayoutConstraint = NSLayoutConstraint()
     
     var tabViews: [UIView]
@@ -33,7 +39,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     var selectedRow: Int
     
     init() {
-        
         dittoStore = DittoStore()
         tabViews = []
         selectedTab = 0
@@ -91,7 +96,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     func loadAddDittoView() {
         categoryPicker.hidden = true
         selectedCategory.text = selectedCategoryFromPicker()
-        addDittoTextInput.text = ADD_DITTO_TEXT_INPUT_PLACEHOLDER
+        addDittoTextInput.text = ADD_DITTO_TEXT_INPUT_PLACEHOLDERS["PASTE_TEXT"]
     }
     
     override func textDidChange(textInput: UITextInput) {
@@ -132,11 +137,11 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         numericKeys.hidden = true
         tableView.hidden = false
         
-        if selectedTab != tab {
-            selectedTab = tab
-            selectedRow = -1
-            tableView.reloadData()
-        }
+        // We want to refresh every time the tab is selected, so that
+        // new dittos appear if they've been added within the keyboard
+        selectedTab = tab
+        selectedRow = -1
+        tableView.reloadData()
     }
     
     func refreshTabButtons() {
@@ -297,10 +302,10 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func addDittoButtonClicked(sender: UIButton) {
-        if addDittoTextInput.text != ADD_DITTO_TEXT_INPUT_PLACEHOLDER {
+        if !contains(ADD_DITTO_TEXT_INPUT_PLACEHOLDERS.values.array, addDittoTextInput.text) {
             let categoryIndex = categoryPicker.selectedRowInComponent(0)
             dittoStore.addDittoToCategory(categoryIndex, text: addDittoTextInput.text!)
-          
+            addDittoTextInput.text = ADD_DITTO_TEXT_INPUT_PLACEHOLDERS["DITTO_ADDED"]
         }
     }
     
