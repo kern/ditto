@@ -14,7 +14,7 @@ class CategoryPicker: NSObject, UIPickerViewDelegate, UIPickerViewDataSource {
         super.init()
         
         view.showsSelectionIndicator = true
-        view.backgroundColor = UIColor(white: 0.98, alpha: 1)
+        view.backgroundColor = UIColor(white: 0.97, alpha: 1)
         view.delegate = self
         view.dataSource = self
         
