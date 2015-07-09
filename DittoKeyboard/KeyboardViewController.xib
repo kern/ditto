@@ -19,6 +19,7 @@
                 <outlet property="infoView" destination="s0W-gi-0Tl" id="lUl-A3-gOn"/>
                 <outlet property="keyboardView" destination="Cqv-DZ-iYE" id="8hi-gV-Kud"/>
                 <outlet property="nextKeyboardButton" destination="rcC-gG-3xF" id="Pkb-Pf-Ezx"/>
+                <outlet property="noDittosLabel" destination="HBQ-D5-Moa" id="BkI-fz-HCw"/>
                 <outlet property="numericKeys" destination="Blc-h8-J6V" id="q56-R2-VtM"/>
                 <outlet property="returnButton" destination="amV-PB-41n" id="Aev-gS-G9g"/>
                 <outlet property="selectedCategory" destination="W2g-Hn-LWs" id="YOF-6m-Cth"/>
@@ -423,19 +424,19 @@
                     <rect key="frame" x="0.0" y="36" width="320" height="138"/>
                     <subviews>
                         <pickerView contentMode="scaleToFill" verticalHuggingPriority="240" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="ZUV-yx-uZi">
-                            <rect key="frame" x="-0.5" y="5.5" width="320" height="162"/>
+                            <rect key="frame" x="0.0" y="5.5" width="320" height="162"/>
                         </pickerView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nXn-z1-n5H" userLabel="Category Bar">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="35"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Category" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0nG-FC-isx" userLabel="Category Label">
-                                    <rect key="frame" x="11" y="7.5" width="70.5" height="20.5"/>
+                                    <rect key="frame" x="11" y="7" width="70.5" height="20.5"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W2g-Hn-LWs" userLabel="Selected Category Label">
-                                    <rect key="frame" x="81.5" y="7.5" width="227.5" height="20.5"/>
+                                    <rect key="frame" x="81" y="7" width="227.5" height="20.5"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                     <color key="textColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
@@ -475,7 +476,7 @@
                             <rect key="frame" x="0.0" y="103" width="320" height="35"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G6m-OU-MDC" userLabel="Paste">
-                                    <rect key="frame" x="0.0" y="2.5" width="160" height="30"/>
+                                    <rect key="frame" x="0.0" y="2" width="160" height="30"/>
                                     <state key="normal" title="Paste">
                                         <color key="titleColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -485,7 +486,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZrH-2I-kfL" userLabel="Add Ditto">
-                                    <rect key="frame" x="160" y="2.5" width="160" height="30"/>
+                                    <rect key="frame" x="160" y="2" width="160" height="30"/>
                                     <state key="normal" title="Add Ditto">
                                         <color key="titleColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -663,8 +664,14 @@
                         <constraint firstItem="rcC-gG-3xF" firstAttribute="leading" secondItem="jDi-uR-9hd" secondAttribute="leading" id="vkR-1C-7kN"/>
                     </constraints>
                 </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You have no dittos!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HBQ-D5-Moa" userLabel="No Dittos">
+                    <rect key="frame" x="0.0" y="1" width="320" height="173"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                    <color key="textColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
-            <color key="backgroundColor" red="0.36744998763515291" green="0.43221640586853027" blue="0.038427555042039874" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="mfm-wR-g33" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="16e-Kf-qmm"/>
                 <constraint firstItem="M9F-sQ-ald" firstAttribute="top" secondItem="2AC-bL-k82" secondAttribute="bottom" id="3SC-04-sTh"/>
@@ -674,6 +681,8 @@
                 <constraint firstAttribute="trailing" secondItem="jDi-uR-9hd" secondAttribute="trailing" id="EKJ-0B-oXa"/>
                 <constraint firstItem="s0W-gi-0Tl" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="H4h-JR-iqI"/>
                 <constraint firstItem="M9F-sQ-ald" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="HuH-Rh-f5L"/>
+                <constraint firstItem="jDi-uR-9hd" firstAttribute="top" secondItem="HBQ-D5-Moa" secondAttribute="bottom" id="K90-fN-TZ0"/>
+                <constraint firstItem="HBQ-D5-Moa" firstAttribute="top" secondItem="2AC-bL-k82" secondAttribute="bottom" id="LEf-Sa-2GF"/>
                 <constraint firstAttribute="trailing" secondItem="s0W-gi-0Tl" secondAttribute="trailing" id="MtF-cF-4C7"/>
                 <constraint firstItem="Blc-h8-J6V" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="OYM-dc-lPV"/>
                 <constraint firstAttribute="trailing" secondItem="M9F-sQ-ald" secondAttribute="trailing" id="OxP-d0-hcD"/>
@@ -692,9 +701,11 @@
                 <constraint firstAttribute="bottom" secondItem="jDi-uR-9hd" secondAttribute="bottom" id="l3q-d0-itF"/>
                 <constraint firstItem="goJ-J0-xDn" firstAttribute="top" secondItem="mfm-wR-g33" secondAttribute="bottom" id="oL5-6B-a5y"/>
                 <constraint firstAttribute="trailing" secondItem="goJ-J0-xDn" secondAttribute="trailing" id="oVB-tv-8tk"/>
+                <constraint firstAttribute="trailing" secondItem="HBQ-D5-Moa" secondAttribute="trailing" id="orM-qM-0xy"/>
                 <constraint firstItem="M9F-sQ-ald" firstAttribute="top" secondItem="mfm-wR-g33" secondAttribute="bottom" id="pBt-E1-KYS"/>
                 <constraint firstItem="mfm-wR-g33" firstAttribute="top" secondItem="M9F-sQ-ald" secondAttribute="bottom" constant="-107" id="us3-GT-ljB"/>
                 <constraint firstItem="jDi-uR-9hd" firstAttribute="top" secondItem="s0W-gi-0Tl" secondAttribute="bottom" id="wOi-X0-W3P"/>
+                <constraint firstItem="HBQ-D5-Moa" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="yTH-E6-Lfy"/>
                 <constraint firstItem="Blc-h8-J6V" firstAttribute="top" secondItem="2AC-bL-k82" secondAttribute="bottom" id="yYe-fM-ood"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>

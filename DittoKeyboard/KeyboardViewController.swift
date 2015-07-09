@@ -8,6 +8,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var numericKeys: UIView!
     @IBOutlet var bottomBar: UIView!
     @IBOutlet var tabBar: UIView!
+    @IBOutlet var noDittosLabel: UILabel!
     
     @IBOutlet var backspaceButton: UIButton!
     @IBOutlet var nextKeyboardButton: UIButton!
@@ -74,20 +75,25 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     override func viewWillAppear(animated: Bool) {
-        
         super.viewWillAppear(animated)
-        dittoStore.reload()
-        tableView.reloadData()
         setKeyboardHeight()
+        
+        if dittoStore.isEmpty() {
+            noDittosLabel.hidden = false
+            tableView.hidden = true
+        } else {
+            noDittosLabel.hidden = true
+            tableView.hidden = false
+            dittoStore.reload()
+            tableView.reloadData()
+        }
         
     }
     
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        resetKeyboardHeight()
-    }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        resetKeyboardHeight()
         refreshTabButtons()
         tableView.beginUpdates()
         tableView.endUpdates()
@@ -209,7 +215,11 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     // MARK: - Table View Callbacks
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dittoStore.countInCategory(selectedTab)
+        if dittoStore.isEmpty() {
+            return 0
+        } else {
+            return dittoStore.countInCategory(selectedTab)
+        }
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -255,6 +265,10 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func dittoButtonClicked() {
+        if dittoStore.isEmpty() {
+            return
+        }
+        
         if addDittoView.hidden && numericKeys.hidden {
             loadAddDittoView()
             addDittoView.hidden = false
