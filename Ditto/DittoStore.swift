@@ -7,24 +7,28 @@ class DittoStore : NSObject {
     let PRESET_CATEGORIES = ["Instructions", "Driving", "Business", "Tinder"]
     let PRESET_DITTOS = [
         "Instructions": [
-            "Welcome to Ditto. 👋",
+            "Welcome to Ditto! 👋",
             "Add Ditto in Settings > General > Keyboard > Keyboards.",
-            "You must Allow Full Access for Ditto to work properly.",
+            "You must allow full access for Ditto to work properly. After you've added the Ditto keyboard, select it, and turn on Allow Full Access.",
             "We DO NOT access ANYTHING that you type on the keyboard.",
             "Everything is saved privately on your device.",
-            "Use the Ditto app to customize your Dittos.",
-            "You can expand this long ditto by holding it down within the keyboard. You can expand this long ditto by holding it down within the keyboard. You can expand this long ditto by holding it down within the keyboard. You can expand this long ditto by holding it down within the keyboard. You can expand this long ditto by holding it down within the keyboard. "
+            "Use the Ditto app to customize your dittos.",
+            "Add a triple underscore ___ to your ditto to control where your cursor lands.",
+            "You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try!",
+            "Hold down a keyboard tab to uncover the category, and swipe between tabs for quick access."
         ],
         
         "Driving": [
-            "Can't talk, I'm driving.",
+            "Can't text, I'm driving.",
             "Can you send me the address?",
-            "I'll be there in ___ minutes!"
+            "I'll be there in ___ minutes!",
+            "I'm on my way!",
+            "I'm driving, can you call me?"
         ],
         
         "Business": [
-            "Hi ___,\n\nIt was great meeting you today. I'd love to chat in more detail about possible business opportinities. Please let me know your avilability.\n\nBest,\nAsaf",
-            "My name is Asaf. I'm a recruiter at Shmoogle on the search team. We are always looking for talented candidates to join our team, and with your impressive background, we think you could be a great fit. Please let me know if you are interested, and if so, your availability to chat this week."
+            "Hi ___,\n\nIt was great meeting you today. I'd love to chat in more detail about possible business opportunities. Please let me know your availability.\n\nBest,\nAsaf Avidan Antonir",
+            "My name is Asaf, and I work at Shmoogle on the search team. We are always looking for talented candidates to join our team, and with your impressive background, we think you could be a great fit. Please let me know if you are interested, and if so, your availability to chat this week."
         ],
         
         "Tinder": [
