@@ -100,6 +100,10 @@ class DittoStore : NSObject {
         return cachedCategories.isEmpty
     }
     
+    func oneCategory() -> Bool {
+        return cachedCategories.count == 1
+    }
+    
     func countInCategory(categoryIndex: Int) -> Int {
         let category = cachedCategories[categoryIndex]
         let dittos = cachedDittos[category]!

@@ -32,8 +32,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         "DITTO_ADDED": "New ditto has been added."
     ]
     
-    
-    var heightConstraint: NSLayoutConstraint = NSLayoutConstraint()
+    var keyboardHeightConstraint: NSLayoutConstraint = NSLayoutConstraint()
+    var tabBarHeightConstraint: NSLayoutConstraint = NSLayoutConstraint()
     
     var tabViews: [UIView]
     var selectedTab: Int
@@ -77,6 +77,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         setKeyboardHeight()
+        setTabBarHeight()
         
         if dittoStore.isEmpty() {
             noDittosLabel.hidden = false
@@ -151,6 +152,11 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func refreshTabButtons() {
+        resetTabBarHeight()
+        
+        if dittoStore.oneCategory() {
+            return
+        }
         
         for tv in tabViews {
             tv.removeFromSuperview()
@@ -367,7 +373,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     
     func setKeyboardHeight() {
         
-        heightConstraint = NSLayoutConstraint(
+        keyboardHeightConstraint = NSLayoutConstraint(
             item: keyboardView,
             attribute: .Height,
             relatedBy: .Equal,
@@ -375,11 +381,29 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             attribute: .NotAnAttribute,
             multiplier: 0.0,
             constant: getHeightForKeyboard())
-        keyboardView.addConstraint(heightConstraint)
+        keyboardView.addConstraint(keyboardHeightConstraint)
     }
     
     func resetKeyboardHeight() {
-        heightConstraint.constant = getHeightForKeyboard()
+        keyboardHeightConstraint.constant = getHeightForKeyboard()
+    }
+    
+    func setTabBarHeight() {
+        
+        tabBarHeightConstraint = NSLayoutConstraint(
+            item: tabBar,
+            attribute: .Height,
+            relatedBy: .Equal,
+            toItem: nil,
+            attribute: .NotAnAttribute,
+            multiplier: 0.0,
+            constant: getHeightForTabBar())
+        
+        keyboardView.addConstraint(tabBarHeightConstraint)
+    }
+    
+    func resetTabBarHeight() {
+        tabBarHeightConstraint.constant = getHeightForTabBar()
     }
     
     func getHeightForKeyboard() -> CGFloat {
@@ -392,6 +416,18 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             height = screenHeight * 0.6
         } else {
             height = min(260, screenHeight * 0.7)
+        }
+        
+        return height
+    }
+    
+    func getHeightForTabBar() -> CGFloat {
+        var height: CGFloat
+        
+        if dittoStore.oneCategory() {
+            height = 0
+        } else {
+            height = 35
         }
         
         return height
