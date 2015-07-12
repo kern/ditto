@@ -4,6 +4,7 @@ class ObjectTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        textLabel!.text = ""
         textLabel!.font = UIFont.systemFontOfSize(UIFont.labelFontSize())
         textLabel!.numberOfLines = 2
     }
