@@ -9,6 +9,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var bottomBar: UIView!
     @IBOutlet var tabBar: UIView!
     @IBOutlet var noDittosLabel: UILabel!
+    @IBOutlet var tabTitleLabel: UILabel!
     
     @IBOutlet var backspaceButton: UIButton!
     @IBOutlet var nextKeyboardButton: UIButton!
@@ -23,6 +24,9 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var selectedCategory: UILabel!
     @IBOutlet var addDittoButtons: UIView!
     
+    var keyboardHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var tabBarHeightConstraint: NSLayoutConstraint!
+    
     let dittoStore: DittoStore
     let addDittoViewController = AddDittoFromClipboardViewController()
     var backspaceTimer: DelayedRepeatTimer!
@@ -32,9 +36,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         "DITTO_ADDED": "New ditto has been added."
     ]
     
-    var keyboardHeightConstraint: NSLayoutConstraint = NSLayoutConstraint()
-    var tabBarHeightConstraint: NSLayoutConstraint = NSLayoutConstraint()
-    
     var tabViews: [UIView]
     var selectedTab: Int
     var selectedRow: Int
@@ -42,11 +43,9 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     init() {
         dittoStore = DittoStore()
         tabViews = []
-        selectedTab = 0
+        selectedTab = -1
         selectedRow = -1
-        
         super.init(nibName: "KeyboardViewController", bundle: nil)
-        
     }
 
     required init(coder: NSCoder) {
@@ -56,6 +55,15 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        
+        keyboardHeightConstraint = NSLayoutConstraint(item: keyboardView,
+            attribute: .Height,
+            relatedBy: .Equal,
+            toItem: nil,
+            attribute: .NotAnAttribute,
+            multiplier: 0,
+            constant: 250)
+        keyboardView.addConstraint(keyboardHeightConstraint)
         
         bottomBar.backgroundColor = UIColor(white: 0.85, alpha: 1)
         tableView.registerClass(ObjectTableViewCell.classForCoder(), forCellReuseIdentifier: "ObjectTableViewCell")
@@ -70,14 +78,13 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         tabBar.addGestureRecognizer(longPressGesture)
         tabBar.addGestureRecognizer(panGesture)
         
-        refreshTabButtons()
+        loadTab(0)
         
     }
     
     override func viewWillAppear(animated: Bool) {
+        
         super.viewWillAppear(animated)
-        setKeyboardHeight()
-        setTabBarHeight()
         
         if dittoStore.isEmpty() {
             noDittosLabel.hidden = false
@@ -94,7 +101,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        resetKeyboardHeight()
+        keyboardHeightConstraint.constant = getHeightForKeyboard()
+        tabBarHeightConstraint.constant = getHeightForTabBar()
         refreshTabButtons()
         tableView.beginUpdates()
         tableView.endUpdates()
@@ -138,21 +146,29 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     // MARK: - Tabs
     
     func tabDragged(recognizer: UIGestureRecognizer) {
+        
         let tab = Int(floor(recognizer.locationInView(tabBar).x / tabWidth()))
         
         addDittoView.hidden = true
         numericKeys.hidden = true
         tableView.hidden = false
         
-        // We want to refresh every time the tab is selected, so that
-        // new dittos appear if they've been added within the keyboard
+        loadTab(tab)
+        tabTitleLabel.hidden = dittoStore.oneCategory() || recognizer.state == .Ended
+        view.setNeedsLayout()
+    
+    }
+    
+    func loadTab(tab: Int) {
+        if selectedTab == tab { return }
         selectedTab = tab
         selectedRow = -1
+        tabTitleLabel.text = dittoStore.getCategory(selectedTab)
+        tabTitleLabel.backgroundColor = colorForTab(selectedTab)
         tableView.reloadData()
     }
     
     func refreshTabButtons() {
-        resetTabBarHeight()
         
         if dittoStore.oneCategory() {
             return
@@ -174,6 +190,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             
         })
         
+        tabBar.bringSubviewToFront(tabTitleLabel)
+        
     }
     
     func countTabs() -> Int {
@@ -185,11 +203,9 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func colorForTab(index: Int) -> UIColor {
-        return UIColor(
-            red: 0.6,
-            green: 0,
-            blue: 0.6,
-            alpha: 1 - (CGFloat(index) / CGFloat(dittoStore.countCategories())))
+        let whiteMix = 0.4 * (CGFloat(index) / CGFloat(dittoStore.countCategories()))
+        let rbComponent = min(1, 0.6 + whiteMix)
+        return UIColor(red: rbComponent, green: whiteMix, blue: rbComponent, alpha: 1)
     }
     
     //=======================
@@ -273,17 +289,13 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBAction func dittoButtonClicked() {
         if dittoStore.isEmpty() {
             return
-        }
-        
-        if addDittoView.hidden && numericKeys.hidden {
+        } else if addDittoView.hidden && numericKeys.hidden {
             loadAddDittoView()
             addDittoView.hidden = false
-        }
-        else if !addDittoView.hidden {
+        } else if !addDittoView.hidden {
             addDittoView.hidden = true
             numericKeys.hidden = false
-        }
-        else if !numericKeys.hidden {
+        } else if !numericKeys.hidden {
             numericKeys.hidden = true
             tableView.hidden = false
         }
@@ -371,65 +383,24 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         return dittoStore.getCategory(categoryIndex)
     }
     
-    func setKeyboardHeight() {
-        
-        keyboardHeightConstraint = NSLayoutConstraint(
-            item: keyboardView,
-            attribute: .Height,
-            relatedBy: .Equal,
-            toItem: nil,
-            attribute: .NotAnAttribute,
-            multiplier: 0.0,
-            constant: getHeightForKeyboard())
-        keyboardView.addConstraint(keyboardHeightConstraint)
-    }
-    
-    func resetKeyboardHeight() {
-        keyboardHeightConstraint.constant = getHeightForKeyboard()
-    }
-    
-    func setTabBarHeight() {
-        
-        tabBarHeightConstraint = NSLayoutConstraint(
-            item: tabBar,
-            attribute: .Height,
-            relatedBy: .Equal,
-            toItem: nil,
-            attribute: .NotAnAttribute,
-            multiplier: 0.0,
-            constant: getHeightForTabBar())
-        
-        keyboardView.addConstraint(tabBarHeightConstraint)
-    }
-    
-    func resetTabBarHeight() {
-        tabBarHeightConstraint.constant = getHeightForTabBar()
-    }
-    
     func getHeightForKeyboard() -> CGFloat {
         
         let screenHeight = UIScreen.mainScreen().bounds.height
         let screenWidth = UIScreen.mainScreen().bounds.width
-        var height: CGFloat
         
         if screenWidth > screenHeight {
-            height = screenHeight * 0.6
+            return screenHeight * 0.6
         } else {
-            height = min(260, screenHeight * 0.7)
+            return min(260, screenHeight * 0.7)
         }
         
-        return height
     }
     
     func getHeightForTabBar() -> CGFloat {
-        var height: CGFloat
-        
         if dittoStore.oneCategory() {
-            height = 0
+            return 0
         } else {
-            height = 35
+            return 35
         }
-        
-        return height
     }
 }

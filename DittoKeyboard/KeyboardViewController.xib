@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
@@ -25,6 +25,8 @@
                 <outlet property="selectedCategory" destination="W2g-Hn-LWs" id="YOF-6m-Cth"/>
                 <outlet property="spaceButton" destination="OeD-6m-9LM" id="m8r-Ac-bQQ"/>
                 <outlet property="tabBar" destination="mfm-wR-g33" id="Lkw-ib-uqB"/>
+                <outlet property="tabBarHeightConstraint" destination="zuK-yR-Faf" id="9O0-lb-HLW"/>
+                <outlet property="tabTitleLabel" destination="rA5-hF-O0v" id="h0t-lB-grE"/>
                 <outlet property="tableView" destination="M9F-sQ-ald" id="LYn-O6-FaH"/>
                 <outlet property="view" destination="Cqv-DZ-iYE" id="ivH-b0-sDA"/>
             </connections>
@@ -59,8 +61,20 @@
                 </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mfm-wR-g33" userLabel="Tab Bar">
                     <rect key="frame" x="0.0" y="1" width="320" height="35"/>
+                    <subviews>
+                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tab Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rA5-hF-O0v" userLabel="Tab Title Label">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="35"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
+                        <constraint firstAttribute="trailing" secondItem="rA5-hF-O0v" secondAttribute="trailing" id="0hi-Rc-FxN"/>
+                        <constraint firstAttribute="bottom" secondItem="rA5-hF-O0v" secondAttribute="bottom" id="DHr-1h-4hI"/>
+                        <constraint firstItem="rA5-hF-O0v" firstAttribute="leading" secondItem="mfm-wR-g33" secondAttribute="leading" id="Sv7-hI-X4c"/>
+                        <constraint firstItem="rA5-hF-O0v" firstAttribute="top" secondItem="mfm-wR-g33" secondAttribute="top" id="yhM-lr-Z7G"/>
                         <constraint firstAttribute="height" constant="35" id="zuK-yR-Faf"/>
                     </constraints>
                 </view>
@@ -430,7 +444,7 @@
                     <rect key="frame" x="0.0" y="36" width="320" height="138"/>
                     <subviews>
                         <pickerView contentMode="scaleToFill" verticalHuggingPriority="240" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="ZUV-yx-uZi">
-                            <rect key="frame" x="0.0" y="5.5" width="320" height="162"/>
+                            <rect key="frame" x="0.0" y="5" width="320" height="162"/>
                         </pickerView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nXn-z1-n5H" userLabel="Category Bar">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="35"/>
@@ -438,7 +452,7 @@
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Category" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0nG-FC-isx" userLabel="Category Label">
                                     <rect key="frame" x="11" y="7" width="70.5" height="20.5"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W2g-Hn-LWs" userLabel="Selected Category Label">
