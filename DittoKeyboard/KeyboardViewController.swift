@@ -62,8 +62,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             toItem: nil,
             attribute: .NotAnAttribute,
             multiplier: 0,
-            constant: 250)
-        keyboardView.addConstraint(keyboardHeightConstraint)
+            constant: getHeightForKeyboard())
         
         bottomBar.backgroundColor = UIColor(white: 0.85, alpha: 1)
         tableView.registerClass(ObjectTableViewCell.classForCoder(), forCellReuseIdentifier: "ObjectTableViewCell")
@@ -86,6 +85,9 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         
         super.viewWillAppear(animated)
         
+        // Keyboard height constraint must be added here rather than ViewDidLoad
+        keyboardView.addConstraint(keyboardHeightConstraint)
+        
         if dittoStore.isEmpty() {
             noDittosLabel.hidden = false
             tableView.hidden = true
@@ -95,9 +97,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             dittoStore.reload()
             tableView.reloadData()
         }
-        
-    }
     
+    }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
