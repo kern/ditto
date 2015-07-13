@@ -11,7 +11,6 @@
                 <outlet property="addDittoButton" destination="ZrH-2I-kfL" id="9ME-Hi-0S4"/>
                 <outlet property="addDittoButtons" destination="rfM-bI-v6T" id="4ni-f2-JQa"/>
                 <outlet property="addDittoTextInput" destination="YNp-SC-d1Q" id="V3v-0w-gdT"/>
-                <outlet property="addDittoTextView" destination="h8p-Ed-zUg" id="CsI-qF-6I0"/>
                 <outlet property="addDittoView" destination="goJ-J0-xDn" id="iEW-1b-gSz"/>
                 <outlet property="backspaceButton" destination="kec-yT-Es7" id="gkN-4k-9A6"/>
                 <outlet property="bottomBar" destination="jDi-uR-9hd" id="2qg-Bc-MJE"/>
@@ -84,7 +83,7 @@
                     <rect key="frame" x="0.0" y="36" width="320" height="138"/>
                     <subviews>
                         <pickerView contentMode="scaleToFill" verticalHuggingPriority="240" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="ZUV-yx-uZi">
-                            <rect key="frame" x="0.0" y="5" width="320" height="162"/>
+                            <rect key="frame" x="0.0" y="5.5" width="320" height="162"/>
                         </pickerView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nXn-z1-n5H" userLabel="Category Bar">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="35"/>
@@ -92,7 +91,7 @@
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Category" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0nG-FC-isx" userLabel="Category Label">
                                     <rect key="frame" x="11" y="7" width="70.5" height="20.5"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="textColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W2g-Hn-LWs" userLabel="Selected Category Label">
@@ -116,22 +115,13 @@
                                 <outletCollection property="gestureRecognizers" destination="4PQ-7E-aeq" appends="YES" id="FqE-Y6-Buz"/>
                             </connections>
                         </view>
-                        <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h8p-Ed-zUg" userLabel="Ditto Text Scroll View">
-                            <rect key="frame" x="0.0" y="35" width="320" height="68"/>
-                            <subviews>
-                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YNp-SC-d1Q">
-                                    <rect key="frame" x="5" y="0.0" width="310" height="68"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                </textView>
-                            </subviews>
-                            <constraints>
-                                <constraint firstItem="YNp-SC-d1Q" firstAttribute="leading" secondItem="h8p-Ed-zUg" secondAttribute="leading" constant="5" id="RFM-0F-F0X"/>
-                                <constraint firstAttribute="trailing" secondItem="YNp-SC-d1Q" secondAttribute="trailing" constant="5" id="he9-Vv-BSs"/>
-                            </constraints>
-                        </scrollView>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YNp-SC-d1Q">
+                            <rect key="frame" x="6" y="35" width="308" height="68"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                        </textView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rfM-bI-v6T" userLabel="Buttons">
                             <rect key="frame" x="0.0" y="103" width="320" height="35"/>
                             <subviews>
@@ -159,22 +149,19 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="ZUV-yx-uZi" secondAttribute="trailing" id="3OV-1L-czo"/>
-                        <constraint firstItem="YNp-SC-d1Q" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="56N-Bi-TQr"/>
                         <constraint firstItem="nXn-z1-n5H" firstAttribute="top" secondItem="goJ-J0-xDn" secondAttribute="top" id="7VR-vh-uE6"/>
+                        <constraint firstItem="rfM-bI-v6T" firstAttribute="top" secondItem="YNp-SC-d1Q" secondAttribute="bottom" id="Egn-o5-nlc"/>
                         <constraint firstAttribute="trailing" secondItem="rfM-bI-v6T" secondAttribute="trailing" id="G4Q-gZ-ATR"/>
-                        <constraint firstItem="h8p-Ed-zUg" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="IyL-Nu-wDe"/>
+                        <constraint firstItem="YNp-SC-d1Q" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="GoA-VN-gvX"/>
                         <constraint firstAttribute="trailing" secondItem="nXn-z1-n5H" secondAttribute="trailing" id="Qvs-5c-uJr"/>
                         <constraint firstAttribute="bottom" secondItem="ZUV-yx-uZi" secondAttribute="bottom" id="RYS-8A-KTd"/>
                         <constraint firstItem="ZUV-yx-uZi" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="RpE-nG-u91"/>
-                        <constraint firstItem="rfM-bI-v6T" firstAttribute="top" secondItem="YNp-SC-d1Q" secondAttribute="bottom" id="Rrl-s1-ZQ8"/>
+                        <constraint firstAttribute="trailing" secondItem="YNp-SC-d1Q" secondAttribute="trailing" constant="6" id="SSi-ZU-OVT"/>
                         <constraint firstItem="rfM-bI-v6T" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="SVm-Th-1to"/>
                         <constraint firstItem="ZUV-yx-uZi" firstAttribute="top" secondItem="goJ-J0-xDn" secondAttribute="top" id="Trd-tL-i2r"/>
                         <constraint firstAttribute="bottom" secondItem="rfM-bI-v6T" secondAttribute="bottom" id="Vng-cc-XsL"/>
-                        <constraint firstItem="rfM-bI-v6T" firstAttribute="top" secondItem="h8p-Ed-zUg" secondAttribute="bottom" id="at2-XI-zt3"/>
                         <constraint firstItem="ZUV-yx-uZi" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="bNE-Hk-rz9"/>
-                        <constraint firstAttribute="trailing" secondItem="h8p-Ed-zUg" secondAttribute="trailing" id="eRI-Az-3OM"/>
-                        <constraint firstAttribute="width" secondItem="YNp-SC-d1Q" secondAttribute="width" constant="10" id="eqQ-h8-Hi9"/>
-                        <constraint firstItem="h8p-Ed-zUg" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="odZ-fz-zZ3"/>
+                        <constraint firstItem="YNp-SC-d1Q" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" constant="6" id="feZ-oB-bES"/>
                         <constraint firstItem="nXn-z1-n5H" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="wnc-nf-Iek"/>
                     </constraints>
                     <variation key="default">
