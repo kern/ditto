@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
@@ -8,6 +8,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="KeyboardViewController" customModule="DittoKeyboard" customModuleProvider="target">
             <connections>
+                <outlet property="addDittoButton" destination="ZrH-2I-kfL" id="9ME-Hi-0S4"/>
                 <outlet property="addDittoButtons" destination="rfM-bI-v6T" id="4ni-f2-JQa"/>
                 <outlet property="addDittoTextInput" destination="YNp-SC-d1Q" id="V3v-0w-gdT"/>
                 <outlet property="addDittoTextView" destination="h8p-Ed-zUg" id="CsI-qF-6I0"/>
@@ -16,6 +17,7 @@
                 <outlet property="bottomBar" destination="jDi-uR-9hd" id="2qg-Bc-MJE"/>
                 <outlet property="categoryPicker" destination="ZUV-yx-uZi" id="puP-JS-h8u"/>
                 <outlet property="decimalButton" destination="8hw-ri-UlD" id="5Ef-a6-6Yu"/>
+                <outlet property="dittoButton" destination="JWM-9V-UXL" id="OVw-6U-9oJ"/>
                 <outlet property="infoView" destination="s0W-gi-0Tl" id="lUl-A3-gOn"/>
                 <outlet property="keyboardView" destination="Cqv-DZ-iYE" id="8hi-gV-Kud"/>
                 <outlet property="nextKeyboardButton" destination="rcC-gG-3xF" id="Pkb-Pf-Ezx"/>
@@ -76,6 +78,136 @@
                         <constraint firstItem="rA5-hF-O0v" firstAttribute="leading" secondItem="mfm-wR-g33" secondAttribute="leading" id="Sv7-hI-X4c"/>
                         <constraint firstItem="rA5-hF-O0v" firstAttribute="top" secondItem="mfm-wR-g33" secondAttribute="top" id="yhM-lr-Z7G"/>
                         <constraint firstAttribute="height" constant="35" id="zuK-yR-Faf"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="goJ-J0-xDn" userLabel="Add Ditto View">
+                    <rect key="frame" x="0.0" y="36" width="320" height="138"/>
+                    <subviews>
+                        <pickerView contentMode="scaleToFill" verticalHuggingPriority="240" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="ZUV-yx-uZi">
+                            <rect key="frame" x="0.0" y="5" width="320" height="162"/>
+                        </pickerView>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nXn-z1-n5H" userLabel="Category Bar">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="35"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Category" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0nG-FC-isx" userLabel="Category Label">
+                                    <rect key="frame" x="11" y="7" width="70.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W2g-Hn-LWs" userLabel="Selected Category Label">
+                                    <rect key="frame" x="81" y="7" width="227.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                    <color key="textColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <gestureRecognizers/>
+                            <constraints>
+                                <constraint firstItem="0nG-FC-isx" firstAttribute="leading" secondItem="nXn-z1-n5H" secondAttribute="leading" constant="11" id="73V-oE-hKx"/>
+                                <constraint firstAttribute="height" constant="35" id="9nl-vp-JUU"/>
+                                <constraint firstAttribute="centerY" secondItem="0nG-FC-isx" secondAttribute="centerY" id="BSw-hR-gg1"/>
+                                <constraint firstAttribute="trailing" secondItem="W2g-Hn-LWs" secondAttribute="trailing" constant="11" id="VbB-sd-Y5f"/>
+                                <constraint firstAttribute="centerY" secondItem="W2g-Hn-LWs" secondAttribute="centerY" id="pRd-JZ-BNd"/>
+                                <constraint firstItem="W2g-Hn-LWs" firstAttribute="leading" secondItem="0nG-FC-isx" secondAttribute="trailing" id="rQW-wv-11q"/>
+                            </constraints>
+                            <connections>
+                                <outletCollection property="gestureRecognizers" destination="4PQ-7E-aeq" appends="YES" id="FqE-Y6-Buz"/>
+                            </connections>
+                        </view>
+                        <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h8p-Ed-zUg" userLabel="Ditto Text Scroll View">
+                            <rect key="frame" x="0.0" y="35" width="320" height="68"/>
+                            <subviews>
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YNp-SC-d1Q">
+                                    <rect key="frame" x="5" y="0.0" width="310" height="68"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                </textView>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="YNp-SC-d1Q" firstAttribute="leading" secondItem="h8p-Ed-zUg" secondAttribute="leading" constant="5" id="RFM-0F-F0X"/>
+                                <constraint firstAttribute="trailing" secondItem="YNp-SC-d1Q" secondAttribute="trailing" constant="5" id="he9-Vv-BSs"/>
+                            </constraints>
+                        </scrollView>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rfM-bI-v6T" userLabel="Buttons">
+                            <rect key="frame" x="0.0" y="103" width="320" height="35"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZrH-2I-kfL" userLabel="Add Ditto">
+                                    <rect key="frame" x="0.0" y="2" width="320" height="30"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                    <state key="normal" title="Add Ditto">
+                                        <color key="titleColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="addDittoButtonClicked:" destination="-1" eventType="touchUpInside" id="Ouq-1q-xeh"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstItem="ZrH-2I-kfL" firstAttribute="leading" secondItem="rfM-bI-v6T" secondAttribute="leading" id="8Uh-GH-0QP"/>
+                                <constraint firstAttribute="trailing" secondItem="ZrH-2I-kfL" secondAttribute="trailing" id="JZG-nB-p0k"/>
+                                <constraint firstAttribute="centerY" secondItem="ZrH-2I-kfL" secondAttribute="centerY" id="btE-0h-J4j"/>
+                                <constraint firstAttribute="height" constant="35" id="u06-KC-lZQ"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="ZUV-yx-uZi" secondAttribute="trailing" id="3OV-1L-czo"/>
+                        <constraint firstItem="YNp-SC-d1Q" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="56N-Bi-TQr"/>
+                        <constraint firstItem="nXn-z1-n5H" firstAttribute="top" secondItem="goJ-J0-xDn" secondAttribute="top" id="7VR-vh-uE6"/>
+                        <constraint firstAttribute="trailing" secondItem="rfM-bI-v6T" secondAttribute="trailing" id="G4Q-gZ-ATR"/>
+                        <constraint firstItem="h8p-Ed-zUg" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="IyL-Nu-wDe"/>
+                        <constraint firstAttribute="trailing" secondItem="nXn-z1-n5H" secondAttribute="trailing" id="Qvs-5c-uJr"/>
+                        <constraint firstAttribute="bottom" secondItem="ZUV-yx-uZi" secondAttribute="bottom" id="RYS-8A-KTd"/>
+                        <constraint firstItem="ZUV-yx-uZi" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="RpE-nG-u91"/>
+                        <constraint firstItem="rfM-bI-v6T" firstAttribute="top" secondItem="YNp-SC-d1Q" secondAttribute="bottom" id="Rrl-s1-ZQ8"/>
+                        <constraint firstItem="rfM-bI-v6T" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="SVm-Th-1to"/>
+                        <constraint firstItem="ZUV-yx-uZi" firstAttribute="top" secondItem="goJ-J0-xDn" secondAttribute="top" id="Trd-tL-i2r"/>
+                        <constraint firstAttribute="bottom" secondItem="rfM-bI-v6T" secondAttribute="bottom" id="Vng-cc-XsL"/>
+                        <constraint firstItem="rfM-bI-v6T" firstAttribute="top" secondItem="h8p-Ed-zUg" secondAttribute="bottom" id="at2-XI-zt3"/>
+                        <constraint firstItem="ZUV-yx-uZi" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="bNE-Hk-rz9"/>
+                        <constraint firstAttribute="trailing" secondItem="h8p-Ed-zUg" secondAttribute="trailing" id="eRI-Az-3OM"/>
+                        <constraint firstAttribute="width" secondItem="YNp-SC-d1Q" secondAttribute="width" constant="10" id="eqQ-h8-Hi9"/>
+                        <constraint firstItem="h8p-Ed-zUg" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="odZ-fz-zZ3"/>
+                        <constraint firstItem="nXn-z1-n5H" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="wnc-nf-Iek"/>
+                    </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="Trd-tL-i2r"/>
+                        </mask>
+                    </variation>
+                </view>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s0W-gi-0Tl" userLabel="Info View">
+                    <rect key="frame" x="0.0" y="1" width="320" height="173"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="small-logo" translatesAutoresizingMaskIntoConstraints="NO" id="Cfn-Qc-ZTH" userLabel="Logo">
+                            <rect key="frame" x="91" y="22" width="138" height="44"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="44" id="0Kd-pr-7gY"/>
+                                <constraint firstAttribute="width" constant="138" id="Dh8-g3-5ZV"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use the Ditto app to customize your Dittos." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A1q-0A-KNX">
+                            <rect key="frame" x="60" y="66" width="200" height="99"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="centerX" secondItem="Cfn-Qc-ZTH" secondAttribute="centerX" id="6sd-Ec-ofe"/>
+                        <constraint firstAttribute="trailing" secondItem="A1q-0A-KNX" secondAttribute="trailing" constant="60" id="KiG-1V-ikG"/>
+                        <constraint firstItem="A1q-0A-KNX" firstAttribute="top" secondItem="Cfn-Qc-ZTH" secondAttribute="bottom" id="eFl-a0-Htb"/>
+                        <constraint firstItem="A1q-0A-KNX" firstAttribute="leading" secondItem="s0W-gi-0Tl" secondAttribute="leading" constant="60" id="ppj-pc-rr5"/>
+                        <constraint firstItem="Cfn-Qc-ZTH" firstAttribute="top" secondItem="s0W-gi-0Tl" secondAttribute="top" constant="22" id="r2S-uu-Qhj"/>
+                        <constraint firstAttribute="bottom" secondItem="A1q-0A-KNX" secondAttribute="bottom" constant="8" id="xSI-6w-DzG"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Blc-h8-J6V" userLabel="Numeric Keys">
@@ -438,148 +570,6 @@
                         <constraint firstAttribute="bottom" secondItem="baf-QW-IRG" secondAttribute="bottom" id="KZx-IP-64h"/>
                         <constraint firstItem="8iQ-tr-gST" firstAttribute="bottom" secondItem="baf-QW-IRG" secondAttribute="top" id="LTo-3U-ENY"/>
                         <constraint firstAttribute="trailing" secondItem="8iQ-tr-gST" secondAttribute="trailing" id="PHN-n0-cgh"/>
-                    </constraints>
-                </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="goJ-J0-xDn" userLabel="Add Ditto View">
-                    <rect key="frame" x="0.0" y="36" width="320" height="138"/>
-                    <subviews>
-                        <pickerView contentMode="scaleToFill" verticalHuggingPriority="240" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="ZUV-yx-uZi">
-                            <rect key="frame" x="0.0" y="5" width="320" height="162"/>
-                        </pickerView>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nXn-z1-n5H" userLabel="Category Bar">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="35"/>
-                            <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Category" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0nG-FC-isx" userLabel="Category Label">
-                                    <rect key="frame" x="11" y="7" width="70.5" height="20.5"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Selected" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W2g-Hn-LWs" userLabel="Selected Category Label">
-                                    <rect key="frame" x="81" y="7" width="227.5" height="20.5"/>
-                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                    <color key="textColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                            </subviews>
-                            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <gestureRecognizers/>
-                            <constraints>
-                                <constraint firstItem="0nG-FC-isx" firstAttribute="leading" secondItem="nXn-z1-n5H" secondAttribute="leading" constant="11" id="73V-oE-hKx"/>
-                                <constraint firstAttribute="height" constant="35" id="9nl-vp-JUU"/>
-                                <constraint firstAttribute="centerY" secondItem="0nG-FC-isx" secondAttribute="centerY" id="BSw-hR-gg1"/>
-                                <constraint firstAttribute="trailing" secondItem="W2g-Hn-LWs" secondAttribute="trailing" constant="11" id="VbB-sd-Y5f"/>
-                                <constraint firstAttribute="centerY" secondItem="W2g-Hn-LWs" secondAttribute="centerY" id="pRd-JZ-BNd"/>
-                                <constraint firstItem="W2g-Hn-LWs" firstAttribute="leading" secondItem="0nG-FC-isx" secondAttribute="trailing" id="rQW-wv-11q"/>
-                            </constraints>
-                            <connections>
-                                <outletCollection property="gestureRecognizers" destination="4PQ-7E-aeq" appends="YES" id="FqE-Y6-Buz"/>
-                            </connections>
-                        </view>
-                        <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h8p-Ed-zUg" userLabel="Ditto Text Scroll View">
-                            <rect key="frame" x="0.0" y="35" width="320" height="68"/>
-                            <subviews>
-                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YNp-SC-d1Q">
-                                    <rect key="frame" x="5" y="0.0" width="310" height="68"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                </textView>
-                            </subviews>
-                            <constraints>
-                                <constraint firstItem="YNp-SC-d1Q" firstAttribute="leading" secondItem="h8p-Ed-zUg" secondAttribute="leading" constant="5" id="RFM-0F-F0X"/>
-                                <constraint firstAttribute="trailing" secondItem="YNp-SC-d1Q" secondAttribute="trailing" constant="5" id="he9-Vv-BSs"/>
-                            </constraints>
-                        </scrollView>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rfM-bI-v6T" userLabel="Buttons">
-                            <rect key="frame" x="0.0" y="103" width="320" height="35"/>
-                            <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G6m-OU-MDC" userLabel="Paste">
-                                    <rect key="frame" x="0.0" y="2" width="160" height="30"/>
-                                    <state key="normal" title="Paste">
-                                        <color key="titleColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                    </state>
-                                    <connections>
-                                        <action selector="pasteButtonClicked:" destination="-1" eventType="touchUpInside" id="UoA-OV-eNx"/>
-                                    </connections>
-                                </button>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZrH-2I-kfL" userLabel="Add Ditto">
-                                    <rect key="frame" x="160" y="2" width="160" height="30"/>
-                                    <state key="normal" title="Add Ditto">
-                                        <color key="titleColor" red="0.57254901960000004" green="0.1450980392" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                    </state>
-                                    <connections>
-                                        <action selector="addDittoButtonClicked:" destination="-1" eventType="touchUpInside" id="Ouq-1q-xeh"/>
-                                    </connections>
-                                </button>
-                            </subviews>
-                            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <constraints>
-                                <constraint firstAttribute="trailing" secondItem="ZrH-2I-kfL" secondAttribute="trailing" id="JZG-nB-p0k"/>
-                                <constraint firstItem="G6m-OU-MDC" firstAttribute="leading" secondItem="rfM-bI-v6T" secondAttribute="leading" id="Xap-wF-UUb"/>
-                                <constraint firstAttribute="centerY" secondItem="ZrH-2I-kfL" secondAttribute="centerY" id="btE-0h-J4j"/>
-                                <constraint firstItem="ZrH-2I-kfL" firstAttribute="leading" secondItem="G6m-OU-MDC" secondAttribute="trailing" id="ldK-eG-8PY"/>
-                                <constraint firstAttribute="centerY" secondItem="G6m-OU-MDC" secondAttribute="centerY" id="mY3-mF-v56"/>
-                                <constraint firstItem="ZrH-2I-kfL" firstAttribute="width" secondItem="G6m-OU-MDC" secondAttribute="width" id="qEl-Ht-OzX"/>
-                                <constraint firstAttribute="height" constant="35" id="u06-KC-lZQ"/>
-                            </constraints>
-                        </view>
-                    </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstAttribute="trailing" secondItem="ZUV-yx-uZi" secondAttribute="trailing" id="3OV-1L-czo"/>
-                        <constraint firstItem="YNp-SC-d1Q" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="56N-Bi-TQr"/>
-                        <constraint firstItem="nXn-z1-n5H" firstAttribute="top" secondItem="goJ-J0-xDn" secondAttribute="top" id="7VR-vh-uE6"/>
-                        <constraint firstAttribute="trailing" secondItem="rfM-bI-v6T" secondAttribute="trailing" id="G4Q-gZ-ATR"/>
-                        <constraint firstItem="h8p-Ed-zUg" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="IyL-Nu-wDe"/>
-                        <constraint firstAttribute="trailing" secondItem="nXn-z1-n5H" secondAttribute="trailing" id="Qvs-5c-uJr"/>
-                        <constraint firstAttribute="bottom" secondItem="ZUV-yx-uZi" secondAttribute="bottom" id="RYS-8A-KTd"/>
-                        <constraint firstItem="ZUV-yx-uZi" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="RpE-nG-u91"/>
-                        <constraint firstItem="rfM-bI-v6T" firstAttribute="top" secondItem="YNp-SC-d1Q" secondAttribute="bottom" id="Rrl-s1-ZQ8"/>
-                        <constraint firstItem="rfM-bI-v6T" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="SVm-Th-1to"/>
-                        <constraint firstItem="ZUV-yx-uZi" firstAttribute="top" secondItem="goJ-J0-xDn" secondAttribute="top" id="Trd-tL-i2r"/>
-                        <constraint firstAttribute="bottom" secondItem="rfM-bI-v6T" secondAttribute="bottom" id="Vng-cc-XsL"/>
-                        <constraint firstItem="rfM-bI-v6T" firstAttribute="top" secondItem="h8p-Ed-zUg" secondAttribute="bottom" id="at2-XI-zt3"/>
-                        <constraint firstItem="ZUV-yx-uZi" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="bNE-Hk-rz9"/>
-                        <constraint firstAttribute="trailing" secondItem="h8p-Ed-zUg" secondAttribute="trailing" id="eRI-Az-3OM"/>
-                        <constraint firstAttribute="width" secondItem="YNp-SC-d1Q" secondAttribute="width" constant="10" id="eqQ-h8-Hi9"/>
-                        <constraint firstItem="h8p-Ed-zUg" firstAttribute="top" secondItem="nXn-z1-n5H" secondAttribute="bottom" id="odZ-fz-zZ3"/>
-                        <constraint firstItem="nXn-z1-n5H" firstAttribute="leading" secondItem="goJ-J0-xDn" secondAttribute="leading" id="wnc-nf-Iek"/>
-                    </constraints>
-                    <variation key="default">
-                        <mask key="constraints">
-                            <exclude reference="Trd-tL-i2r"/>
-                        </mask>
-                    </variation>
-                </view>
-                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s0W-gi-0Tl" userLabel="Info View">
-                    <rect key="frame" x="0.0" y="1" width="320" height="173"/>
-                    <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="small-logo" translatesAutoresizingMaskIntoConstraints="NO" id="Cfn-Qc-ZTH" userLabel="Logo">
-                            <rect key="frame" x="91" y="22" width="138" height="44"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="44" id="0Kd-pr-7gY"/>
-                                <constraint firstAttribute="width" constant="138" id="Dh8-g3-5ZV"/>
-                            </constraints>
-                        </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use the Ditto app to customize your Dittos." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A1q-0A-KNX">
-                            <rect key="frame" x="60" y="66" width="200" height="99"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                    </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstAttribute="centerX" secondItem="Cfn-Qc-ZTH" secondAttribute="centerX" id="6sd-Ec-ofe"/>
-                        <constraint firstAttribute="trailing" secondItem="A1q-0A-KNX" secondAttribute="trailing" constant="60" id="KiG-1V-ikG"/>
-                        <constraint firstItem="A1q-0A-KNX" firstAttribute="top" secondItem="Cfn-Qc-ZTH" secondAttribute="bottom" id="eFl-a0-Htb"/>
-                        <constraint firstItem="A1q-0A-KNX" firstAttribute="leading" secondItem="s0W-gi-0Tl" secondAttribute="leading" constant="60" id="ppj-pc-rr5"/>
-                        <constraint firstItem="Cfn-Qc-ZTH" firstAttribute="top" secondItem="s0W-gi-0Tl" secondAttribute="top" constant="22" id="r2S-uu-Qhj"/>
-                        <constraint firstAttribute="bottom" secondItem="A1q-0A-KNX" secondAttribute="bottom" constant="8" id="xSI-6w-DzG"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jDi-uR-9hd" userLabel="Bottom Bar">

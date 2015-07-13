@@ -16,6 +16,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var returnButton: UIButton!
     @IBOutlet var spaceButton: UIButton!
     @IBOutlet var decimalButton: UIButton!
+    @IBOutlet var dittoButton: UIButton!
     
     @IBOutlet var addDittoTextInput: UITextView!
     @IBOutlet var addDittoView: UIView!
@@ -23,6 +24,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var addDittoTextView: UIScrollView!
     @IBOutlet var selectedCategory: UILabel!
     @IBOutlet var addDittoButtons: UIView!
+    @IBOutlet var addDittoButton: UIButton!
     
     var keyboardHeightConstraint: NSLayoutConstraint!
     @IBOutlet var tabBarHeightConstraint: NSLayoutConstraint!
@@ -31,10 +33,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     let addDittoViewController = AddDittoFromClipboardViewController()
     var backspaceTimer: DelayedRepeatTimer!
     
-    let ADD_DITTO_TEXT_INPUT_PLACEHOLDERS = [
-        "PASTE_TEXT": "Copy desired text and click paste...",
-        "DITTO_ADDED": "New ditto has been added."
-    ]
+    let ADD_DITTO_TEXT_INPUT_PLACEHOLDER = "Select and copy desired text..."
     
     var tabViews: [UIView]
     var selectedTab: Int
@@ -78,6 +77,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         tabBar.addGestureRecognizer(panGesture)
         
         loadTab(0)
+        loadAddDittoView()
+        addDittoView.hidden = true
         
     }
     
@@ -112,7 +113,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     func loadAddDittoView() {
         categoryPicker.hidden = true
         selectedCategory.text = selectedCategoryFromPicker()
-        addDittoTextInput.text = ADD_DITTO_TEXT_INPUT_PLACEHOLDERS["PASTE_TEXT"]
+        NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("pollPasteboard"), userInfo: nil, repeats: true)
+        pollPasteboard()
     }
     
     override func textDidChange(textInput: UITextInput) {
@@ -124,22 +126,22 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             spaceButton.hidden = true
             returnButton.hidden = true
             decimalButton.hidden = true
-            addDittoView.hidden = true
+            dittoButton.hidden = true
 
         case .DecimalPad:
             numericKeys.hidden = false
             spaceButton.hidden = true
             returnButton.hidden = true
             decimalButton.hidden = false
-            addDittoView.hidden = true
+            dittoButton.hidden = true
             
         default:
             numericKeys.hidden = true
             spaceButton.hidden = false
             returnButton.hidden = false
             decimalButton.hidden = false
-            addDittoView.hidden = true
-            
+            dittoButton.hidden = false
+
         }
     }
     
@@ -290,15 +292,11 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBAction func dittoButtonClicked() {
         if dittoStore.isEmpty() {
             return
-        } else if addDittoView.hidden && numericKeys.hidden {
+        } else if addDittoView.hidden {
             loadAddDittoView()
             addDittoView.hidden = false
-        } else if !addDittoView.hidden {
+        } else {
             addDittoView.hidden = true
-            numericKeys.hidden = false
-        } else if !numericKeys.hidden {
-            numericKeys.hidden = true
-            tableView.hidden = false
         }
     }
     
@@ -335,10 +333,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func addDittoButtonClicked(sender: UIButton) {
-        if !contains(ADD_DITTO_TEXT_INPUT_PLACEHOLDERS.values.array, addDittoTextInput.text) {
+        if addDittoTextInput.text != ADD_DITTO_TEXT_INPUT_PLACEHOLDER {
             let categoryIndex = categoryPicker.selectedRowInComponent(0)
             dittoStore.addDittoToCategory(categoryIndex, text: addDittoTextInput.text!)
-            addDittoTextInput.text = ADD_DITTO_TEXT_INPUT_PLACEHOLDERS["DITTO_ADDED"]
+            tableView.reloadData()
+            addDittoButton.setTitle("Your ditto has been saved!", forState: .Normal)
+            addDittoButton.enabled = false
         }
     }
     
@@ -402,6 +402,22 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             return 0
         } else {
             return 35
+        }
+    }
+    
+    func resetAddDittoButton() {
+        addDittoButton.setTitle("Add Ditto", forState: .Normal)
+        addDittoButton.enabled = true
+    }
+    
+    func pollPasteboard() {
+        if let pasteBoardString = UIPasteboard.generalPasteboard().string {
+            if pasteBoardString != addDittoTextInput.text {
+                addDittoTextInput.text = pasteBoardString
+                resetAddDittoButton()
+            }
+        } else {
+            addDittoTextInput.text = ADD_DITTO_TEXT_INPUT_PLACEHOLDER
         }
     }
 }
