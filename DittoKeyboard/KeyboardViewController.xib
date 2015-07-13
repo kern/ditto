@@ -18,7 +18,6 @@
                 <outlet property="categoryPicker" destination="ZUV-yx-uZi" id="puP-JS-h8u"/>
                 <outlet property="decimalButton" destination="8hw-ri-UlD" id="5Ef-a6-6Yu"/>
                 <outlet property="dittoButton" destination="JWM-9V-UXL" id="OVw-6U-9oJ"/>
-                <outlet property="infoView" destination="s0W-gi-0Tl" id="lUl-A3-gOn"/>
                 <outlet property="keyboardView" destination="Cqv-DZ-iYE" id="8hi-gV-Kud"/>
                 <outlet property="nextKeyboardButton" destination="rcC-gG-3xF" id="Pkb-Pf-Ezx"/>
                 <outlet property="noDittosLabel" destination="HBQ-D5-Moa" id="BkI-fz-HCw"/>
@@ -170,33 +169,6 @@
                             <exclude reference="Trd-tL-i2r"/>
                         </mask>
                     </variation>
-                </view>
-                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s0W-gi-0Tl" userLabel="Info View">
-                    <rect key="frame" x="0.0" y="1" width="320" height="173"/>
-                    <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="small-logo" translatesAutoresizingMaskIntoConstraints="NO" id="Cfn-Qc-ZTH" userLabel="Logo">
-                            <rect key="frame" x="91" y="22" width="138" height="44"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="44" id="0Kd-pr-7gY"/>
-                                <constraint firstAttribute="width" constant="138" id="Dh8-g3-5ZV"/>
-                            </constraints>
-                        </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use the Ditto app to customize your Dittos." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A1q-0A-KNX">
-                            <rect key="frame" x="60" y="66" width="200" height="99"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                    </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstAttribute="centerX" secondItem="Cfn-Qc-ZTH" secondAttribute="centerX" id="6sd-Ec-ofe"/>
-                        <constraint firstAttribute="trailing" secondItem="A1q-0A-KNX" secondAttribute="trailing" constant="60" id="KiG-1V-ikG"/>
-                        <constraint firstItem="A1q-0A-KNX" firstAttribute="top" secondItem="Cfn-Qc-ZTH" secondAttribute="bottom" id="eFl-a0-Htb"/>
-                        <constraint firstItem="A1q-0A-KNX" firstAttribute="leading" secondItem="s0W-gi-0Tl" secondAttribute="leading" constant="60" id="ppj-pc-rr5"/>
-                        <constraint firstItem="Cfn-Qc-ZTH" firstAttribute="top" secondItem="s0W-gi-0Tl" secondAttribute="top" constant="22" id="r2S-uu-Qhj"/>
-                        <constraint firstAttribute="bottom" secondItem="A1q-0A-KNX" secondAttribute="bottom" constant="8" id="xSI-6w-DzG"/>
-                    </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Blc-h8-J6V" userLabel="Numeric Keys">
                     <rect key="frame" x="0.0" y="36" width="320" height="138"/>
@@ -671,15 +643,12 @@
                 <constraint firstItem="Blc-h8-J6V" firstAttribute="top" secondItem="mfm-wR-g33" secondAttribute="bottom" id="8Zh-bY-UQj"/>
                 <constraint firstItem="jDi-uR-9hd" firstAttribute="top" secondItem="goJ-J0-xDn" secondAttribute="bottom" id="C6q-v9-7ck"/>
                 <constraint firstAttribute="trailing" secondItem="jDi-uR-9hd" secondAttribute="trailing" id="EKJ-0B-oXa"/>
-                <constraint firstItem="s0W-gi-0Tl" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="H4h-JR-iqI"/>
                 <constraint firstItem="M9F-sQ-ald" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="HuH-Rh-f5L"/>
                 <constraint firstItem="jDi-uR-9hd" firstAttribute="top" secondItem="HBQ-D5-Moa" secondAttribute="bottom" id="K90-fN-TZ0"/>
                 <constraint firstItem="HBQ-D5-Moa" firstAttribute="top" secondItem="2AC-bL-k82" secondAttribute="bottom" id="LEf-Sa-2GF"/>
-                <constraint firstAttribute="trailing" secondItem="s0W-gi-0Tl" secondAttribute="trailing" id="MtF-cF-4C7"/>
                 <constraint firstItem="Blc-h8-J6V" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="OYM-dc-lPV"/>
                 <constraint firstAttribute="trailing" secondItem="M9F-sQ-ald" secondAttribute="trailing" id="OxP-d0-hcD"/>
                 <constraint firstAttribute="trailing" secondItem="mfm-wR-g33" secondAttribute="trailing" id="PPx-qb-qvl"/>
-                <constraint firstItem="s0W-gi-0Tl" firstAttribute="top" secondItem="2AC-bL-k82" secondAttribute="bottom" id="Rx4-xU-P6S"/>
                 <constraint firstItem="goJ-J0-xDn" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="U0m-KA-w1A"/>
                 <constraint firstItem="mfm-wR-g33" firstAttribute="top" secondItem="M9F-sQ-ald" secondAttribute="bottom" constant="-107" id="Vvx-XO-BM2"/>
                 <constraint firstItem="2AC-bL-k82" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="WRY-JC-Usz"/>
@@ -696,7 +665,6 @@
                 <constraint firstAttribute="trailing" secondItem="HBQ-D5-Moa" secondAttribute="trailing" id="orM-qM-0xy"/>
                 <constraint firstItem="M9F-sQ-ald" firstAttribute="top" secondItem="mfm-wR-g33" secondAttribute="bottom" id="pBt-E1-KYS"/>
                 <constraint firstItem="mfm-wR-g33" firstAttribute="top" secondItem="M9F-sQ-ald" secondAttribute="bottom" constant="-107" id="us3-GT-ljB"/>
-                <constraint firstItem="jDi-uR-9hd" firstAttribute="top" secondItem="s0W-gi-0Tl" secondAttribute="bottom" id="wOi-X0-W3P"/>
                 <constraint firstItem="HBQ-D5-Moa" firstAttribute="leading" secondItem="Cqv-DZ-iYE" secondAttribute="leading" id="yTH-E6-Lfy"/>
                 <constraint firstItem="Blc-h8-J6V" firstAttribute="top" secondItem="2AC-bL-k82" secondAttribute="bottom" id="yYe-fM-ood"/>
             </constraints>
@@ -733,7 +701,6 @@
         <image name="ditto" width="32" height="32"/>
         <image name="globe" width="32" height="32"/>
         <image name="return" width="32" height="32"/>
-        <image name="small-logo" width="138" height="44"/>
         <image name="space" width="68" height="15"/>
     </resources>
 </document>

@@ -4,7 +4,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
 
     @IBOutlet var keyboardView: UIView!
     @IBOutlet var tableView: UITableView!
-    @IBOutlet var infoView: UIView!
     @IBOutlet var numericKeys: UIView!
     @IBOutlet var bottomBar: UIView!
     @IBOutlet var tabBar: UIView!
@@ -77,7 +76,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         tabBar.addGestureRecognizer(panGesture)
         
         loadTab(0)
-        loadAddDittoView()
         addDittoView.hidden = true
         
     }
@@ -163,7 +161,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func loadTab(tab: Int) {
-        if selectedTab == tab { return }
+        tableView.setContentOffset(CGPointZero, animated:false)
+        if selectedTab == tab || dittoStore.isEmpty() { return }
         selectedTab = tab
         selectedRow = -1
         tabTitleLabel.text = dittoStore.getCategory(selectedTab)
