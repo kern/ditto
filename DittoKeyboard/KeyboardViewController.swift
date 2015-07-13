@@ -21,7 +21,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var addDittoTextInput: UITextView!
     @IBOutlet var addDittoView: UIView!
     @IBOutlet var categoryPicker: UIPickerView!
-    @IBOutlet var addDittoTextView: UIScrollView!
+    @IBOutlet var addDittoTextView: UITextView!
     @IBOutlet var selectedCategory: UILabel!
     @IBOutlet var addDittoButtons: UIView!
     @IBOutlet var addDittoButton: UIButton!
@@ -208,7 +208,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     func colorForTab(index: Int) -> UIColor {
         let whiteMix = 0.4 * (CGFloat(index) / CGFloat(dittoStore.countCategories()))
         let rbComponent = min(1, 0.6 + whiteMix)
-        return UIColor(red: rbComponent, green: whiteMix, blue: rbComponent, alpha: 1)
+        return UIColor(red: rbComponent, green: whiteMix * 1.7, blue: rbComponent, alpha: 1)
     }
     
     //=======================
