@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E82B6E001B5E120C00FDCE3A /* Ditto.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */; };
 		E84DB89F1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */; };
 		FA237AB719F9CAB0007E67D5 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA237AB619F9CAB0007E67D5 /* NavigationController.swift */; };
 		FA2ECD1119F8C207006B413E /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2ECD1019F8C207006B413E /* EditViewController.swift */; };
@@ -60,6 +61,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E82B6DFF1B5E120C00FDCE3A /* Ditto.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Ditto.xcdatamodel; sourceTree = "<group>"; };
 		E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDittoFromClipboardViewController.swift; sourceTree = "<group>"; };
 		FA237AB619F9CAB0007E67D5 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		FA2ECD1019F8C207006B413E /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 			children = (
 				FA83FA931A01ED5D0061192A /* Ditto.entitlements */,
 				FA70EAB019F5A49D00960EE2 /* AppDelegate.swift */,
+				E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */,
 				FAFCAE7119F90BA6000F0318 /* DittoStore.swift */,
 				FAD4545B1A1EC16900D825EC /* KeyboardAccessory.swift */,
 				FAAE729B1B47559200F3696E /* CategoryField.swift */,
@@ -309,6 +312,7 @@
 				FA70EAB319F5A49D00960EE2 /* ListViewController.swift in Sources */,
 				FA237AB719F9CAB0007E67D5 /* NavigationController.swift in Sources */,
 				FABFBD361B4A140F004BF2F9 /* ObjectTableViewCell.swift in Sources */,
+				E82B6E001B5E120C00FDCE3A /* Ditto.xcdatamodeld in Sources */,
 				FAD4545C1A1EC16900D825EC /* KeyboardAccessory.swift in Sources */,
 				FAAE729A1B474CC000F3696E /* CategoryPicker.swift in Sources */,
 				FAFCAE7219F90BA6000F0318 /* DittoStore.swift in Sources */,
@@ -527,6 +531,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				E82B6DFF1B5E120C00FDCE3A /* Ditto.xcdatamodel */,
+			);
+			currentVersion = E82B6DFF1B5E120C00FDCE3A /* Ditto.xcdatamodel */;
+			path = Ditto.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = FA70EAA319F5A49D00960EE2 /* Project object */;
 }
