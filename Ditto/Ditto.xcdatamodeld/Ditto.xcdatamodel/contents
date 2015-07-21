@@ -7,7 +7,7 @@
     <entity name="Ditto" syncable="YES">
         <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="use_count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="category" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Category" inverseName="dittos" inverseEntity="Category" syncable="YES"/>
+        <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="dittos" inverseEntity="Category" syncable="YES"/>
     </entity>
     <elements>
         <element name="Ditto" positionX="-54" positionY="-9" width="128" height="90"/>
