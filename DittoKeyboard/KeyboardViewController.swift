@@ -78,6 +78,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         
         loadTab(0)
         tabSelector = drawTabSelector(0)
+        
         addDittoView.hidden = true
         
     }
@@ -156,6 +157,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         addDittoView.hidden = true
         numericKeys.hidden = true
         tableView.hidden = false
+        tabSelector.hidden = false
         
         loadTab(tab)
         tabTitleLabel.hidden = dittoStore.oneCategory() || recognizer.state == .Ended
@@ -336,8 +338,10 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         } else if addDittoView.hidden {
             loadAddDittoView()
             addDittoView.hidden = false
+            tabSelector.hidden = true
         } else {
             addDittoView.hidden = true
+            tabSelector.hidden = false
         }
     }
     
