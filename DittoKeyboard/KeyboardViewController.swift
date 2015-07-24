@@ -110,6 +110,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     
     func loadAddDittoView() {
         categoryPicker.hidden = true
+        addDittoTextView.hidden = false
         selectedCategory.text = selectedCategoryFromPicker()
         NSTimer.scheduledTimerWithTimeInterval(0.3, target: self, selector: Selector("pollPasteboard"), userInfo: nil, repeats: true)
         pollPasteboard()
