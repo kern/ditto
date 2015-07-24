@@ -37,7 +37,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     var tabViews: [UIView]
     var selectedTab: Int
     var selectedRow: Int
-    var tabSelector: CAShapeLayer = CAShapeLayer()
+    var selectedTabArrow: CAShapeLayer = CAShapeLayer()
     
     init() {
         dittoStore = DittoStore()
@@ -77,7 +77,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         tabBar.addGestureRecognizer(panGesture)
         
         loadTab(0)
-        tabSelector = drawTabSelector(0)
+        selectedTabArrow = drawSelectedTabArrow(0)
         
         addDittoView.hidden = true
         
@@ -157,7 +157,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         addDittoView.hidden = true
         numericKeys.hidden = true
         tableView.hidden = false
-        tabSelector.hidden = false
+        selectedTabArrow.hidden = false
         
         loadTab(tab)
         tabTitleLabel.hidden = dittoStore.oneCategory() || recognizer.state == .Ended
@@ -169,14 +169,14 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         tableView.setContentOffset(CGPointZero, animated:false)
         if selectedTab == tab || dittoStore.isEmpty() { return }
         selectedTab = tab
-        moveTabSelector(tab)
+        moveSelectedTabArrow(tab)
         selectedRow = -1
         tabTitleLabel.text = dittoStore.getCategory(selectedTab)
         tabTitleLabel.backgroundColor = colorForTab(selectedTab)
         tableView.reloadData()
     }
     
-    func tabSelectorPath(tab: Int) -> CGPath {
+    func selectedTabArrowPath(tab: Int) -> CGPath {
         let h = tabBar.bounds.height
         let x = (CGFloat(tab) + 0.5) * tabWidth()
         
@@ -189,11 +189,11 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         return path.CGPath
     }
     
-    func moveTabSelector(tab: Int) {
-        tabSelector.path = tabSelectorPath(tab)
+    func moveSelectedTabArrow(tab: Int) {
+        selectedTabArrow.path = selectedTabArrowPath(tab)
     }
     
-    func drawTabSelector(tab: Int) -> CAShapeLayer {
+    func drawSelectedTabArrow(tab: Int) -> CAShapeLayer {
         if dittoStore.isEmpty() || dittoStore.oneCategory() {
             return CAShapeLayer()
         }
@@ -206,7 +206,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         shape.strokeColor = UIColor.whiteColor().CGColor
         shape.fillColor = UIColor.whiteColor().CGColor
         
-        shape.path = tabSelectorPath(tab)
+        shape.path = selectedTabArrowPath(tab)
         shape.zPosition = 1
         
         return shape
@@ -236,7 +236,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         
         tabBar.bringSubviewToFront(tabTitleLabel)
         
-        moveTabSelector(selectedTab)
+        moveSelectedTabArrow(selectedTab)
         
     }
     
@@ -338,10 +338,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         } else if addDittoView.hidden {
             loadAddDittoView()
             addDittoView.hidden = false
-            tabSelector.hidden = true
+            selectedTabArrow.shouldRasterize = false
+            selectedTabArrow.hidden = true
         } else {
             addDittoView.hidden = true
-            tabSelector.hidden = false
+            selectedTabArrow.shouldRasterize = false
+            selectedTabArrow.hidden = false
         }
     }
     
