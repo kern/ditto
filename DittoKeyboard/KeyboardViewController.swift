@@ -37,6 +37,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     var tabViews: [UIView]
     var selectedTab: Int
     var selectedRow: Int
+    var tabSelector: CAShapeLayer = CAShapeLayer()
     
     init() {
         dittoStore = DittoStore()
@@ -76,6 +77,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         tabBar.addGestureRecognizer(panGesture)
         
         loadTab(0)
+        tabSelector = drawTabSelector(0)
         addDittoView.hidden = true
         
     }
@@ -165,15 +167,52 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         tableView.setContentOffset(CGPointZero, animated:false)
         if selectedTab == tab || dittoStore.isEmpty() { return }
         selectedTab = tab
+        moveTabSelector(tab)
         selectedRow = -1
         tabTitleLabel.text = dittoStore.getCategory(selectedTab)
         tabTitleLabel.backgroundColor = colorForTab(selectedTab)
         tableView.reloadData()
     }
     
+    func tabSelectorPath(tab: Int) -> CGPath {
+        let h = tabBar.bounds.height
+        let x = (CGFloat(tab) + 0.5) * tabWidth()
+        
+        let path = UIBezierPath()
+        path.moveToPoint(CGPointMake(x - 7, h))
+        path.addLineToPoint(CGPointMake(x + 7, h))
+        path.addLineToPoint(CGPointMake(x, h-7))
+        path.closePath()
+        
+        return path.CGPath
+    }
+    
+    func moveTabSelector(tab: Int) {
+        tabSelector.path = tabSelectorPath(tab)
+    }
+    
+    func drawTabSelector(tab: Int) -> CAShapeLayer {
+        if dittoStore.isEmpty() || dittoStore.oneCategory() {
+            return CAShapeLayer()
+        }
+        
+        let shape = CAShapeLayer()
+        tabBar.layer.addSublayer(shape)
+        shape.opacity = 1
+        shape.lineWidth = 0.0
+        shape.lineJoin = kCALineJoinMiter
+        shape.strokeColor = UIColor.whiteColor().CGColor
+        shape.fillColor = UIColor.whiteColor().CGColor
+        
+        shape.path = tabSelectorPath(tab)
+        shape.zPosition = 1
+        
+        return shape
+    }
+    
     func refreshTabButtons() {
         
-        if dittoStore.oneCategory() {
+        if dittoStore.isEmpty() || dittoStore.oneCategory() {
             return
         }
         
@@ -189,11 +228,13 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
             let button = UIView(frame: CGRectMake(CGFloat(i) * w, 0, w, h))
             button.backgroundColor = self.colorForTab(i)
             self.tabBar.addSubview(button)
-            return button
             
+            return button
         })
         
         tabBar.bringSubviewToFront(tabTitleLabel)
+        
+        moveTabSelector(selectedTab)
         
     }
     

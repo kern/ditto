@@ -19,11 +19,10 @@ class DittoStore : NSObject {
         ],
         
         "Driving": [
-            "Can't text, I'm driving.",
-            "Can you send me the address?",
+            "I'm driving, can you call me?",
             "I'll be there in ___ minutes!",
-            "I'm on my way!",
-            "I'm driving, can you call me?"
+            "What's the address?",
+            "Can't text, I'm driving."
         ],
         
         "Business": [
