@@ -176,9 +176,9 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         tableView.reloadData()
     }
     
-    func selectedTabArrowPath(tab: Int) -> CGPath {
+    func selectedTabArrowPath() -> CGPath {
         let h = tabBar.bounds.height
-        let x = (CGFloat(tab) + 0.5) * tabWidth()
+        let x = CGFloat(0.0)
         
         let path = UIBezierPath()
         path.moveToPoint(CGPointMake(x - 7, h))
@@ -190,7 +190,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func moveSelectedTabArrow(tab: Int) {
-        selectedTabArrow.path = selectedTabArrowPath(tab)
+        selectedTabArrow.position = CGPointMake((CGFloat(tab) + 0.5) * tabWidth(), 0)
     }
     
     func drawSelectedTabArrow(tab: Int) -> CAShapeLayer {
@@ -206,7 +206,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         shape.strokeColor = UIColor.whiteColor().CGColor
         shape.fillColor = UIColor.whiteColor().CGColor
         
-        shape.path = selectedTabArrowPath(tab)
+        shape.path = selectedTabArrowPath()
         shape.zPosition = 1
         
         return shape
@@ -338,11 +338,9 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         } else if addDittoView.hidden {
             loadAddDittoView()
             addDittoView.hidden = false
-            selectedTabArrow.shouldRasterize = false
             selectedTabArrow.hidden = true
         } else {
             addDittoView.hidden = true
-            selectedTabArrow.shouldRasterize = false
             selectedTabArrow.hidden = false
         }
     }
