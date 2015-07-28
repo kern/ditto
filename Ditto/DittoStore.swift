@@ -38,84 +38,51 @@ class DittoStore : NSObject {
         ]
     ]
     
-    
-    let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
-    var cachedDittos: [String: [String]] = [String: [String]]()
-    var cachedCategories: [String] = []
-    
     override init() {
         super.init()
-        reload()
-    }
-    
-    //=====================
-    // MARK: - Persistence
-    
-    func reload() {
-        
-        defaults.synchronize()
-        
-        if let dittos = defaults.dictionaryForKey("dittos") as? [String:[String]] {
-            if let categories = defaults.arrayForKey("categories") as? [String] {
-                cachedCategories = categories
-                cachedDittos = dittos
-            }
-        } else {
-            cachedCategories = PRESET_CATEGORIES
-            cachedDittos = PRESET_DITTOS
-        }
-        
-    }
-    
-    func save() {
-        defaults.setObject(cachedCategories, forKey: "categories")
-        defaults.setObject(cachedDittos, forKey: "dittos")
-        defaults.synchronize()
+        // TODO
     }
     
     //===============
     // MARK: Getters
     
+    func getCategories() -> [String] {
+        fatalError("Not yet implemented")
+    }
+    
     func getCategory(categoryIndex: Int) -> String {
-        return cachedCategories[categoryIndex]
+        fatalError("Not yet implemented")
     }
     
     func getDittosInCategory(categoryIndex: Int) -> [String] {
-        let category = cachedCategories[categoryIndex]
-        return cachedDittos[category]!
+        fatalError("Not yet implemented")
     }
     
     func getDittoInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
-        let category = cachedCategories[categoryIndex]
-        let dittos = cachedDittos[category]!
-        return dittos[dittoIndex]
+        fatalError("Not yet implemented")
     }
     
     func getDittoPreviewInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
-        return getDittoInCategory(categoryIndex, index: dittoIndex)
-            .stringByReplacingOccurrencesOfString("\n", withString: " ")
-            .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
+        return preview(getDittoInCategory(categoryIndex, index: dittoIndex))
     }
     
     //==================
     // MARK: - Counting
     
     func isEmpty() -> Bool {
-        return cachedCategories.isEmpty
+        fatalError("Not yet implemented")
     }
     
     func oneCategory() -> Bool {
-        return cachedCategories.count == 1
+        fatalError("Not yet implemented")
     }
     
     func countInCategory(categoryIndex: Int) -> Int {
-        let category = cachedCategories[categoryIndex]
-        let dittos = cachedDittos[category]!
-        return dittos.count
+        fatalError("Not yet implemented")
     }
     
     func countCategories() -> Int {
-        return cachedCategories.count
+        fatalError("Not yet implemented")
     }
     
     //=============================
@@ -126,60 +93,34 @@ class DittoStore : NSObject {
     }
     
     func addCategoryWithName(name: String) {
-        cachedCategories.append(name)
-        cachedDittos[name] = []
-        save()
+            fatalError("Not yet implemented")
     }
     
     func removeCategoryAtIndex(categoryIndex: Int) {
-        let category = cachedCategories[categoryIndex]
-        cachedDittos.removeValueForKey(category)
-        cachedCategories.removeAtIndex(categoryIndex)
-        save()
+        fatalError("Not yet implemented")
     }
     
     func moveCategoryFromIndex(fromIndex: Int, toIndex: Int) {
-        let category = cachedCategories[fromIndex]
-        cachedCategories.removeAtIndex(fromIndex)
-        cachedCategories.insert(category, atIndex: toIndex)
-        save()
+        fatalError("Not yet implemented")
     }
     
     func editCategoryAtIndex(index: Int, name: String) {
-        let oldName = cachedCategories[index]
-        let dittos = cachedDittos[oldName]
-        cachedCategories[index] = name
-        cachedDittos.removeValueForKey(oldName)
-        cachedDittos[name] = dittos
-        save()
+        fatalError("Not yet implemented")
     }
     
     //==========================
     // MARK: - Ditto Management
     
     func addDittoToCategory(categoryIndex: Int, text: String) {
-        let category = cachedCategories[categoryIndex]
-        var dittos = cachedDittos[category]!
-        dittos.append(text)
-        cachedDittos[category] = dittos
-        save()
+        fatalError("Not yet implemented")
     }
     
     func removeDittoFromCategory(categoryIndex: Int, index dittoIndex: Int) {
-        let category = cachedCategories[categoryIndex]
-        var dittos = cachedDittos[category]!
-        dittos.removeAtIndex(dittoIndex)
-        cachedDittos[category] = dittos
-        save()
+        fatalError("Not yet implemented")
     }
     
     func moveDittoFromCategory(fromCategoryIndex: Int, index fromDittoIndex: Int, toCategory toCategoryIndex: Int, index toDittoIndex: Int) {
-        let fromCategory = cachedCategories[fromCategoryIndex]
-        let toCategory = cachedCategories[toCategoryIndex]
-        let ditto = cachedDittos[fromCategory]![fromDittoIndex]
-        cachedDittos[fromCategory]!.removeAtIndex(fromDittoIndex)
-        cachedDittos[toCategory]!.insert(ditto, atIndex: toDittoIndex)
-        save()
+        fatalError("Not yet implemented")
     }
     
     func moveDittoFromCategory(fromCategoryIndex: Int, index dittoIndex: Int, toCategory toCategoryIndex: Int) {
@@ -190,11 +131,7 @@ class DittoStore : NSObject {
     }
     
     func editDittoInCategory(categoryIndex: Int, index dittoIndex: Int, text: String) {
-        let category = cachedCategories[categoryIndex]
-        var dittos = cachedDittos[category]!
-        dittos[dittoIndex] = text
-        cachedDittos[category] = dittos
-        save()
+        fatalError("Not yet implemented")
     }
     
     //=================

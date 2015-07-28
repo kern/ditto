@@ -3,7 +3,6 @@ import UIKit
 class AddDittoFromClipboardViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelegate {
     
     let dittoStore = DittoStore()
-    let dataSource = DittoStore().cachedCategories
     
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
@@ -12,14 +11,16 @@ class AddDittoFromClipboardViewController: UIViewController,UIPickerViewDataSour
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         if dittoStore.isEmpty() {
             return 1
+        } else {
+            return dittoStore.countCategories()
         }
-        return dataSource.count
     }
     
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
         if dittoStore.isEmpty() {
             return "General"
+        } else {
+            return dittoStore.getCategory(row)
         }
-        return dataSource[row]
     }
 }

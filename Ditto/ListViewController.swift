@@ -44,7 +44,6 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewWillAppear(animated: Bool) {
-        dittoStore.reload()
         tableView.reloadData()
     }
     

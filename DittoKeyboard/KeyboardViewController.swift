@@ -93,7 +93,6 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         } else {
             noDittosLabel.hidden = true
             tableView.hidden = false
-            dittoStore.reload()
             tableView.reloadData()
         }
     
