@@ -1,5 +1,5 @@
-import Foundation
 import UIKit
+import CoreData
 
 class DittoStore : NSObject {
     
@@ -38,9 +38,71 @@ class DittoStore : NSObject {
         ]
     ]
     
-    override init() {
-        super.init()
-        // TODO
+    static var managedObjectModel: NSManagedObjectModel = {
+        let modelURL = NSBundle.mainBundle().URLForResource("Ditto", withExtension: "momd")!
+        return NSManagedObjectModel(contentsOfURL: modelURL)!
+    }()
+    
+    static var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
+        
+        let directory = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.io.kern.ditto")
+        let storeURL = directory?.URLByAppendingPathComponent("Ditto.sqlite")
+        
+        let options = [
+            NSMigratePersistentStoresAutomaticallyOption: NSNumber(bool: true),
+            NSInferMappingModelAutomaticallyOption: NSNumber(bool: true)
+        ]
+        
+        let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+        
+        var err: NSError? = nil
+        if persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: options, error: &err) == nil {
+            fatalError(err!.localizedDescription)
+        }
+        
+        return persistentStoreCoordinator
+        
+    }()
+    
+    static var managedObjectContext: NSManagedObjectContext = {
+        var managedObjectContext = NSManagedObjectContext()
+        managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
+        return managedObjectContext
+    }()
+    
+    //===================
+    // MARK: Persistence
+    
+    func dumpStore() {
+        
+        println("========")
+        println()
+        
+        let entities = DittoStore.managedObjectModel.entities as! [NSEntityDescription]
+        for entity in entities {
+            
+            let request = NSFetchRequest()
+            request.entity = entity
+            let results = DittoStore.managedObjectContext.executeFetchRequest(request, error: nil)!
+            
+            println(entity.name! + " (" + String(results.count) + "):")
+            println()
+            for x in results {
+                println(x)
+            }
+            println()
+
+        }
+        
+        println("========")
+
+    }
+    
+    func save() {
+        var err: NSError? = nil
+        if !DittoStore.managedObjectContext.save(&err) {
+            fatalError(err!.localizedDescription)
+        }
     }
     
     //===============
@@ -93,7 +155,7 @@ class DittoStore : NSObject {
     }
     
     func addCategoryWithName(name: String) {
-            fatalError("Not yet implemented")
+        fatalError("Not yet implemented")
     }
     
     func removeCategoryAtIndex(categoryIndex: Int) {
