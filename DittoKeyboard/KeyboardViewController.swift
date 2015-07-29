@@ -154,12 +154,22 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         
         let tab = Int(floor(recognizer.locationInView(tabBar).x / tabWidth()))
         
+        if addDittoView.hidden {
+            loadTab(tab)
+            selectedTabArrow.hidden = false
+        } else {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            // change properties here without animation
+            loadTab(tab)
+            selectedTabArrow.hidden = false
+            CATransaction.commit()
+        }
+        
         addDittoView.hidden = true
         numericKeys.hidden = true
         tableView.hidden = false
-        selectedTabArrow.hidden = false
         
-        loadTab(tab)
         tabTitleLabel.hidden = dittoStore.oneCategory() || recognizer.state == .Ended
         view.setNeedsLayout()
     
@@ -338,10 +348,21 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         } else if addDittoView.hidden {
             loadAddDittoView()
             addDittoView.hidden = false
+            
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            // change properties here without animation
             selectedTabArrow.hidden = true
+            CATransaction.commit()
+            
         } else {
             addDittoView.hidden = true
+            
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            // change properties here without animation
             selectedTabArrow.hidden = false
+            CATransaction.commit()
         }
     }
     
