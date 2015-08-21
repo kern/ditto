@@ -45,7 +45,7 @@ class DittoStore : NSObject {
     
     static var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
         
-        let directory = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.io.kern.ditto")
+        let directory = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.io.asaf.ditto")
         let storeURL = directory?.URLByAppendingPathComponent("Ditto.sqlite")
         
         let options = [
@@ -79,24 +79,32 @@ class DittoStore : NSObject {
         println()
         
         let entities = DittoStore.managedObjectModel.entities as! [NSEntityDescription]
+        
+        println("Entities")
+        println(entities)
+        
         for entity in entities {
             
             let request = NSFetchRequest()
             request.entity = entity
-            let results = DittoStore.managedObjectContext.executeFetchRequest(request, error: nil)!
-            
-            println(entity.name! + " (" + String(results.count) + "):")
-            println()
-            for x in results {
-                println(x)
-            }
-            println()
+            let results = context.executeFetchRequest(request, error: nil)!
+//
+//            println(entity.name! + " (" + String(results.count) + "):")
+//            println()
+//            for x in results {
+//                println(x)
+//            }
+//            println()
 
         }
         
         println("========")
 
     }
+    
+    lazy var context: NSManagedObjectContext = {
+        return DittoStore.managedObjectContext
+    }()
     
     func save() {
         var err: NSError? = nil
@@ -105,23 +113,73 @@ class DittoStore : NSObject {
         }
     }
     
+//    func loadPresets(profile: Profile) {
+//            }
+    
+    func createProfile() -> Profile {
+        let profile = NSEntityDescription.insertNewObjectForEntityForName("Profile", inManagedObjectContext: DittoStore.managedObjectContext) as! Profile
+        for categoryName in PRESET_CATEGORIES {
+            var category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: DittoStore.managedObjectContext) as! Category
+            category.profile = profile
+            category.title = categoryName
+            
+            for dittoText in PRESET_DITTOS[categoryName]! {
+                var ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: DittoStore.managedObjectContext) as! Ditto
+                ditto.category = category
+                ditto.text = dittoText
+            }
+        }
+        save()
+        
+        return profile
+    }
+    
+    lazy var profile: Profile = {
+        let fetchRequest = NSFetchRequest(entityName: "Profile")
+        var error: NSError?
+        if let profiles = DittoStore.managedObjectContext.executeFetchRequest(fetchRequest, error: &error) {
+            if profiles.count > 0 {
+                return profiles[0] as! Profile
+            } else {
+                return self.createProfile()
+            }
+        } else {
+            fatalError(error!.localizedDescription)
+        }
+        
+    }()
+    
+
+    
     //===============
     // MARK: Getters
     
     func getCategories() -> [String] {
-        fatalError("Not yet implemented")
+        return Array(profile.categories).map({ (category) in
+            let c = category as! Category
+            return c.title
+        })
+        
     }
     
     func getCategory(categoryIndex: Int) -> String {
-        fatalError("Not yet implemented")
+        let category = profile.categories[categoryIndex] as! Category
+        return category.title
     }
     
     func getDittosInCategory(categoryIndex: Int) -> [String] {
-        fatalError("Not yet implemented")
+        let category = profile.categories[categoryIndex] as! Category
+        let dittos = Array(category.dittos)
+        return dittos.map({ (ditto) in
+            let d = ditto as! Ditto
+            return d.text
+        })
     }
     
     func getDittoInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
-        fatalError("Not yet implemented")
+        let category = profile.categories[categoryIndex] as! Category
+        let ditto = category.dittos[dittoIndex] as! Ditto
+        return ditto.text
     }
     
     func getDittoPreviewInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
@@ -132,19 +190,20 @@ class DittoStore : NSObject {
     // MARK: - Counting
     
     func isEmpty() -> Bool {
-        fatalError("Not yet implemented")
+        return countCategories() == 0
     }
     
     func oneCategory() -> Bool {
-        fatalError("Not yet implemented")
+        return countCategories() == 1
     }
     
     func countInCategory(categoryIndex: Int) -> Int {
-        fatalError("Not yet implemented")
+        let category = profile.categories[categoryIndex] as! Category
+        return category.dittos.count
     }
     
     func countCategories() -> Int {
-        fatalError("Not yet implemented")
+        return profile.categories.count
     }
     
     //=============================
@@ -155,34 +214,79 @@ class DittoStore : NSObject {
     }
     
     func addCategoryWithName(name: String) {
-        fatalError("Not yet implemented")
+        var category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: context) as! Category
+        category.profile = profile
+        category.title = name
+        save()
     }
     
     func removeCategoryAtIndex(categoryIndex: Int) {
-        fatalError("Not yet implemented")
+        let category = profile.categories[categoryIndex] as! Category
+        context.delete(category)
+        save()
     }
     
     func moveCategoryFromIndex(fromIndex: Int, toIndex: Int) {
-        fatalError("Not yet implemented")
+        let categories = profile.categories.mutableCopy() as! NSMutableOrderedSet
+        let category = categories[fromIndex] as! Category
+        categories.removeObjectAtIndex(fromIndex)
+        categories.insertObject(category, atIndex: toIndex)
+        profile.categories = categories as NSOrderedSet
+        save()
     }
     
     func editCategoryAtIndex(index: Int, name: String) {
-        fatalError("Not yet implemented")
+        let category = profile.categories[index] as! Category
+        category.title = name
+        save()
     }
     
     //==========================
     // MARK: - Ditto Management
     
     func addDittoToCategory(categoryIndex: Int, text: String) {
-        fatalError("Not yet implemented")
+        var ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: context) as! Ditto
+        ditto.category = profile.categories[categoryIndex] as! Category
+        ditto.text = text
+        save()
     }
     
     func removeDittoFromCategory(categoryIndex: Int, index dittoIndex: Int) {
-        fatalError("Not yet implemented")
+        let category = profile.categories[categoryIndex] as! Category
+        let ditto = category.dittos[dittoIndex] as! Ditto
+        context.delete(ditto)
+        save()
     }
     
     func moveDittoFromCategory(fromCategoryIndex: Int, index fromDittoIndex: Int, toCategory toCategoryIndex: Int, index toDittoIndex: Int) {
-        fatalError("Not yet implemented")
+        
+        if fromCategoryIndex == toCategoryIndex {
+            let category = profile.categories[fromCategoryIndex] as! Category
+            let dittos = category.dittos.mutableCopy() as! NSMutableOrderedSet
+            let ditto = dittos[fromDittoIndex] as! Ditto
+            dittos.removeObjectAtIndex(fromDittoIndex)
+            dittos.insertObject(ditto, atIndex: toDittoIndex)
+            category.dittos = dittos as NSOrderedSet
+        
+        
+        } else {
+            
+            let fromCategory = profile.categories[fromCategoryIndex] as! Category
+            let toCategory = profile.categories[toCategoryIndex] as! Category
+            
+            let fromDittos = fromCategory.dittos.mutableCopy() as! NSMutableOrderedSet
+            let toDittos = toCategory.dittos.mutableCopy() as! NSMutableOrderedSet
+            
+            let ditto = fromDittos[fromDittoIndex] as! Ditto
+            
+            fromDittos.removeObjectAtIndex(fromDittoIndex)
+            toDittos.insertObject(ditto, atIndex: toDittoIndex)
+
+            fromCategory.dittos = fromDittos as NSOrderedSet
+            toCategory.dittos = toDittos as NSOrderedSet
+        }
+        
+        save()
     }
     
     func moveDittoFromCategory(fromCategoryIndex: Int, index dittoIndex: Int, toCategory toCategoryIndex: Int) {
@@ -193,7 +297,10 @@ class DittoStore : NSObject {
     }
     
     func editDittoInCategory(categoryIndex: Int, index dittoIndex: Int, text: String) {
-        fatalError("Not yet implemented")
+        let category = profile.categories[categoryIndex] as! Category
+        let ditto = category.dittos[dittoIndex] as! Ditto
+        ditto.text = text
+        save()
     }
     
     //=================

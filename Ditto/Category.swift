@@ -5,6 +5,7 @@ import CoreData
 class Category: NSManagedObject {
 
     @NSManaged var title: String
-    @NSManaged var dittos: NSSet
+    @NSManaged var dittos: NSOrderedSet
+    @NSManaged var profile: Profile
 
 }

@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14E46" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14A389" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Category" representedClassName="Category" syncable="YES">
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="dittos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Ditto" inverseName="category" inverseEntity="Ditto" syncable="YES"/>
+        <relationship name="dittos" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Ditto" inverseName="category" inverseEntity="Ditto" syncable="YES"/>
+        <relationship name="profile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Profile" inverseName="categories" inverseEntity="Profile" syncable="YES"/>
     </entity>
     <entity name="Ditto" representedClassName="Ditto" syncable="YES">
         <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="use_count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="dittos" inverseEntity="Category" syncable="YES"/>
     </entity>
+    <entity name="Profile" representedClassName="Profile" syncable="YES">
+        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Category" inverseName="profile" inverseEntity="Category" syncable="YES"/>
+    </entity>
     <elements>
-        <element name="Category" positionX="-36" positionY="9" width="128" height="75"/>
+        <element name="Category" positionX="-36" positionY="9" width="128" height="90"/>
         <element name="Ditto" positionX="-54" positionY="-9" width="128" height="90"/>
+        <element name="Profile" positionX="-45" positionY="27" width="128" height="60"/>
     </elements>
 </model>
