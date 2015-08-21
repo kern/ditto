@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E82B6E001B5E120C00FDCE3A /* Ditto.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */; };
 		E84DB89F1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */; };
 		FA237AB719F9CAB0007E67D5 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA237AB619F9CAB0007E67D5 /* NavigationController.swift */; };
 		FA2ECD1119F8C207006B413E /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2ECD1019F8C207006B413E /* EditViewController.swift */; };
@@ -33,6 +34,11 @@
 		FAFCAE7419F98CF7000F0318 /* NewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7319F98CF7000F0318 /* NewViewController.swift */; };
 		FAFCAE7619F99C85000F0318 /* NewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAFCAE7519F99C85000F0318 /* NewViewController.xib */; };
 		FAFCAE7819F9A1DE000F0318 /* EditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAFCAE7719F9A1DE000F0318 /* EditViewController.xib */; };
+		FAFD8AC81B685182000B2364 /* Ditto.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */; };
+		FAFD8ACA1B6856FA000B2364 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD8AC91B6856FA000B2364 /* Category.swift */; };
+		FAFD8ACB1B6856FA000B2364 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD8AC91B6856FA000B2364 /* Category.swift */; };
+		FAFD8ACD1B6856FA000B2364 /* Ditto.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD8ACC1B6856FA000B2364 /* Ditto.swift */; };
+		FAFD8ACE1B6856FA000B2364 /* Ditto.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD8ACC1B6856FA000B2364 /* Ditto.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +66,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E82B6DFF1B5E120C00FDCE3A /* Ditto.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Ditto.xcdatamodel; sourceTree = "<group>"; };
 		E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDittoFromClipboardViewController.swift; sourceTree = "<group>"; };
 		FA237AB619F9CAB0007E67D5 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		FA2ECD1019F8C207006B413E /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
@@ -85,10 +92,12 @@
 		FAD4545D1A1ECF6400D825EC /* DarkKeyboardButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DarkKeyboardButton.swift; sourceTree = "<group>"; };
 		FAD4545F1A1ED40500D825EC /* LightKeyboardButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LightKeyboardButton.swift; sourceTree = "<group>"; };
 		FAD454611A1EE04800D825EC /* DelayedRepeatTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelayedRepeatTimer.swift; sourceTree = "<group>"; };
-		FAFCAE7119F90BA6000F0318 /* DittoStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DittoStore.swift; sourceTree = "<group>"; };
+		FAFCAE7119F90BA6000F0318 /* DittoStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DittoStore.swift; path = Ditto/DittoStore.swift; sourceTree = "<group>"; };
 		FAFCAE7319F98CF7000F0318 /* NewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewViewController.swift; sourceTree = "<group>"; };
 		FAFCAE7519F99C85000F0318 /* NewViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewViewController.xib; sourceTree = "<group>"; };
 		FAFCAE7719F9A1DE000F0318 /* EditViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditViewController.xib; sourceTree = "<group>"; };
+		FAFD8AC91B6856FA000B2364 /* Category.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Category.swift; path = Ditto/Category.swift; sourceTree = "<group>"; };
+		FAFD8ACC1B6856FA000B2364 /* Ditto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Ditto.swift; path = Ditto/Ditto.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +133,7 @@
 		FA70EAA219F5A49D00960EE2 = {
 			isa = PBXGroup;
 			children = (
+				FAFD8ACF1B68571D000B2364 /* Core Data */,
 				FA70EAAD19F5A49D00960EE2 /* Ditto */,
 				FA70EAD519F5A56300960EE2 /* DittoKeyboard */,
 				FA70EAAC19F5A49D00960EE2 /* Products */,
@@ -144,7 +154,6 @@
 			children = (
 				FA83FA931A01ED5D0061192A /* Ditto.entitlements */,
 				FA70EAB019F5A49D00960EE2 /* AppDelegate.swift */,
-				FAFCAE7119F90BA6000F0318 /* DittoStore.swift */,
 				FAD4545B1A1EC16900D825EC /* KeyboardAccessory.swift */,
 				FAAE729B1B47559200F3696E /* CategoryField.swift */,
 				FAAE72991B474CC000F3696E /* CategoryPicker.swift */,
@@ -190,6 +199,17 @@
 				FA70EAD719F5A56300960EE2 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FAFD8ACF1B68571D000B2364 /* Core Data */ = {
+			isa = PBXGroup;
+			children = (
+				E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */,
+				FAFD8ACC1B6856FA000B2364 /* Ditto.swift */,
+				FAFD8AC91B6856FA000B2364 /* Category.swift */,
+				FAFCAE7119F90BA6000F0318 /* DittoStore.swift */,
+			);
+			name = "Core Data";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -294,6 +314,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAFD8AC81B685182000B2364 /* Ditto.xcdatamodeld in Resources */,
 				FA70EAEA19F5C17700960EE2 /* Images.xcassets in Resources */,
 				FA70EAE419F5A7BC00960EE2 /* KeyboardViewController.xib in Resources */,
 			);
@@ -309,6 +330,8 @@
 				FA70EAB319F5A49D00960EE2 /* ListViewController.swift in Sources */,
 				FA237AB719F9CAB0007E67D5 /* NavigationController.swift in Sources */,
 				FABFBD361B4A140F004BF2F9 /* ObjectTableViewCell.swift in Sources */,
+				E82B6E001B5E120C00FDCE3A /* Ditto.xcdatamodeld in Sources */,
+				FAFD8ACD1B6856FA000B2364 /* Ditto.swift in Sources */,
 				FAD4545C1A1EC16900D825EC /* KeyboardAccessory.swift in Sources */,
 				FAAE729A1B474CC000F3696E /* CategoryPicker.swift in Sources */,
 				FAFCAE7219F90BA6000F0318 /* DittoStore.swift in Sources */,
@@ -318,6 +341,7 @@
 				FA2ECD1119F8C207006B413E /* EditViewController.swift in Sources */,
 				FABFBD321B49ECCD004BF2F9 /* CategoryHeaderView.swift in Sources */,
 				FAAE729E1B47874B00F3696E /* DittoObjectType.swift in Sources */,
+				FAFD8ACA1B6856FA000B2364 /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,12 +350,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				FABFBD371B4A259D004BF2F9 /* ObjectTableViewCell.swift in Sources */,
+				FAFD8ACE1B6856FA000B2364 /* Ditto.swift in Sources */,
 				FAD4545E1A1ECF6400D825EC /* DarkKeyboardButton.swift in Sources */,
 				FAD454621A1EE04800D825EC /* DelayedRepeatTimer.swift in Sources */,
 				E84DB89F1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift in Sources */,
 				FAD454601A1ED40500D825EC /* LightKeyboardButton.swift in Sources */,
 				FA83FA951A01FFD80061192A /* DittoStore.swift in Sources */,
 				FA70EAD919F5A56300960EE2 /* KeyboardViewController.swift in Sources */,
+				FAFD8ACB1B6856FA000B2364 /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -527,6 +553,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				E82B6DFF1B5E120C00FDCE3A /* Ditto.xcdatamodel */,
+			);
+			currentVersion = E82B6DFF1B5E120C00FDCE3A /* Ditto.xcdatamodel */;
+			name = Ditto.xcdatamodeld;
+			path = Ditto/Ditto.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = FA70EAA319F5A49D00960EE2 /* Project object */;
 }

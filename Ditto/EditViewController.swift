@@ -33,7 +33,7 @@ class EditViewController: UIViewController {
         self.objectType = .Ditto
         self.categoryIndex = categoryIndex
         self.dittoIndex = dittoIndex
-        self.categoryPicker = CategoryPicker(categories: dittoStore.cachedCategories, selected: categoryIndex)
+        self.categoryPicker = CategoryPicker(categories: dittoStore.getCategories(), selected: categoryIndex)
         self.keyboardAccessory = KeyboardAccessory(categoryPicker: categoryPicker!)
         
         super.init(nibName: "EditViewController", bundle: nil)
