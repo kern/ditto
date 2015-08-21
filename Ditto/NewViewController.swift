@@ -24,7 +24,7 @@ class NewViewController: UIViewController, UITextViewDelegate {
             if dittoStore.isEmpty() {
                 self.categoryPicker = CategoryPicker(categories: ["General"])
             } else {
-                self.categoryPicker = CategoryPicker(categories: dittoStore.cachedCategories)
+                self.categoryPicker = CategoryPicker(categories: dittoStore.getCategories())
             }
         
             self.keyboardAccessory = KeyboardAccessory(categoryPicker: categoryPicker!)
