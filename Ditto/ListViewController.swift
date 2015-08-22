@@ -37,6 +37,12 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         tableView.dataSource = self
         tableView.registerClass(ObjectTableViewCell.classForCoder(), forCellReuseIdentifier: "ObjectTableViewCell")
         view = tableView
+        
+        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("pollTableData"), userInfo: nil, repeats: true)
+    }
+    
+    func pollTableData() {
+        tableView.reloadData()
     }
 
     required init(coder: NSCoder) {

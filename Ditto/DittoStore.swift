@@ -72,35 +72,6 @@ class DittoStore : NSObject {
     //===================
     // MARK: Persistence
     
-    func dumpStore() {
-        
-        println("========")
-        println()
-        
-        let entities = DittoStore.managedObjectModel.entities as! [NSEntityDescription]
-        
-        println("Entities")
-        println(entities)
-        
-        for entity in entities {
-            
-            let request = NSFetchRequest()
-            request.entity = entity
-            let results = context.executeFetchRequest(request, error: nil)!
-//
-//            println(entity.name! + " (" + String(results.count) + "):")
-//            println()
-//            for x in results {
-//                println(x)
-//            }
-//            println()
-
-        }
-        
-        println("========")
-
-    }
-    
     lazy var context: NSManagedObjectContext = {
         return DittoStore.managedObjectContext
     }()
@@ -111,9 +82,6 @@ class DittoStore : NSObject {
             fatalError(err!.localizedDescription)
         }
     }
-    
-//    func loadPresets(profile: Profile) {
-//            }
     
     func createProfile() -> Profile {
         let profile = NSEntityDescription.insertNewObjectForEntityForName("Profile", inManagedObjectContext: DittoStore.managedObjectContext) as! Profile
@@ -133,7 +101,7 @@ class DittoStore : NSObject {
         return profile
     }
     
-    lazy var profile: Profile = {
+    func getProfile() -> Profile {
         let fetchRequest = NSFetchRequest(entityName: "Profile")
         var error: NSError?
         if let profiles = DittoStore.managedObjectContext.executeFetchRequest(fetchRequest, error: &error) {
@@ -146,15 +114,13 @@ class DittoStore : NSObject {
             fatalError(error!.localizedDescription)
         }
         
-    }()
-    
-
+    }
     
     //===============
     // MARK: Getters
     
     func getCategories() -> [String] {
-        return Array(profile.categories).map({ (category) in
+        return Array(getProfile().categories).map({ (category) in
             let c = category as! Category
             return c.title
         })
@@ -162,12 +128,12 @@ class DittoStore : NSObject {
     }
     
     func getCategory(categoryIndex: Int) -> String {
-        let category = profile.categories[categoryIndex] as! Category
+        let category = getProfile().categories[categoryIndex] as! Category
         return category.title
     }
     
     func getDittosInCategory(categoryIndex: Int) -> [String] {
-        let category = profile.categories[categoryIndex] as! Category
+        let category = getProfile().categories[categoryIndex] as! Category
         let dittos = Array(category.dittos)
         return dittos.map({ (ditto) in
             let d = ditto as! Ditto
@@ -176,7 +142,7 @@ class DittoStore : NSObject {
     }
     
     func getDittoInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
-        let category = profile.categories[categoryIndex] as! Category
+        let category = getProfile().categories[categoryIndex] as! Category
         let ditto = category.dittos[dittoIndex] as! Ditto
         return ditto.text
     }
@@ -197,12 +163,12 @@ class DittoStore : NSObject {
     }
     
     func countInCategory(categoryIndex: Int) -> Int {
-        let category = profile.categories[categoryIndex] as! Category
+        let category = getProfile().categories[categoryIndex] as! Category
         return category.dittos.count
     }
     
     func countCategories() -> Int {
-        return profile.categories.count
+        return getProfile().categories.count
     }
     
     //=============================
@@ -214,28 +180,28 @@ class DittoStore : NSObject {
     
     func addCategoryWithName(name: String) {
         var category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: context) as! Category
-        category.profile = profile
+        category.profile = getProfile()
         category.title = name
         save()
     }
     
     func removeCategoryAtIndex(categoryIndex: Int) {
-        let category = profile.categories[categoryIndex] as! Category
+        let category = getProfile().categories[categoryIndex] as! Category
         context.deleteObject(category)
         save()
     }
     
     func moveCategoryFromIndex(fromIndex: Int, toIndex: Int) {
-        let categories = profile.categories.mutableCopy() as! NSMutableOrderedSet
+        let categories = getProfile().categories.mutableCopy() as! NSMutableOrderedSet
         let category = categories[fromIndex] as! Category
         categories.removeObjectAtIndex(fromIndex)
         categories.insertObject(category, atIndex: toIndex)
-        profile.categories = categories as NSOrderedSet
+        getProfile().categories = categories as NSOrderedSet
         save()
     }
     
     func editCategoryAtIndex(index: Int, name: String) {
-        let category = profile.categories[index] as! Category
+        let category = getProfile().categories[index] as! Category
         category.title = name
         save()
     }
@@ -245,13 +211,13 @@ class DittoStore : NSObject {
     
     func addDittoToCategory(categoryIndex: Int, text: String) {
         var ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: context) as! Ditto
-        ditto.category = profile.categories[categoryIndex] as! Category
+        ditto.category = getProfile().categories[categoryIndex] as! Category
         ditto.text = text
         save()
     }
     
     func removeDittoFromCategory(categoryIndex: Int, index dittoIndex: Int) {
-        let category = profile.categories[categoryIndex] as! Category
+        let category = getProfile().categories[categoryIndex] as! Category
         let ditto = category.dittos[dittoIndex] as! Ditto
         context.deleteObject(ditto)
         save()
@@ -260,7 +226,7 @@ class DittoStore : NSObject {
     func moveDittoFromCategory(fromCategoryIndex: Int, index fromDittoIndex: Int, toCategory toCategoryIndex: Int, index toDittoIndex: Int) {
         
         if fromCategoryIndex == toCategoryIndex {
-            let category = profile.categories[fromCategoryIndex] as! Category
+            let category = getProfile().categories[fromCategoryIndex] as! Category
             let dittos = category.dittos.mutableCopy() as! NSMutableOrderedSet
             let ditto = dittos[fromDittoIndex] as! Ditto
             dittos.removeObjectAtIndex(fromDittoIndex)
@@ -270,8 +236,8 @@ class DittoStore : NSObject {
         
         } else {
             
-            let fromCategory = profile.categories[fromCategoryIndex] as! Category
-            let toCategory = profile.categories[toCategoryIndex] as! Category
+            let fromCategory = getProfile().categories[fromCategoryIndex] as! Category
+            let toCategory = getProfile().categories[toCategoryIndex] as! Category
             
             let fromDittos = fromCategory.dittos.mutableCopy() as! NSMutableOrderedSet
             let toDittos = toCategory.dittos.mutableCopy() as! NSMutableOrderedSet
@@ -296,7 +262,7 @@ class DittoStore : NSObject {
     }
     
     func editDittoInCategory(categoryIndex: Int, index dittoIndex: Int, text: String) {
-        let category = profile.categories[categoryIndex] as! Category
+        let category = getProfile().categories[categoryIndex] as! Category
         let ditto = category.dittos[dittoIndex] as! Ditto
         ditto.text = text
         save()
