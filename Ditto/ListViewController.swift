@@ -42,7 +42,9 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func pollTableData() {
-        tableView.reloadData()
+        if !tableView.editing {
+            tableView.reloadData()
+        }
     }
 
     required init(coder: NSCoder) {
