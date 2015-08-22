@@ -221,7 +221,7 @@ class DittoStore : NSObject {
     
     func removeCategoryAtIndex(categoryIndex: Int) {
         let category = profile.categories[categoryIndex] as! Category
-        context.delete(category)
+        context.deleteObject(category)
         save()
     }
     
@@ -253,7 +253,7 @@ class DittoStore : NSObject {
     func removeDittoFromCategory(categoryIndex: Int, index dittoIndex: Int) {
         let category = profile.categories[categoryIndex] as! Category
         let ditto = category.dittos[dittoIndex] as! Ditto
-        context.delete(ditto)
+        context.deleteObject(ditto)
         save()
     }
     
