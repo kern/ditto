@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E80587AF1B8865C80035B80B /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80587AE1B8865C80035B80B /* Profile.swift */; };
+		E80587B01B8865C80035B80B /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80587AE1B8865C80035B80B /* Profile.swift */; };
 		E82B6E001B5E120C00FDCE3A /* Ditto.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */; };
 		E84DB89F1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */; };
 		FA237AB719F9CAB0007E67D5 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA237AB619F9CAB0007E67D5 /* NavigationController.swift */; };
@@ -66,6 +68,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E80587AE1B8865C80035B80B /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Profile.swift; path = Ditto/Profile.swift; sourceTree = "<group>"; };
 		E82B6DFF1B5E120C00FDCE3A /* Ditto.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Ditto.xcdatamodel; sourceTree = "<group>"; };
 		E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDittoFromClipboardViewController.swift; sourceTree = "<group>"; };
 		FA237AB619F9CAB0007E67D5 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
@@ -204,6 +207,7 @@
 		FAFD8ACF1B68571D000B2364 /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
+				E80587AE1B8865C80035B80B /* Profile.swift */,
 				E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */,
 				FAFD8ACC1B6856FA000B2364 /* Ditto.swift */,
 				FAFD8AC91B6856FA000B2364 /* Category.swift */,
@@ -336,6 +340,7 @@
 				FAAE729A1B474CC000F3696E /* CategoryPicker.swift in Sources */,
 				FAFCAE7219F90BA6000F0318 /* DittoStore.swift in Sources */,
 				FAAE729C1B47559200F3696E /* CategoryField.swift in Sources */,
+				E80587AF1B8865C80035B80B /* Profile.swift in Sources */,
 				FAFCAE7419F98CF7000F0318 /* NewViewController.swift in Sources */,
 				FA70EAB119F5A49D00960EE2 /* AppDelegate.swift in Sources */,
 				FA2ECD1119F8C207006B413E /* EditViewController.swift in Sources */,
@@ -350,6 +355,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FABFBD371B4A259D004BF2F9 /* ObjectTableViewCell.swift in Sources */,
+				E80587B01B8865C80035B80B /* Profile.swift in Sources */,
 				FAFD8ACE1B6856FA000B2364 /* Ditto.swift in Sources */,
 				FAD4545E1A1ECF6400D825EC /* DarkKeyboardButton.swift in Sources */,
 				FAD454621A1EE04800D825EC /* DelayedRepeatTimer.swift in Sources */,
