@@ -11,6 +11,8 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var newButton: UIBarButtonItem!
     var doneButton: UIBarButtonItem!
     
+    let defaults = NSUserDefaults(suiteName: "group.io.asaf.ditto")!
+    
     init() {
         
         objectType = .Ditto
@@ -37,14 +39,6 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         tableView.dataSource = self
         tableView.registerClass(ObjectTableViewCell.classForCoder(), forCellReuseIdentifier: "ObjectTableViewCell")
         view = tableView
-        
-        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("pollTableData"), userInfo: nil, repeats: true)
-    }
-    
-    func pollTableData() {
-        if !tableView.editing {
-            tableView.reloadData()
-        }
     }
 
     required init(coder: NSCoder) {
@@ -52,6 +46,10 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewWillAppear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector:"handleAppInForeground", name:
+        UIApplicationWillEnterForegroundNotification, object: nil)
+        
+        loadPendingDittos()
         tableView.reloadData()
     }
     
@@ -255,6 +253,35 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         presentViewController(alert, animated: true, completion: nil)
         
+    }
+    
+    //========
+    // Helpers
+    
+    func loadPendingDittos() {
+        defaults.synchronize()
+        
+        
+        if let pendingDittos = defaults.dictionaryForKey("pendingDittos") as? [String:[String]] {
+            if let pendingCategories = defaults.arrayForKey("pendingCategories") as? [String] {
+                let categories = dittoStore.getCategories()
+                for (index, category) in  enumerate(categories) {
+                    if let dittos = pendingDittos[category] {
+                        for ditto in dittos {
+                            dittoStore.addDittoToCategory(index, text: ditto)
+                        }
+                    }
+                }
+                defaults.removeObjectForKey("pendingDittos")
+                defaults.removeObjectForKey("pendingCategories")
+                defaults.synchronize()
+            }
+        }
+    }
+    
+    func handleAppInForeground() {
+        loadPendingDittos()
+        tableView.reloadData()
     }
     
 }

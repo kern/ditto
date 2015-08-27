@@ -28,9 +28,10 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     var keyboardHeightConstraint: NSLayoutConstraint!
     @IBOutlet var tabBarHeightConstraint: NSLayoutConstraint!
     
-    let dittoStore: DittoStore
+    let dittoStore: PendingDittoStore
     let addDittoViewController = AddDittoFromClipboardViewController()
     var backspaceTimer: DelayedRepeatTimer!
+    let defaults = NSUserDefaults(suiteName: "group.io.asaf.ditto")!
     
     let ADD_DITTO_TEXT_INPUT_PLACEHOLDER = "Select and copy desired text..."
     
@@ -40,7 +41,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     var selectedTabArrow: CAShapeLayer = CAShapeLayer()
     
     init() {
-        dittoStore = DittoStore()
+        dittoStore = PendingDittoStore()
         tabViews = []
         selectedTab = -1
         selectedRow = -1
