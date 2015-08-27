@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		E80587AF1B8865C80035B80B /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80587AE1B8865C80035B80B /* Profile.swift */; };
 		E80587B01B8865C80035B80B /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80587AE1B8865C80035B80B /* Profile.swift */; };
+		E80587B21B8EFE060035B80B /* PendingDittoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80587B11B8EFE060035B80B /* PendingDittoStore.swift */; };
+		E80587B31B8EFE060035B80B /* PendingDittoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80587B11B8EFE060035B80B /* PendingDittoStore.swift */; };
 		E82B6E001B5E120C00FDCE3A /* Ditto.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */; };
 		E84DB89F1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */; };
 		FA237AB719F9CAB0007E67D5 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA237AB619F9CAB0007E67D5 /* NavigationController.swift */; };
@@ -69,6 +71,7 @@
 
 /* Begin PBXFileReference section */
 		E80587AE1B8865C80035B80B /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Profile.swift; path = Ditto/Profile.swift; sourceTree = "<group>"; };
+		E80587B11B8EFE060035B80B /* PendingDittoStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PendingDittoStore.swift; path = Ditto/PendingDittoStore.swift; sourceTree = "<group>"; };
 		E82B6DFF1B5E120C00FDCE3A /* Ditto.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Ditto.xcdatamodel; sourceTree = "<group>"; };
 		E84DB89E1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDittoFromClipboardViewController.swift; sourceTree = "<group>"; };
 		FA237AB619F9CAB0007E67D5 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
@@ -212,6 +215,7 @@
 				FAFD8ACC1B6856FA000B2364 /* Ditto.swift */,
 				FAFD8AC91B6856FA000B2364 /* Category.swift */,
 				FAFCAE7119F90BA6000F0318 /* DittoStore.swift */,
+				E80587B11B8EFE060035B80B /* PendingDittoStore.swift */,
 			);
 			name = "Core Data";
 			sourceTree = "<group>";
@@ -265,7 +269,7 @@
 				TargetAttributes = {
 					FA70EAAA19F5A49D00960EE2 = {
 						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = G8DHPYJA37;
+						DevelopmentTeam = RAT9S49R99;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -274,7 +278,7 @@
 					};
 					FA70EAD319F5A56300960EE2 = {
 						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = G8DHPYJA37;
+						DevelopmentTeam = RAT9S49R99;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -339,6 +343,7 @@
 				FAD4545C1A1EC16900D825EC /* KeyboardAccessory.swift in Sources */,
 				FAAE729A1B474CC000F3696E /* CategoryPicker.swift in Sources */,
 				FAFCAE7219F90BA6000F0318 /* DittoStore.swift in Sources */,
+				E80587B21B8EFE060035B80B /* PendingDittoStore.swift in Sources */,
 				FAAE729C1B47559200F3696E /* CategoryField.swift in Sources */,
 				E80587AF1B8865C80035B80B /* Profile.swift in Sources */,
 				FAFCAE7419F98CF7000F0318 /* NewViewController.swift in Sources */,
@@ -360,6 +365,7 @@
 				FAD4545E1A1ECF6400D825EC /* DarkKeyboardButton.swift in Sources */,
 				FAD454621A1EE04800D825EC /* DelayedRepeatTimer.swift in Sources */,
 				E84DB89F1B37BEEA004A75CC /* AddDittoFromClipboardViewController.swift in Sources */,
+				E80587B31B8EFE060035B80B /* PendingDittoStore.swift in Sources */,
 				FAD454601A1ED40500D825EC /* LightKeyboardButton.swift in Sources */,
 				FA83FA951A01FFD80061192A /* DittoStore.swift in Sources */,
 				FA70EAD919F5A56300960EE2 /* KeyboardViewController.swift in Sources */,
