@@ -86,6 +86,7 @@ class DittoStore : NSObject {
     }
     
     func createProfile() -> Profile {
+        
         let profile = NSEntityDescription.insertNewObjectForEntityForName("Profile", inManagedObjectContext: DittoStore.managedObjectContext) as! Profile
         for categoryName in PRESET_CATEGORIES {
             var category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: DittoStore.managedObjectContext) as! Category
@@ -110,6 +111,9 @@ class DittoStore : NSObject {
                 ditto.text = dittoText
             }
         }
+        
+        defaults.removeObjectForKey("dittos")
+        defaults.synchronize()
         
         save()
         
