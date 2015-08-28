@@ -104,7 +104,7 @@ class DittoStore : NSObject {
         if let dittos = defaults.arrayForKey("dittos") as? [String] {
             var category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: DittoStore.managedObjectContext) as! Category
             category.profile = profile
-            category.title = "Saved"
+            category.title = "General"
             for dittoText in dittos {
                 var ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: DittoStore.managedObjectContext) as! Ditto
                 ditto.category = category
