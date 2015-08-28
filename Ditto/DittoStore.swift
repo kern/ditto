@@ -4,14 +4,14 @@ import CoreData
 class DittoStore : NSObject {
     
     let MAX_CATEGORIES = 8
-    let PRESET_CATEGORIES = ["Instructions", "Driving", "Business", "Tinder"]
+    let PRESET_CATEGORIES = ["Instructions", "Driving", "Business", "🔥❤️"]
     let PRESET_DITTOS = [
         "Instructions": [
             "Welcome to Ditto! 👋",
             "Add Ditto in Settings > General > Keyboard > Keyboards.",
             "You must allow full access for Ditto to work properly. After you've added the Ditto keyboard, select it, and turn on Allow Full Access.",
             "We DO NOT access ANYTHING that you type on the keyboard.",
-            "Everything is saved privately on your device.",
+            "Everything is saved privately on your device. 🔒",
             "Use the Ditto app to customize your dittos.",
             "Add a triple underscore ___ to your ditto to control where your cursor lands.",
             "You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try!",
@@ -30,9 +30,9 @@ class DittoStore : NSObject {
             "My name is Asaf, and I work at Shmoogle on the search team. We are always looking for talented candidates to join our team, and with your impressive background, we think you could be a great fit. Please let me know if you are interested, and if so, your availability to chat this week."
         ],
         
-        "Tinder": [
-            "I'm not a photographer, but I can picture us together.",
-            "Was your dad a thief? Because someone stole the stars from the sky and put them in your eyes.",
+        "🔥❤️": [
+            "I'm not a photographer, but I can picture us together. 📷",
+            "Was your dad a thief? Because someone stole the stars from the sky and put them in your eyes ✨👀✨.",
             "Do you have a Band-Aid? Because I just scraped my knee falling for you."
         ]
     ]
