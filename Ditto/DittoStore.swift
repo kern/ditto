@@ -37,6 +37,8 @@ class DittoStore : NSObject {
         ]
     ]
     
+    let defaults = NSUserDefaults(suiteName: "group.io.asaf.ditto")!
+    
     static var managedObjectModel: NSManagedObjectModel = {
         let modelURL = NSBundle.mainBundle().URLForResource("Ditto", withExtension: "momd")!
         return NSManagedObjectModel(contentsOfURL: modelURL)!
@@ -96,6 +98,19 @@ class DittoStore : NSObject {
                 ditto.text = dittoText
             }
         }
+        
+        // Migrate dittos from V1
+        if let dittos = defaults.arrayForKey("dittos") as? [String] {
+            var category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: DittoStore.managedObjectContext) as! Category
+            category.profile = profile
+            category.title = "Saved"
+            for dittoText in dittos {
+                var ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: DittoStore.managedObjectContext) as! Ditto
+                ditto.category = category
+                ditto.text = dittoText
+            }
+        }
+        
         save()
         
         return profile
