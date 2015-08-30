@@ -238,11 +238,21 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         
         tabViews = (0..<countTabs()).map({ i in
             
-            let button = UIView(frame: CGRectMake(CGFloat(i) * w, 0, w, h))
-            button.backgroundColor = self.colorForTab(i)
-            self.tabBar.addSubview(button)
+            let tab = UIView(frame: CGRectMake(CGFloat(i) * w, 0, w, h))
+            tab.backgroundColor =  self.colorForTab(i)
             
-            return button
+            let tabLabel = UILabel(frame: CGRectMake(8, 0, w - 16, h))
+            tabLabel.textColor = UIColor.whiteColor()
+            tabLabel.text = self.dittoStore.getCategory(i)
+            tabLabel.font = tabLabel.font.fontWithSize(14.0)
+            tabLabel.textAlignment = .Center
+            tabLabel.lineBreakMode = NSLineBreakMode.ByClipping
+            self.truncateToLastFullLetter(tabLabel, width: w - 16)
+            
+            tab.addSubview(tabLabel)
+            self.tabBar.addSubview(tab)
+            
+            return tab
         })
         
         tabBar.bringSubviewToFront(tabTitleLabel)
@@ -424,6 +434,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     //=================
     // MARK: - Helpers
+    
+    func truncateToLastFullLetter(label: UILabel, width: CGFloat) {
+        while label.intrinsicContentSize().width > width {
+            label.text = label.text!.substringToIndex(label.text!.endIndex.predecessor())
+        }
+    }
     
     func backspaceFire() {
         let proxy = textDocumentProxy as! UITextDocumentProxy
