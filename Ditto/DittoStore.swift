@@ -4,7 +4,7 @@ import CoreData
 class DittoStore : NSObject {
     
     let MAX_CATEGORIES = 8
-    let PRESET_CATEGORIES = ["Instructions", "Driving", "Business", "🔥❤️"]
+    let PRESET_CATEGORIES = ["Instructions", "Driving", "Business", "Dating 🔥❤️"]
     let PRESET_DITTOS = [
         "Instructions": [
             "Welcome to Ditto! 👋",
@@ -15,14 +15,14 @@ class DittoStore : NSObject {
             "Use the Ditto app to customize your dittos.",
             "Add a triple underscore ___ to your ditto to control where your cursor lands.",
             "You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try!",
-            "Hold down a keyboard tab to uncover the category, and swipe between tabs for quick access."
+            "Hold down a keyboard tab to expand the category title, and swipe on the tab bar for quick access."
         ],
         
         "Driving": [
             "I'm driving, can you call me?",
             "I'll be there in ___ minutes!",
             "What's the address?",
-            "Can't text, I'm driving."
+            "Can't text, I'm driving 🚘"
         ],
         
         "Business": [
@@ -30,7 +30,7 @@ class DittoStore : NSObject {
             "My name is Asaf, and I work at Shmoogle on the search team. We are always looking for talented candidates to join our team, and with your impressive background, we think you could be a great fit. Please let me know if you are interested, and if so, your availability to chat this week."
         ],
         
-        "🔥❤️": [
+        "Dating 🔥❤️": [
             "I'm not a photographer, but I can picture us together. 📷",
             "Was your dad a thief? Because someone stole the stars from the sky and put them in your eyes ✨👀✨.",
             "Do you have a Band-Aid? Because I just scraped my knee falling for you."
