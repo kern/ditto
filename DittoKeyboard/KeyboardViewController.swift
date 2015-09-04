@@ -33,7 +33,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     var backspaceTimer: DelayedRepeatTimer!
     let defaults = NSUserDefaults(suiteName: "group.io.asaf.ditto")!
     
-    let ADD_DITTO_TEXT_INPUT_PLACEHOLDER = "Select and copy desired text..."
+    let ADD_DITTO_TEXT_INPUT_PLACEHOLDER = "Select and copy desired text... if it doesn't appear, you may need to turn on \"Allow Full Access\" in your device's keyboard settings."
     
     var tabViews: [UIView]
     var selectedTab: Int
@@ -420,16 +420,19 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func categoryBarTapped(sender: UITapGestureRecognizer) {
-        if categoryPicker.hidden {
-            selectedCategory.text = "Done"
-            categoryPicker.hidden = false
-            addDittoButtons.hidden = true
-            addDittoTextView.hidden = true
-        } else {
-            selectedCategory.text = selectedCategoryFromPicker()
-            categoryPicker.hidden = true
-            addDittoButtons.hidden = false
-            addDittoTextView.hidden = false
+        // If full access isn't allowed (pasteboard isn't accessible), we don't want to be able to select a category
+        if let pasteBoardString = UIPasteboard.generalPasteboard().string {
+            if categoryPicker.hidden {
+                selectedCategory.text = "Done"
+                categoryPicker.hidden = false
+                addDittoButtons.hidden = true
+                addDittoTextView.hidden = true
+            } else {
+                selectedCategory.text = selectedCategoryFromPicker()
+                categoryPicker.hidden = true
+                addDittoButtons.hidden = false
+                addDittoTextView.hidden = false
+            }
         }
     }
     //=================
