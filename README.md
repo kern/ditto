@@ -1,11 +1,9 @@
-Ditto
-=====
+# Ditto
 
 An iOS keyboard for quickly composing repetitive emails.
 
-License
--------
+## License
 
-Copyright 2014 Alexander Kern, Anish Patel, Asaf Avidan Antonir, Laith Alqaisi, Julia Solano. All rights reserved.
+Copyright 2014-2015 Alexander Kern, Anish Patel, Asaf Avidan Antonir, Laith Alqaisi, Julia Solano. All rights reserved.
 
 That means you, Ken.
