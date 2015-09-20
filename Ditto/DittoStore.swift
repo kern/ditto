@@ -37,7 +37,7 @@ class DittoStore : NSObject {
         ]
     ]
     
-    let defaults = NSUserDefaults(suiteName: "group.io.asaf.ditto")!
+    let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
     
     static var managedObjectModel: NSManagedObjectModel = {
         let modelURL = NSBundle.mainBundle().URLForResource("Ditto", withExtension: "momd")!
@@ -46,7 +46,7 @@ class DittoStore : NSObject {
     
     static var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
         
-        let directory = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.io.asaf.ditto")
+        let directory = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.io.kern.ditto")
         let storeURL = directory?.URLByAppendingPathComponent("Ditto.sqlite")
         
         let options = [
@@ -57,8 +57,13 @@ class DittoStore : NSObject {
         let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
         
         var err: NSError? = nil
-        if persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: options, error: &err) == nil {
+        do {
+            try persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: options)
+        } catch var error as NSError {
+            err = error
             fatalError(err!.localizedDescription)
+        } catch {
+            fatalError()
         }
         
         return persistentStoreCoordinator
@@ -80,7 +85,10 @@ class DittoStore : NSObject {
     
     func save() {
         var err: NSError? = nil
-        if !DittoStore.managedObjectContext.save(&err) {
+        do {
+            try DittoStore.managedObjectContext.save()
+        } catch let error as NSError {
+            err = error
             fatalError(err!.localizedDescription)
         }
     }
@@ -89,12 +97,12 @@ class DittoStore : NSObject {
         
         let profile = NSEntityDescription.insertNewObjectForEntityForName("Profile", inManagedObjectContext: DittoStore.managedObjectContext) as! Profile
         for categoryName in PRESET_CATEGORIES {
-            var category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: DittoStore.managedObjectContext) as! Category
+            let category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: DittoStore.managedObjectContext) as! Category
             category.profile = profile
             category.title = categoryName
             
             for dittoText in PRESET_DITTOS[categoryName]! {
-                var ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: DittoStore.managedObjectContext) as! Ditto
+                let ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: DittoStore.managedObjectContext) as! Ditto
                 ditto.category = category
                 ditto.text = dittoText
             }
@@ -103,12 +111,12 @@ class DittoStore : NSObject {
         // Migrate dittos from V1
         defaults.synchronize()
         if let dittos = defaults.arrayForKey("dittos") as? [String] {
-            var category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: DittoStore.managedObjectContext) as! Category
+            let category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: DittoStore.managedObjectContext) as! Category
             category.profile = profile
             category.title = "General"
             
             for dittoText in dittos {
-                var ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: DittoStore.managedObjectContext) as! Ditto
+                let ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: DittoStore.managedObjectContext) as! Ditto
                 ditto.category = category
                 ditto.text = dittoText
             }
@@ -125,13 +133,15 @@ class DittoStore : NSObject {
     func getProfile() -> Profile {
         let fetchRequest = NSFetchRequest(entityName: "Profile")
         var error: NSError?
-        if let profiles = DittoStore.managedObjectContext.executeFetchRequest(fetchRequest, error: &error) {
+        do {
+            let profiles = try DittoStore.managedObjectContext.executeFetchRequest(fetchRequest)
             if profiles.count > 0 {
                 return profiles[0] as! Profile
             } else {
                 return self.createProfile()
             }
-        } else {
+        } catch let error1 as NSError {
+            error = error1
             fatalError(error!.localizedDescription)
         }
         
@@ -200,7 +210,7 @@ class DittoStore : NSObject {
     }
     
     func addCategoryWithName(name: String) {
-        var category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: context) as! Category
+        let category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: context) as! Category
         category.profile = getProfile()
         category.title = name
         save()
@@ -231,7 +241,7 @@ class DittoStore : NSObject {
     // MARK: - Ditto Management
     
     func addDittoToCategory(categoryIndex: Int, text: String) {
-        var ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: context) as! Ditto
+        let ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: context) as! Ditto
         ditto.category = getProfile().categories[categoryIndex] as! Category
         ditto.text = text
         save()

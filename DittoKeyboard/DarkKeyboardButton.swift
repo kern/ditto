@@ -2,7 +2,7 @@ import UIKit
 
 class DarkKeyboardButton: UIButton {
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         backgroundColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1)
     }

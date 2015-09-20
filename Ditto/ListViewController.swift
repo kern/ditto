@@ -11,7 +11,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var newButton: UIBarButtonItem!
     var doneButton: UIBarButtonItem!
     
-    let defaults = NSUserDefaults(suiteName: "group.io.asaf.ditto")!
+    let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
     
     init() {
         
@@ -41,7 +41,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         view = tableView
     }
 
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -265,7 +265,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if let pendingDittos = defaults.dictionaryForKey("pendingDittos") as? [String:[String]] {
             if let pendingCategories = defaults.arrayForKey("pendingCategories") as? [String] {
                 let categories = dittoStore.getCategories()
-                for (index, category) in  enumerate(categories) {
+                for (index, category) in  categories.enumerate() {
                     if let dittos = pendingDittos[category] {
                         for ditto in dittos {
                             dittoStore.addDittoToCategory(index, text: ditto)

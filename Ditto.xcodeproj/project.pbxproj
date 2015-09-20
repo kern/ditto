@@ -265,11 +265,13 @@
 		FA70EAA319F5A49D00960EE2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0600;
 				TargetAttributes = {
 					FA70EAAA19F5A49D00960EE2 = {
 						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = RAT9S49R99;
+						DevelopmentTeam = G8DHPYJA37;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -278,7 +280,7 @@
 					};
 					FA70EAD319F5A56300960EE2 = {
 						CreatedOnToolsVersion = 6.0.1;
-						DevelopmentTeam = RAT9S49R99;
+						DevelopmentTeam = G8DHPYJA37;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;

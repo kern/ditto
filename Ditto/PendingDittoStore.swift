@@ -3,7 +3,7 @@ import CoreData
 
 class PendingDittoStore : NSObject {
     
-    let defaults = NSUserDefaults(suiteName: "group.io.asaf.ditto")!
+    let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
     let dittoStore = DittoStore()
     
     
@@ -23,7 +23,7 @@ class PendingDittoStore : NSObject {
         let category = dittoStore.getCategory(categoryIndex)
         if let pendingDittos = defaults.objectForKey("pendingDittos") as? [String: [String]]{
             if let pendingCategories = defaults.objectForKey("pendingCategories") as? [String] {
-                if contains(pendingCategories, category) {
+                if pendingCategories.contains(category) {
                     savedDittos = savedDittos + pendingDittos[category]!
                 }
             }
@@ -32,7 +32,6 @@ class PendingDittoStore : NSObject {
     }
     
     func getDittoInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
-        var dittos = getDittosInCategory(categoryIndex)
         return getDittosInCategory(categoryIndex)[dittoIndex]
     }
     
@@ -56,7 +55,7 @@ class PendingDittoStore : NSObject {
         var count = dittoStore.countInCategory(categoryIndex)
         if let pendingDittos = defaults.objectForKey("pendingDittos") as? [String: [String]]{
             if let pendingCategories = defaults.objectForKey("pendingCategories") as? [String] {
-                if contains(pendingCategories, category) {
+                if pendingCategories.contains(category) {
                     count += pendingDittos[category]!.count
                 }
             }
@@ -79,7 +78,7 @@ class PendingDittoStore : NSObject {
         
         if var pendingDittos = defaults.dictionaryForKey("pendingDittos") as? [String:[String]] {
             if var pendingCategories = defaults.arrayForKey("pendingCategories") as? [String] {
-                if contains(pendingCategories, category){
+                if pendingCategories.contains(category){
                     var dittos = pendingDittos[category]
                     dittos!.append(text)
                     pendingDittos[category] = dittos!

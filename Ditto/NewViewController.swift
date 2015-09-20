@@ -54,7 +54,7 @@ class NewViewController: UIViewController, UITextViewDelegate {
         
     }
 
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -118,7 +118,7 @@ class NewViewController: UIViewController, UITextViewDelegate {
     }
     
     func textViewDidChange(textView: UITextView) {
-        navigationItem.rightBarButtonItem?.enabled = count(textView.text) > 0
+        navigationItem.rightBarButtonItem?.enabled = textView.text.characters.count > 0
     }
     
 }

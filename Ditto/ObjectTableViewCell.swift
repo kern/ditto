@@ -10,7 +10,7 @@ class ObjectTableViewCell: UITableViewCell {
         setTextLabelConstraints()
     }
 
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -50,13 +50,13 @@ class ObjectTableViewCell: UITableViewCell {
         
         let w = widthWithDisclosure(disclosure)
         var height = text.boundingRectWithSize(CGSizeMake(w, CGFloat.max),
-            options: .UsesLineFragmentOrigin | .UsesFontLeading,
+            options: [.UsesLineFragmentOrigin, .UsesFontLeading],
             attributes: [NSFontAttributeName: UIFont.systemFontOfSize(UIFont.labelFontSize())],
             context: nil).size.height
         
         if truncated {
             let twoLineHeight = " \n ".boundingRectWithSize(CGSizeMake(w, CGFloat.max),
-                options: .UsesLineFragmentOrigin | .UsesFontLeading,
+                options: [.UsesLineFragmentOrigin, .UsesFontLeading],
                 attributes: [NSFontAttributeName: UIFont.systemFontOfSize(UIFont.labelFontSize())],
                 context: nil).size.height
             

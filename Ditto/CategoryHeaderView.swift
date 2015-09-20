@@ -8,7 +8,7 @@ class CategoryHeaderView: UILabel {
         textColor = UIColor(white: 0.35, alpha: 1)
     }
 
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     

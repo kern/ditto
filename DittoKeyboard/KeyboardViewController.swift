@@ -31,7 +31,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     let dittoStore: PendingDittoStore
     let addDittoViewController = AddDittoFromClipboardViewController()
     var backspaceTimer: DelayedRepeatTimer!
-    let defaults = NSUserDefaults(suiteName: "group.io.asaf.ditto")!
+    let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
     
     let ADD_DITTO_TEXT_INPUT_PLACEHOLDER = "Select and copy desired text... if it doesn't appear, you may need to turn on \"Allow Full Access\" in your device's keyboard settings."
     
@@ -48,7 +48,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         super.init(nibName: "KeyboardViewController", bundle: nil)
     }
 
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -120,8 +120,8 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
         pollPasteboard()
     }
     
-    override func textDidChange(textInput: UITextInput) {
-        let proxy = textDocumentProxy as! UITextDocumentProxy
+    override func textDidChange(textInput: UITextInput?) {
+        let proxy = textDocumentProxy 
         
         switch proxy.keyboardType! {
         case .NumberPad:
@@ -312,7 +312,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        var text = dittoStore.getDittoPreviewInCategory(selectedTab, index: indexPath.row)
+        let text = dittoStore.getDittoPreviewInCategory(selectedTab, index: indexPath.row)
         return ObjectTableViewCell.heightForText(text, truncated: selectedRow != indexPath.row, disclosure: false)
     }
     
@@ -326,7 +326,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        let proxy = textDocumentProxy as! UITextDocumentProxy
+        let proxy = textDocumentProxy 
         let ditto = dittoStore.getDittoInCategory(selectedTab, index: indexPath.row)
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
@@ -378,7 +378,7 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func returnButtonClicked() {
-        let proxy = textDocumentProxy as! UITextDocumentProxy
+        let proxy = textDocumentProxy 
         proxy.insertText("\n")
     }
     
@@ -393,12 +393,12 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     @IBAction func spaceButtonClicked() {
-        let proxy = textDocumentProxy as! UITextDocumentProxy
+        let proxy = textDocumentProxy 
         proxy.insertText(" ")
     }
     
     @IBAction func numberClicked(button: UIButton) {
-        let proxy = textDocumentProxy as! UITextDocumentProxy
+        let proxy = textDocumentProxy 
         let char = button.titleLabel?.text
         proxy.insertText(char!)
     }
@@ -445,20 +445,20 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     }
     
     func backspaceFire() {
-        let proxy = textDocumentProxy as! UITextDocumentProxy
+        let proxy = textDocumentProxy 
         proxy.deleteBackward()
     }
     
     func findCursorRange(s: String) -> (String, Int) {
-        let length = count(s)
-        let regex = NSRegularExpression(pattern: "___+", options: nil, error: nil)!
-        let match = regex.rangeOfFirstMatchInString(s, options: nil, range: NSMakeRange(0, length))
+        let length = s.characters.count
+        let regex = try! NSRegularExpression(pattern: "___+", options: [])
+        let match = regex.rangeOfFirstMatchInString(s, options: [], range: NSMakeRange(0, length))
         
         if (match.location == NSNotFound) {
             return (s, 0)
         } else {
-            let start = advance(s.startIndex, match.location)
-            let end = advance(start, match.length)
+            let start = s.startIndex.advancedBy(match.location)
+            let end = start.advancedBy(match.length)
             let range = Range(start: start, end: end)
             let newS = s.stringByReplacingCharactersInRange(range, withString: "")
             return (newS, length - match.location - match.length)
