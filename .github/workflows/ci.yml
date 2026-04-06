@@ -166,11 +166,24 @@ jobs:
             echo "Warning: iPhone 16 simulator not found"
           fi
 
+      - name: Build for UI testing
+        timeout-minutes: 12
+        run: |
+          set -o pipefail
+          xcodebuild build-for-testing \
+            -project Ditto.xcodeproj \
+            -scheme Ditto \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee /tmp/ui_build_output.log | tail -20
+
       - name: Run UI tests
         timeout-minutes: 10
         run: |
           set -o pipefail
-          xcodebuild test \
+          xcodebuild test-without-building \
             -project Ditto.xcodeproj \
             -scheme Ditto \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
