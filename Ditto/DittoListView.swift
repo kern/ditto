@@ -1,10 +1,12 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// Main list view showing either categories or dittos with a segmented control toggle.
 struct DittoListView: View {
 
     @State var store: DittoStore
     var subscriptionManager: SubscriptionManager
+    var syncSettings: SyncSettings
 
     @State private var objectType: DittoObjectType = .ditto
     @State private var isEditing = false
@@ -13,6 +15,11 @@ struct DittoListView: View {
     @State private var showMaxCategoryAlert = false
     @State private var categoryToDelete: Int?
     @State private var showSubscription = false
+    @State private var exportItem: ExportActivityItem?
+    @State private var showImporter = false
+    @State private var importResult: String?
+    @State private var showSyncSettings = false
+    @State private var showKeyboardSetup = false
 
     var body: some View {
         NavigationStack {
@@ -28,10 +35,12 @@ struct DittoListView: View {
                 .disabled(isEditing)
 
                 listContent
+                    .frame(maxHeight: .infinity)
             }
+            .frame(maxHeight: .infinity)
             .navigationTitle("Ditto")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.purple, for: .navigationBar)
+            .toolbarBackground(Color.dittoAccent, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
@@ -48,16 +57,46 @@ struct DittoListView: View {
                                 Label("Edit", systemImage: "pencil")
                             }
 
+                            if subscriptionManager.isProSubscriber {
+                                Button {
+                                    showSyncSettings = true
+                                } label: {
+                                    Label("Sync Settings", systemImage: "arrow.triangle.2.circlepath.icloud")
+                                }
+
+                                Button {
+                                    let data = DittoImportExport.exportCSV(from: store)
+                                    let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("Dittos.csv")
+                                    try? data.write(to: tempURL)
+                                    exportItem = ExportActivityItem(url: tempURL)
+                                } label: {
+                                    Label("Export Dittos", systemImage: "square.and.arrow.up")
+                                }
+
+                                Button {
+                                    showImporter = true
+                                } label: {
+                                    Label("Import Dittos", systemImage: "square.and.arrow.down")
+                                }
+                            }
+
+                            Button {
+                                showKeyboardSetup = true
+                            } label: {
+                                Label("Set Up Keyboard", systemImage: KeyboardSetupStatus.hasFullAccess ? "keyboard.badge.checkmark" : "keyboard")
+                            }
+
                             Button {
                                 showSubscription = true
                             } label: {
                                 Label(
-                                    subscriptionManager.isProSubscriber ? "iCloud Sync: On" : "Upgrade to Pro",
+                                    subscriptionManager.isProSubscriber ? "Manage Subscription" : "Upgrade to Pro",
                                     systemImage: subscriptionManager.isProSubscriber ? "checkmark.icloud" : "icloud"
                                 )
                             }
                         } label: {
                             Image(systemName: "ellipsis.circle")
+                                .foregroundStyle(.white)
                         }
                     }
                 }
@@ -71,6 +110,7 @@ struct DittoListView: View {
                             }
                         } label: {
                             Image(systemName: "plus")
+                                .foregroundStyle(.white)
                         }
                     }
                 }
@@ -105,8 +145,45 @@ struct DittoListView: View {
             .sheet(isPresented: $showSubscription) {
                 SubscriptionView(subscriptionManager: subscriptionManager)
             }
+            .sheet(isPresented: $showSyncSettings) {
+                SyncSettingsView(settings: syncSettings)
+            }
+            .sheet(isPresented: $showKeyboardSetup) {
+                KeyboardSetupView()
+            }
+            .sheet(item: $exportItem) { item in
+                ShareSheet(items: [item.url])
+            }
+            .fileImporter(isPresented: $showImporter, allowedContentTypes: [.commaSeparatedText]) { result in
+                switch result {
+                case .success(let url):
+                    guard url.startAccessingSecurityScopedResource() else { return }
+                    defer { url.stopAccessingSecurityScopedResource() }
+                    if let data = try? Data(contentsOf: url) {
+                        let count = (try? DittoImportExport.importCSV(data, into: store)) ?? 0
+                        importResult = String(localized: "Imported \(count) new dittos.")
+                    }
+                case .failure:
+                    importResult = String(localized: "Failed to import file.")
+                }
+            }
+            .alert("Import Complete", isPresented: .init(
+                get: { importResult != nil },
+                set: { if !$0 { importResult = nil } }
+            )) {
+                Button("OK") { importResult = nil }
+            } message: {
+                Text(importResult ?? "")
+            }
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
                 store.loadPendingDittos()
+            }
+            .onAppear {
+                let key = "hasShownKeyboardSetup"
+                if !UserDefaults.standard.bool(forKey: key) {
+                    UserDefaults.standard.set(true, forKey: key)
+                    showKeyboardSetup = true
+                }
             }
         }
     }
@@ -210,4 +287,21 @@ enum EditTarget: Identifiable {
         case .ditto(let ci, let di): return "ditto-\(ci)-\(di)"
         }
     }
+}
+
+/// Wrapper for export share sheet item.
+struct ExportActivityItem: Identifiable {
+    let id = UUID()
+    let url: URL
+}
+
+/// UIActivityViewController wrapped for SwiftUI.
+struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

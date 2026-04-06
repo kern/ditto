@@ -11,6 +11,7 @@ final class DittoStore {
 
     let modelContainer: ModelContainer
     let modelContext: ModelContext
+    private(set) var categories: [DittoCategory] = []
 
     static let presetCategories = ["Instructions", "Driving", "Business", "Dating"]
     static let presetDittos: [String: [String]] = [
@@ -43,6 +44,7 @@ final class DittoStore {
         self.modelContainer = modelContainer
         self.modelContext = ModelContext(modelContainer)
         ensureProfileExists()
+        refreshCategories()
     }
 
     /// Convenience initializer for production use with the shared App Group container.
@@ -92,13 +94,13 @@ final class DittoStore {
             let category = DittoCategory(title: categoryName, profile: profile)
             category.sortOrder = categoryIndex
             modelContext.insert(category)
-            profile.categories.append(category)
+            profile.categories?.append(category)
 
             for (dittoIndex, dittoText) in (Self.presetDittos[categoryName] ?? []).enumerated() {
                 let ditto = DittoItem(text: dittoText, category: category)
                 ditto.sortOrder = dittoIndex
                 modelContext.insert(ditto)
-                category.dittos.append(ditto)
+                category.dittos?.append(ditto)
             }
         }
 
@@ -111,12 +113,8 @@ final class DittoStore {
 
     // MARK: - Categories
 
-    var categories: [DittoCategory] {
-        getProfile().orderedCategories
-    }
-
     var categoryCount: Int {
-        getProfile().orderedCategories.count
+        categories.count
     }
 
     var canCreateNewCategory: Bool {
@@ -134,9 +132,9 @@ final class DittoStore {
     func addCategory(title: String) {
         let profile = getProfile()
         let category = DittoCategory(title: title, profile: profile)
-        category.sortOrder = profile.categories.count
+        category.sortOrder = (profile.categories ?? []).count
         modelContext.insert(category)
-        profile.categories.append(category)
+        profile.categories?.append(category)
         save()
     }
 
@@ -165,8 +163,9 @@ final class DittoStore {
     }
 
     func updateCategory(at index: Int, title: String) {
-        let category = category(at: index)
-        category.title = title
+        let cat = category(at: index)
+        cat.title = title
+        cat.modifiedAt = Date()
         save()
     }
 
@@ -187,9 +186,9 @@ final class DittoStore {
     func addDitto(text: String, toCategoryAt index: Int) {
         let cat = category(at: index)
         let ditto = DittoItem(text: text, category: cat)
-        ditto.sortOrder = cat.dittos.count
+        ditto.sortOrder = (cat.dittos ?? []).count
         modelContext.insert(ditto)
-        cat.dittos.append(ditto)
+        cat.dittos?.append(ditto)
         save()
     }
 
@@ -205,6 +204,7 @@ final class DittoStore {
     func updateDitto(inCategoryAt categoryIndex: Int, at dittoIndex: Int, text: String) {
         let item = ditto(inCategoryAt: categoryIndex, at: dittoIndex)
         item.text = text
+        item.modifiedAt = Date()
         save()
     }
 
@@ -222,7 +222,7 @@ final class DittoStore {
         } else {
             let dstCat = category(at: toCategory)
             item.category = dstCat
-            dstCat.dittos.append(item)
+            dstCat.dittos?.append(item)
 
             // Reindex source
             reindexDittos(in: srcCat)
@@ -268,9 +268,14 @@ final class DittoStore {
     func save() {
         do {
             try modelContext.save()
+            refreshCategories()
         } catch {
             print("DittoStore save error: \(error)")
         }
+    }
+
+    private func refreshCategories() {
+        categories = getProfile().orderedCategories
     }
 
     // MARK: - Pending Dittos Migration
@@ -288,9 +293,9 @@ final class DittoStore {
                let texts = pendingDittos[cat.title] {
                 for text in texts {
                     let ditto = DittoItem(text: text, category: cat)
-                    ditto.sortOrder = cat.dittos.count
+                    ditto.sortOrder = (cat.dittos ?? []).count
                     modelContext.insert(ditto)
-                    cat.dittos.append(ditto)
+                    cat.dittos?.append(ditto)
                 }
             }
         }
@@ -312,9 +317,9 @@ final class DittoStore {
             if let texts = pendingDittos[cat.title] {
                 for text in texts {
                     let ditto = DittoItem(text: text, category: cat)
-                    ditto.sortOrder = cat.dittos.count
+                    ditto.sortOrder = (cat.dittos ?? []).count
                     modelContext.insert(ditto)
-                    cat.dittos.append(ditto)
+                    cat.dittos?.append(ditto)
                 }
             }
         }

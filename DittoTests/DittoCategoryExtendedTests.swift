@@ -20,7 +20,7 @@ struct DittoCategoryExtendedTests {
     @Test("Default dittos is empty")
     func defaultDittos() {
         let cat = DittoCategory(title: "Test")
-        #expect(cat.dittos.isEmpty)
+        #expect(cat.dittos?.isEmpty != false)
     }
 
     @Test("title can be updated")
@@ -52,7 +52,7 @@ struct ProfileExtendedTests {
     @Test("Default categories is empty")
     func defaultCategories() {
         let profile = Profile()
-        #expect(profile.categories.isEmpty)
+        #expect(profile.categories?.isEmpty != false)
     }
 
     @Test("orderedCategories on empty is empty")

@@ -4,11 +4,13 @@ import SwiftData
 @Model
 final class Profile {
     @Relationship(deleteRule: .cascade, inverse: \DittoCategory.profile)
-    var categories: [DittoCategory] = []
+    var categories: [DittoCategory]?
 
-    init() {}
+    init() {
+        self.categories = []
+    }
 
     var orderedCategories: [DittoCategory] {
-        categories.sorted { $0.sortOrder < $1.sortOrder }
+        (categories ?? []).sorted { $0.sortOrder < $1.sortOrder }
     }
 }

@@ -18,9 +18,7 @@
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
 	<string>3.0.0</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
+<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSExtension</key>
 	<dict>

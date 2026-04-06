@@ -8,6 +8,7 @@ import SwiftData
 /// with ordered relationships and snake_case attributes (use_count).
 /// This migrator reads the old store, creates equivalent SwiftData objects,
 /// and removes the old store files after successful migration.
+@available(iOS, deprecated: 18.0, message: "Remove once all users have migrated from Core Data (target: v4.0)")
 enum LegacyDataMigrator {
 
     private static let appGroupIdentifier = "group.io.kern.ditto"
@@ -165,14 +166,14 @@ enum LegacyDataMigrator {
             let category = DittoCategory(title: legacyCat.title, profile: profile)
             category.sortOrder = catIndex
             context.insert(category)
-            profile.categories.append(category)
+            profile.categories?.append(category)
 
             for (dittoIndex, legacyDitto) in legacyCat.dittos.enumerated() {
                 let item = DittoItem(text: legacyDitto.text, category: category)
                 item.useCount = legacyDitto.useCount
                 item.sortOrder = dittoIndex
                 context.insert(item)
-                category.dittos.append(item)
+                category.dittos?.append(item)
             }
         }
     }

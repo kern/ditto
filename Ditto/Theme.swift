@@ -5,8 +5,6 @@ extension Color {
     static let dittoAccent = Color.purple
 }
 
-/// Shared styling constants.
-enum DittoTheme {
-    static let accentColor = Color.purple
-    static let maxCategoryCount = 8
+extension ShapeStyle where Self == Color {
+    static var dittoAccent: Color { Color.dittoAccent }
 }

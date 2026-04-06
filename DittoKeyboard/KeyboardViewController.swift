@@ -29,9 +29,8 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
     @IBOutlet private var tabBarHeightConstraint: NSLayoutConstraint!
 
     let dittoStore: PendingDittoStore
-    let addDittoViewController = AddDittoFromClipboardViewController()
+    let addDittoViewController: AddDittoFromClipboardViewController
     var backspaceTimer: DelayedRepeatTimer?
-    let defaults = UserDefaults(suiteName: "group.io.kern.ditto")!
 
     // swiftlint:disable:next line_length
     let addDittoTextInputPlaceholder = "Select and copy desired text... if it doesn't appear, you may need to turn on \"Allow Full Access\" in your device's keyboard settings."
@@ -42,7 +41,9 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
     var selectedTabArrow = CAShapeLayer()
 
     init() {
-        dittoStore = PendingDittoStore()
+        let store = PendingDittoStore()
+        dittoStore = store
+        addDittoViewController = AddDittoFromClipboardViewController(dittoStore: store)
         super.init(nibName: "KeyboardViewController", bundle: nil)
     }
 
@@ -53,16 +54,10 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Signal to the main app that the keyboard has been loaded (full access granted)
+        UserDefaults(suiteName: "group.io.kern.ditto")?.set(true, forKey: "keyboardHasLoaded")
 
-        keyboardHeightConstraint = NSLayoutConstraint(
-            item: keyboardView!,
-            attribute: .height,
-            relatedBy: .equal,
-            toItem: nil,
-            attribute: .notAnAttribute,
-            multiplier: 0,
-            constant: keyboardHeight
-        )
+        keyboardHeightConstraint = keyboardView.heightAnchor.constraint(equalToConstant: keyboardHeight)
 
         bottomBar.backgroundColor = UIColor(white: 0.85, alpha: 1)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DittoCell")
@@ -242,8 +237,12 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
 
     var tabCount: Int { dittoStore.categoryCount }
 
+    private var screenBounds: CGRect {
+        view.window?.windowScene?.screen.bounds ?? UIScreen.main.bounds
+    }
+
     var tabWidth: CGFloat {
-        UIScreen.main.bounds.width / CGFloat(tabCount)
+        screenBounds.width / CGFloat(tabCount)
     }
 
     func colorForTab(_ index: Int) -> UIColor {
@@ -261,13 +260,17 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
     func selectRow(_ row: Int) {
         guard selectedRow != row else { return }
 
-        if selectedRow >= 0, let cell = tableView.cellForRow(at: selectedIndexPath) {
-            cell.textLabel?.numberOfLines = 2
+        if selectedRow >= 0, let cell = tableView.cellForRow(at: selectedIndexPath),
+           var config = cell.contentConfiguration as? UIListContentConfiguration {
+            config.textProperties.numberOfLines = 2
+            cell.contentConfiguration = config
         }
 
         selectedRow = row
-        if let cell = tableView.cellForRow(at: selectedIndexPath) {
-            cell.textLabel?.numberOfLines = 0
+        if let cell = tableView.cellForRow(at: selectedIndexPath),
+           var config = cell.contentConfiguration as? UIListContentConfiguration {
+            config.textProperties.numberOfLines = 0
+            cell.contentConfiguration = config
         }
 
         tableView.beginUpdates()
@@ -283,9 +286,11 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DittoCell", for: indexPath)
         let text = dittoStore.dittoPreview(inCategoryAt: selectedTab, at: indexPath.row)
-        cell.textLabel?.text = text
-        cell.textLabel?.font = .systemFont(ofSize: UIFont.labelFontSize)
-        cell.textLabel?.numberOfLines = selectedRow == indexPath.row ? 0 : 2
+        var config = cell.defaultContentConfiguration()
+        config.text = text
+        config.textProperties.font = .systemFont(ofSize: UIFont.labelFontSize)
+        config.textProperties.numberOfLines = selectedRow == indexPath.row ? 0 : 2
+        cell.contentConfiguration = config
         return cell
     }
 
@@ -413,13 +418,11 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
     }
 
     var keyboardHeight: CGFloat {
-        let screenHeight = UIScreen.main.bounds.height
-        let screenWidth = UIScreen.main.bounds.width
-
-        if screenWidth > screenHeight {
-            return screenHeight * 0.6
+        let bounds = screenBounds
+        if bounds.width > bounds.height {
+            return bounds.height * 0.6
         } else {
-            return min(260, screenHeight * 0.7)
+            return min(260, bounds.height * 0.7)
         }
     }
 

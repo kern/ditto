@@ -1,0 +1,76 @@
+name: Deploy to App Store Connect
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"   # e.g. v3.1.0
+
+  workflow_dispatch:
+    inputs:
+      skip_upload:
+        description: "Skip upload to App Store Connect (archive + export only)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Archive & Upload
+    runs-on: macos-15
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # needed for accurate git commit count (build number)
+
+      - name: Derive version from tag
+        id: version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          else
+            VERSION=$(defaults read "$(pwd)/Ditto/Info.plist" CFBundleShortVersionString 2>/dev/null || echo "dev")
+          fi
+          BUILD=$(git rev-list --count HEAD)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "build=$BUILD" >> "$GITHUB_OUTPUT"
+          echo "Version: $VERSION  Build: $BUILD"
+
+      - name: Bump version in Info.plist
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" Ditto/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" DittoKeyboard/Info.plist
+
+      - name: Run deploy script
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+          DEVELOPMENT_TEAM: ${{ secrets.DEVELOPMENT_TEAM }}
+          DIST_CERT_P12_BASE64: ${{ secrets.DIST_CERT_P12_BASE64 }}
+          DIST_CERT_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
+          BUILD_NUMBER: ${{ steps.version.outputs.build }}
+          SKIP_UPLOAD: ${{ inputs.skip_upload && '1' || '0' }}
+        run: ./scripts/deploy.sh
+
+      - name: Upload archive as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Ditto-${{ steps.version.outputs.version }}-${{ steps.version.outputs.build }}.xcarchive
+          path: build/Ditto.xcarchive
+          retention-days: 30
+
+      - name: Upload IPA as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Ditto-${{ steps.version.outputs.version }}-${{ steps.version.outputs.build }}.ipa
+          path: build/export/Ditto.ipa
+          retention-days: 30

@@ -11,10 +11,10 @@ struct CategorySelectionField: View {
         Button(action: onTap) {
             HStack {
                 Text("Category")
-                    .foregroundStyle(.purple)
+                    .foregroundStyle(.dittoAccent)
                 Spacer()
                 Text(isExpanded ? "Done" : categoryName)
-                    .foregroundStyle(.purple)
+                    .foregroundStyle(.dittoAccent)
                     .fontWeight(.bold)
             }
             .padding(.horizontal)

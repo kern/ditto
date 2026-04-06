@@ -11,19 +11,19 @@ struct KeyboardAccessoryBar: View {
         VStack(spacing: 0) {
             HStack {
                 Text("Category")
-                    .foregroundStyle(.purple)
+                    .foregroundStyle(.dittoAccent)
                 Spacer()
                 if isPickerExpanded {
                     Button("Done") {
                         isPickerExpanded = false
                     }
-                    .foregroundStyle(.purple)
+                    .foregroundStyle(.dittoAccent)
                     .fontWeight(.bold)
                 } else {
                     Button(categories.indices.contains(selectedCategoryIndex) ? categories[selectedCategoryIndex].title : "") {
                         isPickerExpanded = true
                     }
-                    .foregroundStyle(.purple)
+                    .foregroundStyle(.dittoAccent)
                     .fontWeight(.bold)
                 }
             }

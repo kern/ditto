@@ -1,0 +1,70 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@" : {
+
+    },
+    "%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "Category" : {
+
+    },
+    "Come back here after enabling — we'll detect it automatically." : {
+
+    },
+    "Deleting a category removes all of its Dittos. Are you sure?" : {
+
+    },
+    "Ditto keyboard is active" : {
+
+    },
+    "Ditto Pro" : {
+
+    },
+    "Follow these steps to use Ditto anywhere you type." : {
+
+    },
+    "If you edit a ditto on two devices before they sync, this setting decides which version to keep." : {
+
+    },
+    "Open Settings" : {
+
+    },
+    "Set Up Ditto Keyboard" : {
+
+    },
+    "Subscribe" : {
+
+    },
+    "Sync your dittos across all your Apple devices using iCloud." : {
+
+    },
+    "Thank you for supporting Ditto!" : {
+
+    },
+    "Unable to load subscription options." : {
+
+    },
+    "Unlock the full power of Ditto" : {
+
+    },
+    "When devices disagree" : {
+
+    },
+    "You can only create up to %@ categories. Delete a category before creating a new one." : {
+
+    },
+    "You're subscribed" : {
+
+    }
+  },
+  "version" : "1.0"
+}

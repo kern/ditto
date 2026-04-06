@@ -3,7 +3,7 @@ import SwiftData
 import Testing
 @testable import Ditto
 
-@Suite("LegacyDataMigrator Tests")
+@Suite("LegacyDataMigrator Tests", .serialized)
 struct LegacyDataMigratorTests {
 
     @Test("Migration flag prevents repeated migration")
@@ -29,7 +29,7 @@ struct LegacyDataMigratorTests {
     @Test("Migration returns false when no legacy store exists")
     func noLegacyStore() throws {
         let schema = Schema([Profile.self, DittoCategory.self, DittoItem.self])
-        let config = ModelConfiguration("TestMigration", schema: schema, isStoredInMemoryOnly: true)
+        let config = ModelConfiguration("Migration-\(UUID())", schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         let container = try ModelContainer(for: schema, configurations: [config])
         let context = ModelContext(container)
 

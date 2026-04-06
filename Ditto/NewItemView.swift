@@ -10,6 +10,7 @@ struct NewItemView: View {
 
     @State private var text: String = ""
     @State private var selectedCategoryIndex: Int = 0
+    @FocusState private var isTextFocused: Bool
 
     private var title: String {
         switch objectType {
@@ -28,14 +29,14 @@ struct NewItemView: View {
                 if showCategoryPicker {
                     HStack {
                         Text("Category")
-                            .foregroundStyle(.purple)
+                            .foregroundStyle(.dittoAccent)
                         Spacer()
                         Picker("Category", selection: $selectedCategoryIndex) {
                             ForEach(Array(store.categories.enumerated()), id: \.offset) { index, cat in
                                 Text(cat.title).tag(index)
                             }
                         }
-                        .tint(.purple)
+                        .tint(.dittoAccent)
                     }
                     .padding(.horizontal)
                     .padding(.vertical, 8)
@@ -43,14 +44,16 @@ struct NewItemView: View {
                 }
 
                 TextEditor(text: $text)
+                    .focused($isTextFocused)
                     .padding(6)
                     .scrollContentBackground(.hidden)
             }
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.purple, for: .navigationBar)
+            .toolbarBackground(Color.dittoAccent, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
+            .onAppear { isTextFocused = true }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }

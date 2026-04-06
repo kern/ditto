@@ -6,10 +6,12 @@ final class DittoItem {
     var text: String = ""
     var useCount: Int = 0
     var sortOrder: Int = 0
+    var modifiedAt: Date = Date()
     var category: DittoCategory?
 
     init(text: String, category: DittoCategory? = nil) {
         self.text = text
+        self.modifiedAt = Date()
         self.category = category
     }
 
@@ -23,15 +25,12 @@ final class DittoItem {
     /// Processes `___` cursor placeholder markers.
     /// Returns the cleaned text and the number of characters to rewind the cursor.
     func processedTextForInsertion() -> (text: String, cursorRewind: Int) {
-        let length = text.count
-        guard let regex = try? NSRegularExpression(pattern: "___+"),
-              let match = regex.firstMatch(in: text, range: NSRange(location: 0, length: length)) else {
+        guard let match = text.firstMatch(of: /___+/) else {
             return (text, 0)
         }
-
-        let matchRange = Range(match.range, in: text)!
-        let cleaned = text.replacingCharacters(in: matchRange, with: "")
-        let cursorRewind = length - match.range.location - match.range.length
+        let cleaned = String(text[text.startIndex..<match.range.lowerBound])
+            + String(text[match.range.upperBound...])
+        let cursorRewind = text[match.range.upperBound...].count
         return (cleaned, cursorRewind)
     }
 }

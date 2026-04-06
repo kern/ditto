@@ -6,12 +6,12 @@ import Testing
 /// Creates an in-memory DittoStore for testing.
 private func makeTestStore() throws -> DittoStore {
     let schema = Schema([Profile.self, DittoCategory.self, DittoItem.self])
-    let config = ModelConfiguration("EdgeCaseStore", schema: schema, isStoredInMemoryOnly: true)
+    let config = ModelConfiguration("EdgeCase-\(UUID())", schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
     let container = try ModelContainer(for: schema, configurations: [config])
     return DittoStore(modelContainer: container)
 }
 
-@Suite("DittoStore Edge Case Tests")
+@Suite("DittoStore Edge Case Tests", .serialized)
 struct DittoStoreEdgeCaseTests {
 
     // MARK: - Category Edge Cases

@@ -6,14 +6,17 @@ import Testing
 /// Creates an in-memory PendingDittoStore for testing.
 private func makeTestPendingStore() throws -> (PendingDittoStore, DittoStore) {
     let schema = Schema([Profile.self, DittoCategory.self, DittoItem.self])
-    let config = ModelConfiguration("TestPendingExt", schema: schema, isStoredInMemoryOnly: true)
+    let config = ModelConfiguration("PendingExt-\(UUID())", schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
     let container = try ModelContainer(for: schema, configurations: [config])
     let store = DittoStore(modelContainer: container)
+    let defaults = UserDefaults(suiteName: "group.io.kern.ditto")
+    defaults?.removeObject(forKey: "pendingDittos")
+    defaults?.removeObject(forKey: "pendingCategories")
     let pendingStore = PendingDittoStore(dittoStore: store)
     return (pendingStore, store)
 }
 
-@Suite("PendingDittoStore Extended Tests")
+@Suite("PendingDittoStore Extended Tests", .serialized)
 struct PendingDittoStoreExtendedTests {
 
     @Test("categories returns store categories")

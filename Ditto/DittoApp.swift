@@ -13,6 +13,7 @@ struct DittoApp: App {
         startListening: !isTestEnvironment
     )
     @State private var store: DittoStore
+    @State private var syncSettings = SyncSettings()
 
     init() {
         if Self.isTestEnvironment {
@@ -38,11 +39,12 @@ struct DittoApp: App {
 
     var body: some Scene {
         WindowGroup {
-            DittoListView(store: store, subscriptionManager: subscriptionManager)
+            DittoListView(store: store, subscriptionManager: subscriptionManager, syncSettings: syncSettings)
+                .tint(.dittoAccent)
                 .task {
                     guard !Self.isTestEnvironment else { return }
                     await subscriptionManager.restorePurchases()
-                    if subscriptionManager.isProSubscriber {
+                    if subscriptionManager.isProSubscriber && syncSettings.syncEnabled {
                         upgradeToCloudSync()
                     }
                 }

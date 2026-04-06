@@ -6,14 +6,18 @@ import Testing
 /// Creates an in-memory PendingDittoStore for testing.
 private func makeTestPendingStore() throws -> (PendingDittoStore, DittoStore) {
     let schema = Schema([Profile.self, DittoCategory.self, DittoItem.self])
-    let config = ModelConfiguration("TestPending", schema: schema, isStoredInMemoryOnly: true)
+    let config = ModelConfiguration("Pending-\(UUID())", schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
     let container = try ModelContainer(for: schema, configurations: [config])
     let store = DittoStore(modelContainer: container)
+    // Clear any pending dittos from shared UserDefaults to avoid cross-test pollution
+    let defaults = UserDefaults(suiteName: "group.io.kern.ditto")
+    defaults?.removeObject(forKey: "pendingDittos")
+    defaults?.removeObject(forKey: "pendingCategories")
     let pendingStore = PendingDittoStore(dittoStore: store)
     return (pendingStore, store)
 }
 
-@Suite("PendingDittoStore Tests")
+@Suite("PendingDittoStore Tests", .serialized)
 struct PendingDittoStoreTests {
 
     @Test("Categories delegates to DittoStore")
