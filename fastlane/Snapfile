@@ -1,0 +1,21 @@
+devices([
+  "iPhone 16 Pro Max",   # 6.9" — required for iOS 18+
+  "iPhone 15 Pro Max",   # 6.5" — covers older required size
+])
+
+languages(["en-US"])
+
+scheme("Ditto")
+app_identifier("io.kern.Ditto")
+
+output_directory("./fastlane/screenshots")
+output_files("*.png")
+clear_previous_screenshots(true)
+
+# Show 9:41 AM with full battery/signal — standard App Store look
+override_status_bar(true)
+
+# Run only the screenshot test, not the full UI test suite
+only_testing("DittoUITests/ScreenshotTests")
+
+erase_simulator(true)

@@ -1,0 +1,36 @@
+default_platform(:ios)
+
+platform :ios do
+
+  desc "Take App Store screenshots on all required device sizes"
+  lane :screenshots do
+    snapshot
+  end
+
+  desc "Upload screenshots to App Store Connect (requires ASC API key env vars)"
+  lane :upload_screenshots do
+    api_key = app_store_connect_api_key(
+      key_id:        ENV["ASC_KEY_ID"],
+      issuer_id:     ENV["ASC_ISSUER_ID"],
+      key_content:   ENV["ASC_PRIVATE_KEY"],
+      is_key_content_base64: false
+    )
+    deliver(
+      api_key:              api_key,
+      app_identifier:       "io.kern.Ditto",
+      screenshots_path:     "./fastlane/screenshots",
+      skip_binary_upload:   true,
+      skip_metadata:        true,
+      skip_app_version_strings: true,
+      overwrite_screenshots: true,
+      submit_for_review:    false
+    )
+  end
+
+  desc "Capture screenshots and upload in one shot"
+  lane :capture_and_upload do
+    screenshots
+    upload_screenshots
+  end
+
+end

@@ -39,6 +39,8 @@
 		CC000002AAAA000000000020 /* DittoCategoryExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000029 /* DittoCategoryExtendedTests.swift */; };
 		CC000002AAAA000000000030 /* SyncConflictResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000031 /* SyncConflictResolverTests.swift */; };
 		DD000001AAAA000000000003 /* DittoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000001AAAA000000000002 /* DittoUITests.swift */; };
+		DD000001AAAA000000000004 /* ScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000001AAAA000000000005 /* ScreenshotTests.swift */; };
+		DD000001AAAA000000000006 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000001AAAA000000000007 /* SnapshotHelper.swift */; };
 		E80587AF1B8865C80035B80B /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80587AE1B8865C80035B80B /* Profile.swift */; };
 		E80587B01B8865C80035B80B /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80587AE1B8865C80035B80B /* Profile.swift */; };
 		E80587B21B8EFE060035B80B /* PendingDittoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80587B11B8EFE060035B80B /* PendingDittoStore.swift */; };
@@ -138,6 +140,8 @@
 		CC000004AAAA000000000001 /* DittoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD000001AAAA000000000001 /* DittoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD000001AAAA000000000002 /* DittoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoUITests.swift; sourceTree = "<group>"; };
+		DD000001AAAA000000000005 /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = "<group>"; };
+		DD000001AAAA000000000007 /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		E80587AE1B8865C80035B80B /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Profile.swift; path = Ditto/Profile.swift; sourceTree = "<group>"; };
 		E80587B11B8EFE060035B80B /* PendingDittoStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PendingDittoStore.swift; path = Ditto/PendingDittoStore.swift; sourceTree = "<group>"; };
 		E82B6DFF1B5E120C00FDCE3A /* Ditto.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Ditto.xcdatamodel; sourceTree = "<group>"; };
@@ -235,6 +239,8 @@
 			isa = PBXGroup;
 			children = (
 				DD000001AAAA000000000002 /* DittoUITests.swift */,
+				DD000001AAAA000000000005 /* ScreenshotTests.swift */,
+				DD000001AAAA000000000007 /* SnapshotHelper.swift */,
 			);
 			path = DittoUITests;
 			sourceTree = "<group>";
@@ -539,6 +545,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD000001AAAA000000000003 /* DittoUITests.swift in Sources */,
+				DD000001AAAA000000000004 /* ScreenshotTests.swift in Sources */,
+				DD000001AAAA000000000006 /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
