@@ -7,6 +7,7 @@ final class DittoUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = true
         app = XCUIApplication()
+        app.launchArguments = ["--uitesting"]
         app.launch()
     }
 

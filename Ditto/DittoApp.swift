@@ -4,8 +4,13 @@ import SwiftUI
 @main
 struct DittoApp: App {
 
+    private static var isTestEnvironment: Bool {
+        NSClassFromString("XCTestCase") != nil
+            || ProcessInfo.processInfo.arguments.contains("--uitesting")
+    }
+
     @State private var subscriptionManager = SubscriptionManager(
-        startListening: NSClassFromString("XCTestCase") == nil
+        startListening: !isTestEnvironment
     )
     @State private var store: DittoStore
 
@@ -31,6 +36,7 @@ struct DittoApp: App {
         WindowGroup {
             DittoListView(store: store, subscriptionManager: subscriptionManager)
                 .task {
+                    guard !Self.isTestEnvironment else { return }
                     await subscriptionManager.restorePurchases()
                     if subscriptionManager.isProSubscriber {
                         upgradeToCloudSync()
