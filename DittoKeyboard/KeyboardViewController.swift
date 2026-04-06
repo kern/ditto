@@ -342,36 +342,22 @@ func refreshTabButtons() {
         }
     }
 
-    @IBAction private func returnButtonClicked() {
-        textDocumentProxy.insertText("\n")
-    }
+    @IBAction private func returnButtonClicked() { textDocumentProxy.insertText("\n") }
 
     @IBAction private func backspaceButtonDown() {
         backspaceFire()
-        backspaceTimer = DelayedRepeatTimer(delay: 0.5, interval: 0.1) { [weak self] in
-            self?.backspaceFire()
-        }
+        backspaceTimer = DelayedRepeatTimer(delay: 0.5, interval: 0.1) { [weak self] in self?.backspaceFire() }
     }
 
-    @IBAction private func backspaceButtonUp() {
-        backspaceTimer?.invalidate()
-        backspaceTimer = nil
-    }
-
-    @IBAction private func spaceButtonClicked() {
-        textDocumentProxy.insertText(" ")
-    }
+    @IBAction private func backspaceButtonUp() { backspaceTimer?.invalidate(); backspaceTimer = nil }
+    @IBAction private func spaceButtonClicked() { textDocumentProxy.insertText(" ") }
 
     @IBAction private func numberClicked(_ button: UIButton) {
-        if let char = button.titleLabel?.text {
-            textDocumentProxy.insertText(char)
-        }
+        if let char = button.titleLabel?.text { textDocumentProxy.insertText(char) }
     }
 
     @IBAction private func pasteButtonClicked(_ sender: UIButton) {
-        if let text = UIPasteboard.general.string {
-            addDittoTextInput.text = text
-        }
+        if let text = UIPasteboard.general.string { addDittoTextInput.text = text }
     }
 
     @IBAction private func addDittoButtonClicked(_ sender: UIButton) {
@@ -467,12 +453,20 @@ extension KeyboardViewController {
         let iconTint = UIColor(dynamicProvider: { t in
             t.userInterfaceStyle == .dark ? UIColor(white: 0.95, alpha: 1) : UIColor(white: 0.1, alpha: 1)
         })
-        // Cover every XIB-hardcoded white surface, including the root view
-        for v in [view, keyboardView, numericKeys, addDittoView] { v?.backgroundColor = bg }
+        // Override every XIB-hardcoded white surface
+        for v in [view, keyboardView, numericKeys, addDittoView, addDittoButtons] { v?.backgroundColor = bg }
         tableView.backgroundColor = .clear
         bottomBar.backgroundColor = UIColor(dynamicProvider: { t in
             t.userInterfaceStyle == .dark ? UIColor(white: 0.18, alpha: 1) : UIColor(white: 0.82, alpha: 1)
         })
+        // Add-ditto panel
+        for tv in [addDittoTextInput, addDittoTextView] { tv?.backgroundColor = inputBg; tv?.textColor = .label }
+        selectedCategory.backgroundColor = actionBg
+        selectedCategory.textColor = .white
+        addDittoButton.backgroundColor = actionBg
+        addDittoButton.setTitleColor(iconTint, for: .normal)
+        addDittoButton.setTitleColor(iconTint.withAlphaComponent(0.4), for: .disabled)
+        categoryPicker.backgroundColor = bg
         // SF Symbol bottom-bar buttons
         let sym = UIImage.SymbolConfiguration(pointSize: 17, weight: .medium)
         for (button, name) in [(nextKeyboardButton, "globe"), (backspaceButton, "delete.backward"),
