@@ -1,6 +1,6 @@
 import UIKit
 
-class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITableViewDataSource {
+final class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet var keyboardView: UIView!
     @IBOutlet var tableView: UITableView!
@@ -9,14 +9,14 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var tabBar: UIView!
     @IBOutlet var noDittosLabel: UILabel!
     @IBOutlet var tabTitleLabel: UILabel!
-    
+
     @IBOutlet var backspaceButton: UIButton!
     @IBOutlet var nextKeyboardButton: UIButton!
     @IBOutlet var returnButton: UIButton!
     @IBOutlet var spaceButton: UIButton!
     @IBOutlet var decimalButton: UIButton!
     @IBOutlet var dittoButton: UIButton!
-    
+
     @IBOutlet var addDittoTextInput: UITextView!
     @IBOutlet var addDittoView: UIView!
     @IBOutlet var categoryPicker: UIPickerView!
@@ -24,486 +24,421 @@ class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITabl
     @IBOutlet var selectedCategory: UILabel!
     @IBOutlet var addDittoButtons: UIView!
     @IBOutlet var addDittoButton: UIButton!
-    
+
     var keyboardHeightConstraint: NSLayoutConstraint!
     @IBOutlet var tabBarHeightConstraint: NSLayoutConstraint!
-    
+
     let dittoStore: PendingDittoStore
     let addDittoViewController = AddDittoFromClipboardViewController()
-    var backspaceTimer: DelayedRepeatTimer!
-    let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
-    
-    let ADD_DITTO_TEXT_INPUT_PLACEHOLDER = "Select and copy desired text... if it doesn't appear, you may need to turn on \"Allow Full Access\" in your device's keyboard settings."
-    
-    var tabViews: [UIView]
-    var selectedTab: Int
-    var selectedRow: Int
-    var selectedTabArrow: CAShapeLayer = CAShapeLayer()
-    
+    var backspaceTimer: DelayedRepeatTimer?
+    let defaults = UserDefaults(suiteName: "group.io.kern.ditto")!
+
+    let addDittoTextInputPlaceholder = "Select and copy desired text... if it doesn't appear, you may need to turn on \"Allow Full Access\" in your device's keyboard settings."
+
+    var tabViews: [UIView] = []
+    var selectedTab: Int = -1
+    var selectedRow: Int = -1
+    var selectedTabArrow = CAShapeLayer()
+
     init() {
         dittoStore = PendingDittoStore()
-        tabViews = []
-        selectedTab = -1
-        selectedRow = -1
         super.init(nibName: "KeyboardViewController", bundle: nil)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        
-        keyboardHeightConstraint = NSLayoutConstraint(item: keyboardView,
-            attribute: .Height,
-            relatedBy: .Equal,
+
+        keyboardHeightConstraint = NSLayoutConstraint(
+            item: keyboardView!,
+            attribute: .height,
+            relatedBy: .equal,
             toItem: nil,
-            attribute: .NotAnAttribute,
+            attribute: .notAnAttribute,
             multiplier: 0,
-            constant: getHeightForKeyboard())
-        
+            constant: keyboardHeight
+        )
+
         bottomBar.backgroundColor = UIColor(white: 0.85, alpha: 1)
-        tableView.registerClass(ObjectTableViewCell.classForCoder(), forCellReuseIdentifier: "ObjectTableViewCell")
-        
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DittoCell")
+
         categoryPicker.delegate = addDittoViewController
         categoryPicker.dataSource = addDittoViewController
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: Selector("tabDragged:"))
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: Selector("tabDragged:"))
-        let panGesture = UIPanGestureRecognizer(target: self, action: Selector("tabDragged:"))
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tabDragged(_:)))
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(tabDragged(_:)))
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(tabDragged(_:)))
         tabBar.addGestureRecognizer(tapGesture)
         tabBar.addGestureRecognizer(longPressGesture)
         tabBar.addGestureRecognizer(panGesture)
-        
+
         loadTab(0)
         selectedTabArrow = drawSelectedTabArrow(0)
-        
-        addDittoView.hidden = true
-        
+
+        addDittoView.isHidden = true
     }
-    
-    override func viewWillAppear(animated: Bool) {
-        
+
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        // Keyboard height constraint must be added here rather than ViewDidLoad
+
         keyboardView.addConstraint(keyboardHeightConstraint)
-        
-        if dittoStore.isEmpty() {
-            noDittosLabel.hidden = false
-            tableView.hidden = true
+
+        if dittoStore.isEmpty {
+            noDittosLabel.isHidden = false
+            tableView.isHidden = true
         } else {
-            noDittosLabel.hidden = true
-            tableView.hidden = false
+            noDittosLabel.isHidden = true
+            tableView.isHidden = false
             tableView.reloadData()
         }
-    
     }
-    
+
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        keyboardHeightConstraint.constant = getHeightForKeyboard()
-        tabBarHeightConstraint.constant = getHeightForTabBar()
+        keyboardHeightConstraint.constant = keyboardHeight
+        tabBarHeightConstraint.constant = tabBarHeight
         refreshTabButtons()
         tableView.beginUpdates()
         tableView.endUpdates()
     }
-    
+
     func loadAddDittoView() {
-        categoryPicker.hidden = true
-        addDittoTextView.hidden = false
-        addDittoTextView.selectable = false
+        categoryPicker.isHidden = true
+        addDittoTextView.isHidden = false
+        addDittoTextView.isSelectable = false
         selectedCategory.text = selectedCategoryFromPicker()
-        NSTimer.scheduledTimerWithTimeInterval(0.3, target: self, selector: Selector("pollPasteboard"), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] _ in
+            self?.pollPasteboard()
+        }
         pollPasteboard()
     }
-    
-    override func textDidChange(textInput: UITextInput?) {
-        let proxy = textDocumentProxy 
-        
-        switch proxy.keyboardType! {
-        case .NumberPad:
-            numericKeys.hidden = false
-            spaceButton.hidden = true
-            returnButton.hidden = true
-            decimalButton.hidden = true
-            dittoButton.hidden = true
 
-        case .DecimalPad:
-            numericKeys.hidden = false
-            spaceButton.hidden = true
-            returnButton.hidden = true
-            decimalButton.hidden = false
-            dittoButton.hidden = true
-            
+    override func textDidChange(_ textInput: UITextInput?) {
+        let proxy = textDocumentProxy
+
+        switch proxy.keyboardType {
+        case .numberPad:
+            numericKeys.isHidden = false
+            spaceButton.isHidden = true
+            returnButton.isHidden = true
+            decimalButton.isHidden = true
+            dittoButton.isHidden = true
+
+        case .decimalPad:
+            numericKeys.isHidden = false
+            spaceButton.isHidden = true
+            returnButton.isHidden = true
+            decimalButton.isHidden = false
+            dittoButton.isHidden = true
+
         default:
-            numericKeys.hidden = true
-            spaceButton.hidden = false
-            returnButton.hidden = false
-            decimalButton.hidden = false
-            dittoButton.hidden = false
-
+            numericKeys.isHidden = true
+            spaceButton.isHidden = false
+            returnButton.isHidden = false
+            decimalButton.isHidden = false
+            dittoButton.isHidden = false
         }
     }
-    
-    //==============
+
     // MARK: - Tabs
-    
-    func tabDragged(recognizer: UIGestureRecognizer) {
-        
-        let tab = Int(floor(recognizer.locationInView(tabBar).x / tabWidth()))
-        
-        if addDittoView.hidden {
+
+    @objc func tabDragged(_ recognizer: UIGestureRecognizer) {
+        let tab = Int(floor(recognizer.location(in: tabBar).x / tabWidth))
+
+        if addDittoView.isHidden {
             loadTab(tab)
-            selectedTabArrow.hidden = false
+            selectedTabArrow.isHidden = false
         } else {
             CATransaction.begin()
             CATransaction.setDisableActions(true)
-            // change properties here without animation
             loadTab(tab)
-            selectedTabArrow.hidden = false
+            selectedTabArrow.isHidden = false
             CATransaction.commit()
         }
-        
-        addDittoView.hidden = true
-        numericKeys.hidden = true
-        tableView.hidden = false
-        
-        tabTitleLabel.hidden = dittoStore.oneCategory() || recognizer.state == .Ended
+
+        addDittoView.isHidden = true
+        numericKeys.isHidden = true
+        tableView.isHidden = false
+
+        tabTitleLabel.isHidden = dittoStore.hasOneCategory || recognizer.state == .ended
         view.setNeedsLayout()
-    
     }
-    
-    func loadTab(tab: Int) {
-        tableView.setContentOffset(CGPointZero, animated:false)
-        if selectedTab == tab || dittoStore.isEmpty() { return }
+
+    func loadTab(_ tab: Int) {
+        tableView.setContentOffset(.zero, animated: false)
+        guard selectedTab != tab, !dittoStore.isEmpty else { return }
         selectedTab = tab
         moveSelectedTabArrow(tab)
         selectedRow = -1
-        tabTitleLabel.text = dittoStore.getCategory(selectedTab)
+        tabTitleLabel.text = dittoStore.categoryTitle(at: selectedTab)
         tabTitleLabel.backgroundColor = colorForTab(selectedTab)
         tableView.reloadData()
     }
-    
+
     func selectedTabArrowPath() -> CGPath {
         let h = tabBar.bounds.height
-        let x = CGFloat(0.0)
-        
         let path = UIBezierPath()
-        path.moveToPoint(CGPointMake(x - 7, h))
-        path.addLineToPoint(CGPointMake(x + 7, h))
-        path.addLineToPoint(CGPointMake(x, h-7))
-        path.closePath()
-        
-        return path.CGPath
+        path.move(to: CGPoint(x: -7, y: h))
+        path.addLine(to: CGPoint(x: 7, y: h))
+        path.addLine(to: CGPoint(x: 0, y: h - 7))
+        path.close()
+        return path.cgPath
     }
-    
-    func moveSelectedTabArrow(tab: Int) {
-        selectedTabArrow.position = CGPointMake((CGFloat(tab) + 0.5) * tabWidth(), 0)
+
+    func moveSelectedTabArrow(_ tab: Int) {
+        selectedTabArrow.position = CGPoint(x: (CGFloat(tab) + 0.5) * tabWidth, y: 0)
     }
-    
-    func drawSelectedTabArrow(tab: Int) -> CAShapeLayer {
-        if dittoStore.isEmpty() || dittoStore.oneCategory() {
+
+    func drawSelectedTabArrow(_ tab: Int) -> CAShapeLayer {
+        guard !dittoStore.isEmpty, !dittoStore.hasOneCategory else {
             return CAShapeLayer()
         }
-        
+
         let shape = CAShapeLayer()
         tabBar.layer.addSublayer(shape)
         shape.opacity = 1
-        shape.lineWidth = 0.0
-        shape.lineJoin = kCALineJoinMiter
-        shape.strokeColor = UIColor.whiteColor().CGColor
-        shape.fillColor = UIColor.whiteColor().CGColor
-        
+        shape.lineWidth = 0
+        shape.lineJoin = .miter
+        shape.strokeColor = UIColor.white.cgColor
+        shape.fillColor = UIColor.white.cgColor
         shape.path = selectedTabArrowPath()
         shape.zPosition = 1
-        
         return shape
     }
-    
+
     func refreshTabButtons() {
-        
-        if dittoStore.isEmpty() || dittoStore.oneCategory() {
-            return
-        }
-        
-        for tv in tabViews {
-            tv.removeFromSuperview()
-        }
-        
-        let w = tabWidth()
+        guard !dittoStore.isEmpty, !dittoStore.hasOneCategory else { return }
+
+        tabViews.forEach { $0.removeFromSuperview() }
+
+        let w = tabWidth
         let h = tabBar.bounds.height
-        
-        tabViews = (0..<countTabs()).map({ i in
-            
-            let tab = UIView(frame: CGRectMake(CGFloat(i) * w, 0, w, h))
-            tab.backgroundColor =  self.colorForTab(i)
-            
-            let tabLabel = UILabel(frame: CGRectMake(8, 0, w - 16, h))
-            tabLabel.textColor = UIColor.whiteColor()
-            tabLabel.text = self.dittoStore.getCategory(i)
-            tabLabel.font = tabLabel.font.fontWithSize(14.0)
-            tabLabel.textAlignment = .Center
-            tabLabel.lineBreakMode = NSLineBreakMode.ByClipping
+
+        tabViews = (0..<tabCount).map { i in
+            let tab = UIView(frame: CGRect(x: CGFloat(i) * w, y: 0, width: w, height: h))
+            tab.backgroundColor = self.colorForTab(i)
+
+            let tabLabel = UILabel(frame: CGRect(x: 8, y: 0, width: w - 16, height: h))
+            tabLabel.textColor = .white
+            tabLabel.text = self.dittoStore.categoryTitle(at: i)
+            tabLabel.font = tabLabel.font.withSize(14)
+            tabLabel.textAlignment = .center
+            tabLabel.lineBreakMode = .byClipping
             self.truncateToLastFullLetter(tabLabel, width: w - 16)
-            
+
             tab.addSubview(tabLabel)
             self.tabBar.addSubview(tab)
-            
             return tab
-        })
-        
+        }
+
         tabBar.bringSubviewToFront(tabTitleLabel)
-        
         moveSelectedTabArrow(selectedTab)
-        
     }
-    
-    func countTabs() -> Int {
-        return dittoStore.countCategories()
+
+    var tabCount: Int { dittoStore.categoryCount }
+
+    var tabWidth: CGFloat {
+        UIScreen.main.bounds.width / CGFloat(tabCount)
     }
-    
-    func tabWidth() -> CGFloat {
-        return UIScreen.mainScreen().bounds.width / CGFloat(countTabs())
-    }
-    
-    func colorForTab(index: Int) -> UIColor {
-        let whiteMix = 0.4 * (CGFloat(index) / CGFloat(dittoStore.countCategories()))
+
+    func colorForTab(_ index: Int) -> UIColor {
+        let whiteMix = 0.4 * (CGFloat(index) / CGFloat(dittoStore.categoryCount))
         let rbComponent = min(1, 0.6 + whiteMix)
         return UIColor(red: rbComponent, green: whiteMix * 1.7, blue: rbComponent, alpha: 1)
     }
-    
-    //=======================
+
     // MARK: - Row Selection
-    
-    var selectedIndexPath: NSIndexPath {
-        return NSIndexPath(forRow: selectedRow, inSection: 0)
+
+    var selectedIndexPath: IndexPath {
+        IndexPath(row: selectedRow, section: 0)
     }
-    
-    func selectRow(row: Int) {
-        
-        if selectedRow == row { return }
-        
-        if selectedRow >= 0 {
-            let cell = tableView.cellForRowAtIndexPath(selectedIndexPath) as? ObjectTableViewCell
-            cell?.truncated = true
+
+    func selectRow(_ row: Int) {
+        guard selectedRow != row else { return }
+
+        if selectedRow >= 0, let cell = tableView.cellForRow(at: selectedIndexPath) {
+            cell.textLabel?.numberOfLines = 2
         }
-        
+
         selectedRow = row
-        let cell = tableView.cellForRowAtIndexPath(selectedIndexPath) as! ObjectTableViewCell
-        cell.truncated = false
-        
+        if let cell = tableView.cellForRow(at: selectedIndexPath) {
+            cell.textLabel?.numberOfLines = 0
+        }
+
         tableView.beginUpdates()
         tableView.endUpdates()
+    }
 
+    // MARK: - UITableViewDataSource
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        dittoStore.isEmpty ? 0 : dittoStore.dittoCount(inCategoryAt: selectedTab)
     }
-    
-    //==============================
-    // MARK: - Table View Callbacks
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if dittoStore.isEmpty() {
-            return 0
-        } else {
-            return dittoStore.countInCategory(selectedTab)
-        }
-    }
-    
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let text = dittoStore.getDittoPreviewInCategory(selectedTab, index: indexPath.row)
-        return ObjectTableViewCell.heightForText(text, truncated: selectedRow != indexPath.row, disclosure: false)
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("ObjectTableViewCell", forIndexPath: indexPath) as! ObjectTableViewCell
-        let text = dittoStore.getDittoPreviewInCategory(selectedTab, index: indexPath.row)
-        cell.setText(text, disclosure: false)
-        cell.truncated = selectedRow != indexPath.row
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DittoCell", for: indexPath)
+        let text = dittoStore.dittoPreview(inCategoryAt: selectedTab, at: indexPath.row)
+        cell.textLabel?.text = text
+        cell.textLabel?.font = .systemFont(ofSize: UIFont.labelFontSize)
+        cell.textLabel?.numberOfLines = selectedRow == indexPath.row ? 0 : 2
         return cell
     }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        let proxy = textDocumentProxy 
-        let ditto = dittoStore.getDittoInCategory(selectedTab, index: indexPath.row)
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        
-        let (newDitto, cursorRewind) = findCursorRange(ditto)
-        proxy.insertText(newDitto)
-        dispatch_async(dispatch_get_main_queue(), {
-            proxy.adjustTextPositionByCharacterOffset(-cursorRewind)
-        })
-        
+
+    // MARK: - UITableViewDelegate
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let proxy = textDocumentProxy
+        let item = dittoStore.ditto(inCategoryAt: selectedTab, at: indexPath.row)
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        let (cleanText, cursorRewind) = item.processedTextForInsertion()
+        proxy.insertText(cleanText)
+        DispatchQueue.main.async {
+            proxy.adjustTextPosition(byCharacterOffset: -cursorRewind)
+        }
     }
-    
-    @IBAction func dittoLongPressed(sender: UILongPressGestureRecognizer) {
-        if sender.state != .Began { return }
-        let p = sender.locationInView(tableView)
-        if let indexPath = tableView.indexPathForRowAtPoint(p) {
+
+    @IBAction func dittoLongPressed(_ sender: UILongPressGestureRecognizer) {
+        guard sender.state == .began else { return }
+        let p = sender.location(in: tableView)
+        if let indexPath = tableView.indexPathForRow(at: p) {
             selectRow(indexPath.row)
         }
     }
-    
-    //==========================
-    // MARK: - Button Callbacks
-    
+
+    // MARK: - Button Actions
+
     @IBAction func nextKeyboardButtonClicked() {
         advanceToNextInputMode()
     }
-    
+
     @IBAction func dittoButtonClicked() {
-        if dittoStore.isEmpty() {
-            return
-        } else if addDittoView.hidden {
+        guard !dittoStore.isEmpty else { return }
+
+        if addDittoView.isHidden {
             loadAddDittoView()
-            addDittoView.hidden = false
-            
+            addDittoView.isHidden = false
             CATransaction.begin()
             CATransaction.setDisableActions(true)
-            // change properties here without animation
-            selectedTabArrow.hidden = true
+            selectedTabArrow.isHidden = true
             CATransaction.commit()
-            
         } else {
-            addDittoView.hidden = true
-            
+            addDittoView.isHidden = true
             CATransaction.begin()
             CATransaction.setDisableActions(true)
-            // change properties here without animation
-            selectedTabArrow.hidden = false
+            selectedTabArrow.isHidden = false
             CATransaction.commit()
         }
     }
-    
+
     @IBAction func returnButtonClicked() {
-        let proxy = textDocumentProxy 
-        proxy.insertText("\n")
+        textDocumentProxy.insertText("\n")
     }
-    
+
     @IBAction func backspaceButtonDown() {
         backspaceFire()
-        backspaceTimer = DelayedRepeatTimer(delay: 0.5, ti: 0.1, target: self, selector: Selector("backspaceFire"))
+        backspaceTimer = DelayedRepeatTimer(delay: 0.5, interval: 0.1) { [weak self] in
+            self?.backspaceFire()
+        }
     }
-    
+
     @IBAction func backspaceButtonUp() {
-        backspaceTimer.invalidate()
+        backspaceTimer?.invalidate()
         backspaceTimer = nil
     }
-    
+
     @IBAction func spaceButtonClicked() {
-        let proxy = textDocumentProxy 
-        proxy.insertText(" ")
+        textDocumentProxy.insertText(" ")
     }
-    
-    @IBAction func numberClicked(button: UIButton) {
-        let proxy = textDocumentProxy 
-        let char = button.titleLabel?.text
-        proxy.insertText(char!)
-    }
-    
-    @IBAction func pasteButtonClicked(sender: UIButton) {
-        if let pasteBoardString = UIPasteboard.generalPasteboard().string {
-            addDittoTextInput.text = pasteBoardString
+
+    @IBAction func numberClicked(_ button: UIButton) {
+        if let char = button.titleLabel?.text {
+            textDocumentProxy.insertText(char)
         }
     }
-    
-    @IBAction func addDittoButtonClicked(sender: UIButton) {
-        if addDittoTextInput.text != ADD_DITTO_TEXT_INPUT_PLACEHOLDER {
-            let categoryIndex = categoryPicker.selectedRowInComponent(0)
-            dittoStore.addDittoToCategory(categoryIndex, text: addDittoTextInput.text!)
-            tableView.reloadData()
-            addDittoButton.setTitle("Your ditto has been saved!", forState: .Normal)
-            addDittoButton.enabled = false
+
+    @IBAction func pasteButtonClicked(_ sender: UIButton) {
+        if let text = UIPasteboard.general.string {
+            addDittoTextInput.text = text
         }
     }
-    
-    @IBAction func categoryBarTapped(sender: UITapGestureRecognizer) {
-        // If full access isn't allowed (pasteboard isn't accessible), we don't want to be able to select a category
-        if let pasteBoardString = UIPasteboard.generalPasteboard().string {
-            if categoryPicker.hidden {
-                selectedCategory.text = "Done"
-                categoryPicker.hidden = false
-                addDittoButtons.hidden = true
-                addDittoTextView.hidden = true
-            } else {
-                selectedCategory.text = selectedCategoryFromPicker()
-                categoryPicker.hidden = true
-                addDittoButtons.hidden = false
-                addDittoTextView.hidden = false
-            }
-        }
+
+    @IBAction func addDittoButtonClicked(_ sender: UIButton) {
+        guard addDittoTextInput.text != addDittoTextInputPlaceholder else { return }
+        let categoryIndex = categoryPicker.selectedRow(inComponent: 0)
+        dittoStore.addDitto(text: addDittoTextInput.text, toCategoryAt: categoryIndex)
+        tableView.reloadData()
+        addDittoButton.setTitle("Your ditto has been saved!", for: .normal)
+        addDittoButton.isEnabled = false
     }
-    //=================
-    // MARK: - Helpers
-    
-    func truncateToLastFullLetter(label: UILabel, width: CGFloat) {
-        while label.intrinsicContentSize().width > width {
-            label.text = label.text!.substringToIndex(label.text!.endIndex.predecessor())
-        }
-    }
-    
-    func backspaceFire() {
-        let proxy = textDocumentProxy 
-        proxy.deleteBackward()
-    }
-    
-    func findCursorRange(s: String) -> (String, Int) {
-        let length = s.characters.count
-        let regex = try! NSRegularExpression(pattern: "___+", options: [])
-        let match = regex.rangeOfFirstMatchInString(s, options: [], range: NSMakeRange(0, length))
-        
-        if (match.location == NSNotFound) {
-            return (s, 0)
+
+    @IBAction func categoryBarTapped(_ sender: UITapGestureRecognizer) {
+        guard UIPasteboard.general.string != nil else { return }
+
+        if categoryPicker.isHidden {
+            selectedCategory.text = "Done"
+            categoryPicker.isHidden = false
+            addDittoButtons.isHidden = true
+            addDittoTextView.isHidden = true
         } else {
-            let start = s.startIndex.advancedBy(match.location)
-            let end = start.advancedBy(match.length)
-            let range = Range(start: start, end: end)
-            let newS = s.stringByReplacingCharactersInRange(range, withString: "")
-            return (newS, length - match.location - match.length)
+            selectedCategory.text = selectedCategoryFromPicker()
+            categoryPicker.isHidden = true
+            addDittoButtons.isHidden = false
+            addDittoTextView.isHidden = false
         }
     }
-    
-    func selectedCategoryFromPicker() -> String {
-        let categoryIndex = categoryPicker.selectedRowInComponent(0)
-        return dittoStore.getCategory(categoryIndex)
+
+    // MARK: - Helpers
+
+    func truncateToLastFullLetter(_ label: UILabel, width: CGFloat) {
+        guard var text = label.text else { return }
+        while label.intrinsicContentSize.width > width, !text.isEmpty {
+            text = String(text.dropLast())
+            label.text = text
+        }
     }
-    
-    func getHeightForKeyboard() -> CGFloat {
-        
-        let screenHeight = UIScreen.mainScreen().bounds.height
-        let screenWidth = UIScreen.mainScreen().bounds.width
-        
+
+    @objc func backspaceFire() {
+        textDocumentProxy.deleteBackward()
+    }
+
+    func selectedCategoryFromPicker() -> String {
+        let index = categoryPicker.selectedRow(inComponent: 0)
+        return dittoStore.categoryTitle(at: index)
+    }
+
+    var keyboardHeight: CGFloat {
+        let screenHeight = UIScreen.main.bounds.height
+        let screenWidth = UIScreen.main.bounds.width
+
         if screenWidth > screenHeight {
             return screenHeight * 0.6
         } else {
             return min(260, screenHeight * 0.7)
         }
-        
     }
-    
-    func getHeightForTabBar() -> CGFloat {
-        if dittoStore.oneCategory() {
-            return 0
-        } else {
-            return 35
-        }
+
+    var tabBarHeight: CGFloat {
+        dittoStore.hasOneCategory ? 0 : 35
     }
-    
+
     func resetAddDittoButton() {
-        addDittoButton.setTitle("Add Ditto", forState: .Normal)
-        addDittoButton.enabled = true
+        addDittoButton.setTitle("Add Ditto", for: .normal)
+        addDittoButton.isEnabled = true
     }
-    
-    func pollPasteboard() {
-        if let pasteBoardString = UIPasteboard.generalPasteboard().string {
-            if pasteBoardString != addDittoTextInput.text {
-                addDittoTextInput.text = pasteBoardString
+
+    @objc func pollPasteboard() {
+        if let text = UIPasteboard.general.string {
+            if text != addDittoTextInput.text {
+                addDittoTextInput.text = text
                 resetAddDittoButton()
             }
         } else {
-            addDittoTextInput.text = ADD_DITTO_TEXT_INPUT_PLACEHOLDER
+            addDittoTextInput.text = addDittoTextInputPlaceholder
         }
     }
 }

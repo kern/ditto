@@ -1,287 +1,213 @@
-import UIKit
+import SwiftUI
 
-class ListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    
-    var objectType: DittoObjectType
-    let dittoStore: DittoStore
-    
-    let segmentedControl: UISegmentedControl
-    var tableView: UITableView!
-    var editButton: UIBarButtonItem!
-    var newButton: UIBarButtonItem!
-    var doneButton: UIBarButtonItem!
-    
-    let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
-    
-    init() {
-        
-        objectType = .Ditto
-        dittoStore = DittoStore()
-        segmentedControl = UISegmentedControl(items: ["Categories", "Dittos"])
-        super.init(nibName: nil, bundle: nil)
-        
-        navigationItem.titleView = segmentedControl
-        segmentedControl.selectedSegmentIndex = 1
-        segmentedControl.addTarget(self, action: Selector("segmentedControlChanged:"), forControlEvents: .ValueChanged)
-        
-        editButton = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "editButtonClicked")
-        newButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "newButtonClicked")
-        doneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonClicked")
-    
-        navigationItem.leftBarButtonItem = editButton
-        navigationItem.rightBarButtonItem = newButton
+/// Main list view showing either categories or dittos with a segmented control toggle.
+struct DittoListView: View {
 
-    }
-    
-    override func loadView() {
-        tableView = UITableView(frame: CGRectZero, style: .Plain)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.registerClass(ObjectTableViewCell.classForCoder(), forCellReuseIdentifier: "ObjectTableViewCell")
-        view = tableView
-    }
+    @State var store: DittoStore
+    var subscriptionManager: SubscriptionManager
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector:"handleAppInForeground", name:
-        UIApplicationWillEnterForegroundNotification, object: nil)
-        
-        loadPendingDittos()
-        tableView.reloadData()
-    }
-    
-    override func viewWillLayoutSubviews() {
-        
-        super.viewWillLayoutSubviews()
-        
-        var segmentedFrame = segmentedControl.frame
-        segmentedFrame.size.width = UIScreen.mainScreen().bounds.width * 0.5
-        segmentedControl.frame = segmentedFrame
-        
-    }
-    
-    func segmentedControlChanged(sender: AnyObject) {
-        switch segmentedControl.selectedSegmentIndex {
-        case 0:
-            objectType = .Category
-            
-        case 1:
-            objectType = .Ditto
-            
-        default:
-            fatalError("Unknown index")
-        }
-        
-        tableView.reloadData()
-    }
-    
-    func textForCellAtIndexPath(indexPath: NSIndexPath) -> String {
-        switch objectType {
-        case .Category:
-            return "\(dittoStore.getCategory(indexPath.row)) (\(dittoStore.countInCategory(indexPath.row)))"
-            
-        case .Ditto:
-            return dittoStore.getDittoPreviewInCategory(indexPath.section, index: indexPath.row)
-            
-        }
-    }
-    
-    //==============================
-    // MARK: - Table View Callbacks
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        switch objectType {
-        case .Category: return 1
-        case .Ditto:    return dittoStore.countCategories()
-        }
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch objectType {
-        case .Category: return dittoStore.countCategories()
-        case .Ditto:    return dittoStore.countInCategory(section)
-        }
-    }
-    
-    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch objectType {
-        case .Category: return 0
-        case .Ditto:    return 33
-        }
-    }
-    
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        switch objectType {
-        case .Category:
-            return nil
-            
-        case .Ditto:
-            let v = CategoryHeaderView(frame: CGRectZero)
-            v.text = dittoStore.getCategory(section)
-            return v
-        }
-    }
-    
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let text = textForCellAtIndexPath(indexPath)
-        return ObjectTableViewCell.heightForText(text, truncated: true, disclosure: true)
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("ObjectTableViewCell", forIndexPath: indexPath) as! ObjectTableViewCell
-        let text = textForCellAtIndexPath(indexPath)
-        cell.setText(text, disclosure: true)
-        return cell
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        presentEditViewController(indexPath)
-    }
-    
-    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        switch objectType {
-        case .Category: dittoStore.moveCategoryFromIndex(sourceIndexPath.row, toIndex: destinationIndexPath.row)
-        case .Ditto: dittoStore.moveDittoFromCategory(sourceIndexPath.section, index: sourceIndexPath.row, toCategory: destinationIndexPath.section, index: destinationIndexPath.row)
-        }
-    }
-    
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            switch objectType {
-            case .Category:
-                
-                presentRemoveCategoryWarning({ action in
-                    self.dittoStore.removeCategoryAtIndex(indexPath.row)
-                    tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
-                })
-                
-            case .Ditto:
-                
-                dittoStore.removeDittoFromCategory(indexPath.section, index: indexPath.row)
-                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
-                
+    @State private var objectType: DittoObjectType = .ditto
+    @State private var isEditing = false
+    @State private var showNewSheet = false
+    @State private var editTarget: EditTarget?
+    @State private var showMaxCategoryAlert = false
+    @State private var categoryToDelete: Int?
+    @State private var showSubscription = false
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                Picker("View", selection: $objectType) {
+                    ForEach(DittoObjectType.allCases, id: \.self) { type in
+                        Text(type.rawValue).tag(type)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .disabled(isEditing)
+
+                listContent
             }
-        }
-    }
-    
-    //==========================
-    // MARK: - Button Callbacks
-    
-    func newButtonClicked() {
-        
-        if objectType == .Category && !dittoStore.canCreateNewCategory() {
-            presentMaxCategoryWarning()
-        } else {
-            presentNewViewController()
-        }
-        
-    }
-    
-    func editButtonClicked() {
-        
-        segmentedControl.enabled = false
-        segmentedControl.userInteractionEnabled = false
-        navigationItem.setLeftBarButtonItem(doneButton, animated: true)
-        navigationItem.setRightBarButtonItem(nil, animated: true)
-        tableView.setEditing(true, animated: true)
-        
-    }
-    
-    func doneButtonClicked() {
-        
-        segmentedControl.enabled = true
-        segmentedControl.userInteractionEnabled = true
-        navigationItem.setLeftBarButtonItem(editButton, animated: true)
-        navigationItem.setRightBarButtonItem(newButton, animated: true)
-        tableView.setEditing(false, animated: true)
-        
-    }
-    
-    //=====================================
-    // MARK: - Presenting View Controllers
-    
-    func presentNewViewController() {
-        let newViewController = NewViewController(objectType: objectType)
-        let subnavController = NavigationController(rootViewController: newViewController)
-        presentViewController(subnavController, animated: true, completion: nil)
-    }
-    
-    func presentEditViewController(indexPath: NSIndexPath) {
-        
-        var editViewController: EditViewController
-        switch objectType {
-        case .Category:
-            editViewController = EditViewController(categoryIndex: indexPath.row)
-        case .Ditto:
-            editViewController = EditViewController(categoryIndex: indexPath.section, dittoIndex: indexPath.row)
-        }
-        
-        let subnavController = NavigationController(rootViewController: editViewController)
-        presentViewController(subnavController, animated: true, completion: nil)
-        
-    }
-    
-    func presentMaxCategoryWarning() {
+            .navigationTitle("Ditto")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.purple, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    if isEditing {
+                        Button("Done") {
+                            isEditing = false
+                        }
+                    } else {
+                        Menu {
+                            Button {
+                                isEditing = true
+                            } label: {
+                                Label("Edit", systemImage: "pencil")
+                            }
 
-        let alert = UIAlertController(title: "Warning",
-            message: "You can only create up to 8 categories. Delete a category before creating a new one.",
-            preferredStyle: .Alert)
-        
-        alert.addAction(UIAlertAction(title: "Okay", style: .Cancel, handler: nil))
-        presentViewController(alert, animated: true, completion: nil)
-
-    }
-    
-    func presentRemoveCategoryWarning(handler: ((UIAlertAction!) -> Void)) {
-        
-        let alert = UIAlertController(title: "Warning",
-            message: "Deleting a category removes all of its Dittos. Are you sure you wish to continue?",
-            preferredStyle: .Alert)
-        
-        alert.addAction(UIAlertAction(title: "Delete", style: .Destructive, handler: handler))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
-        presentViewController(alert, animated: true, completion: nil)
-        
-    }
-    
-    //========
-    // Helpers
-    
-    func loadPendingDittos() {
-        defaults.synchronize()
-        
-        
-        if let pendingDittos = defaults.dictionaryForKey("pendingDittos") as? [String:[String]] {
-            if let pendingCategories = defaults.arrayForKey("pendingCategories") as? [String] {
-                let categories = dittoStore.getCategories()
-                for (index, category) in  categories.enumerate() {
-                    if let dittos = pendingDittos[category] {
-                        for ditto in dittos {
-                            dittoStore.addDittoToCategory(index, text: ditto)
+                            Button {
+                                showSubscription = true
+                            } label: {
+                                Label(
+                                    subscriptionManager.isProSubscriber ? "iCloud Sync: On" : "Upgrade to Pro",
+                                    systemImage: subscriptionManager.isProSubscriber ? "checkmark.icloud" : "icloud"
+                                )
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
                         }
                     }
                 }
-                defaults.removeObjectForKey("pendingDittos")
-                defaults.removeObjectForKey("pendingCategories")
-                defaults.synchronize()
+                ToolbarItem(placement: .topBarTrailing) {
+                    if !isEditing {
+                        Button {
+                            if objectType == .category && !store.canCreateNewCategory {
+                                showMaxCategoryAlert = true
+                            } else {
+                                showNewSheet = true
+                            }
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                    }
+                }
+            }
+            .alert("Maximum Categories", isPresented: $showMaxCategoryAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("You can only create up to \(DittoStore.maxCategories) categories. Delete a category before creating a new one.")
+            }
+            .alert("Delete Category?", isPresented: .init(
+                get: { categoryToDelete != nil },
+                set: { if !$0 { categoryToDelete = nil } }
+            )) {
+                Button("Delete", role: .destructive) {
+                    if let index = categoryToDelete {
+                        store.removeCategory(at: index)
+                        categoryToDelete = nil
+                    }
+                }
+                Button("Cancel", role: .cancel) {
+                    categoryToDelete = nil
+                }
+            } message: {
+                Text("Deleting a category removes all of its Dittos. Are you sure?")
+            }
+            .sheet(isPresented: $showNewSheet) {
+                NewItemView(store: store, objectType: objectType)
+            }
+            .sheet(item: $editTarget) { target in
+                EditItemView(store: store, target: target)
+            }
+            .sheet(isPresented: $showSubscription) {
+                SubscriptionView(subscriptionManager: subscriptionManager)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                store.loadPendingDittos()
             }
         }
     }
-    
-    func handleAppInForeground() {
-        loadPendingDittos()
-        tableView.reloadData()
+
+    @ViewBuilder
+    private var listContent: some View {
+        switch objectType {
+        case .category:
+            categoryList
+        case .ditto:
+            dittoList
+        }
     }
-    
+
+    private var categoryList: some View {
+        List {
+            ForEach(Array(store.categories.enumerated()), id: \.element.persistentModelID) { index, cat in
+                Button {
+                    editTarget = .category(index: index)
+                } label: {
+                    HStack {
+                        Text("\(cat.title) (\(cat.orderedDittos.count))")
+                            .foregroundStyle(.primary)
+                            .lineLimit(2)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                    }
+                }
+            }
+            .onDelete { offsets in
+                for index in offsets {
+                    categoryToDelete = index
+                }
+            }
+            .onMove { source, destination in
+                if let from = source.first {
+                    store.moveCategory(fromIndex: from, toIndex: destination > from ? destination - 1 : destination)
+                }
+            }
+        }
+        .listStyle(.plain)
+        .environment(\.editMode, .constant(isEditing ? .active : .inactive))
+    }
+
+    private var dittoList: some View {
+        List {
+            ForEach(Array(store.categories.enumerated()), id: \.element.persistentModelID) { catIndex, cat in
+                Section {
+                    ForEach(Array(cat.orderedDittos.enumerated()), id: \.element.persistentModelID) { dittoIndex, item in
+                        Button {
+                            editTarget = .ditto(categoryIndex: catIndex, dittoIndex: dittoIndex)
+                        } label: {
+                            HStack {
+                                Text(item.preview)
+                                    .foregroundStyle(.primary)
+                                    .lineLimit(2)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .foregroundStyle(.secondary)
+                                    .font(.caption)
+                            }
+                        }
+                    }
+                    .onDelete { offsets in
+                        for dittoIndex in offsets {
+                            store.removeDitto(inCategoryAt: catIndex, at: dittoIndex)
+                        }
+                    }
+                    .onMove { source, destination in
+                        if let from = source.first {
+                            store.moveDitto(
+                                fromCategory: catIndex,
+                                fromIndex: from,
+                                toCategory: catIndex,
+                                toIndex: destination > from ? destination - 1 : destination
+                            )
+                        }
+                    }
+                } header: {
+                    Text(cat.title)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .listStyle(.plain)
+        .environment(\.editMode, .constant(isEditing ? .active : .inactive))
+    }
+}
+
+/// Identifies what we're editing in the edit sheet.
+enum EditTarget: Identifiable {
+    case category(index: Int)
+    case ditto(categoryIndex: Int, dittoIndex: Int)
+
+    var id: String {
+        switch self {
+        case .category(let i): return "cat-\(i)"
+        case .ditto(let ci, let di): return "ditto-\(ci)-\(di)"
+        }
+    }
 }

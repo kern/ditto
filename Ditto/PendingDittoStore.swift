@@ -1,114 +1,105 @@
-import UIKit
-import CoreData
+import Foundation
 
-class PendingDittoStore : NSObject {
-    
-    let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
-    let dittoStore = DittoStore()
-    
-    
-    //===============
-    // MARK: Getters
-    
-    func getCategories() -> [String] {
-        return dittoStore.getCategories()
+/// Lightweight store used by the keyboard extension to read dittos and queue pending additions.
+/// Uses UserDefaults with the shared App Group since extensions have limited SwiftData access.
+final class PendingDittoStore {
+
+    static let appGroupIdentifier = "group.io.kern.ditto"
+
+    private let dittoStore: DittoStore
+    private let defaults: UserDefaults
+
+    init(dittoStore: DittoStore? = nil) {
+        self.dittoStore = dittoStore ?? DittoStore()
+        self.defaults = UserDefaults(suiteName: Self.appGroupIdentifier) ?? .standard
     }
-    
-    func getCategory(categoryIndex: Int) -> String {
-        return dittoStore.getCategories()[categoryIndex]
+
+    // MARK: - Read Access (delegates to DittoStore)
+
+    var categories: [DittoCategory] {
+        dittoStore.categories
     }
-    
-    func getDittosInCategory(categoryIndex: Int) -> [String] {
-        var savedDittos = dittoStore.getDittosInCategory(categoryIndex)
-        let category = dittoStore.getCategory(categoryIndex)
-        if let pendingDittos = defaults.objectForKey("pendingDittos") as? [String: [String]]{
-            if let pendingCategories = defaults.objectForKey("pendingCategories") as? [String] {
-                if pendingCategories.contains(category) {
-                    savedDittos = savedDittos + pendingDittos[category]!
-                }
-            }
+
+    var categoryCount: Int {
+        dittoStore.categoryCount
+    }
+
+    var isEmpty: Bool {
+        dittoStore.isEmpty
+    }
+
+    var hasOneCategory: Bool {
+        categoryCount == 1
+    }
+
+    func category(at index: Int) -> DittoCategory {
+        dittoStore.category(at: index)
+    }
+
+    func categoryTitle(at index: Int) -> String {
+        category(at: index).title
+    }
+
+    func dittos(inCategoryAt index: Int) -> [DittoItem] {
+        var items = dittoStore.dittos(inCategoryAt: index)
+        let categoryTitle = self.categoryTitle(at: index)
+
+        // Append any pending dittos from UserDefaults
+        if let pending = pendingDittos(for: categoryTitle) {
+            let pendingItems = pending.map { DittoItem(text: $0) }
+            items.append(contentsOf: pendingItems)
         }
-        return savedDittos
+        return items
     }
-    
-    func getDittoInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
-        return getDittosInCategory(categoryIndex)[dittoIndex]
-    }
-    
-    func getDittoPreviewInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
-        return preview(getDittoInCategory(categoryIndex, index: dittoIndex))
-    }
-    
-    //==================
-    // MARK: - Counting
-    
-    func isEmpty() -> Bool {
-        return countCategories() == 0
-    }
-    
-    func oneCategory() -> Bool {
-        return countCategories() == 1
-    }
-    
-    func countInCategory(categoryIndex: Int) -> Int {
-        let category = getCategory(categoryIndex)
-        var count = dittoStore.countInCategory(categoryIndex)
-        if let pendingDittos = defaults.objectForKey("pendingDittos") as? [String: [String]]{
-            if let pendingCategories = defaults.objectForKey("pendingCategories") as? [String] {
-                if pendingCategories.contains(category) {
-                    count += pendingDittos[category]!.count
-                }
-            }
+
+    func dittoCount(inCategoryAt index: Int) -> Int {
+        var count = dittoStore.dittoCount(inCategoryAt: index)
+        let categoryTitle = self.categoryTitle(at: index)
+
+        if let pending = pendingDittos(for: categoryTitle) {
+            count += pending.count
         }
         return count
     }
-    
-    func countCategories() -> Int {
-        return getCategories().count
+
+    func ditto(inCategoryAt categoryIndex: Int, at dittoIndex: Int) -> DittoItem {
+        let allDittos = dittos(inCategoryAt: categoryIndex)
+        return allDittos[dittoIndex]
     }
-    
-    //==========================
-    // MARK: - Ditto Management
-    
-    func addDittoToCategory(categoryIndex: Int, text: String) {
+
+    func dittoPreview(inCategoryAt categoryIndex: Int, at dittoIndex: Int) -> String {
+        ditto(inCategoryAt: categoryIndex, at: dittoIndex).preview
+    }
+
+    // MARK: - Write (queues to UserDefaults for main app to pick up)
+
+    func addDitto(text: String, toCategoryAt index: Int) {
         defaults.synchronize()
-        
-        let categories = dittoStore.getCategories()
-        let category = categories[categoryIndex]
-        
-        if var pendingDittos = defaults.dictionaryForKey("pendingDittos") as? [String:[String]] {
-            if var pendingCategories = defaults.arrayForKey("pendingCategories") as? [String] {
-                if pendingCategories.contains(category){
-                    var dittos = pendingDittos[category]
-                    dittos!.append(text)
-                    pendingDittos[category] = dittos!
-                } else {
-                    pendingCategories.append(category)
-                    pendingDittos[category] = [text]
-                }
-                
-                defaults.setObject(pendingCategories, forKey: "pendingCategories")
-                defaults.setObject(pendingDittos, forKey: "pendingDittos")
-                
-            }
+        let categoryTitle = self.categoryTitle(at: index)
+
+        var allPending = defaults.dictionary(forKey: "pendingDittos") as? [String: [String]] ?? [:]
+        var pendingCats = defaults.array(forKey: "pendingCategories") as? [String] ?? []
+
+        if var dittos = allPending[categoryTitle] {
+            dittos.append(text)
+            allPending[categoryTitle] = dittos
         } else {
-            let pendingCategories = [category]
-            let pendingDittos = [category: [text]]
-            
-            defaults.setObject(pendingCategories, forKey: "pendingCategories")
-            defaults.setObject(pendingDittos, forKey: "pendingDittos")
+            pendingCats.append(categoryTitle)
+            allPending[categoryTitle] = [text]
         }
-        
+
+        defaults.set(pendingCats, forKey: "pendingCategories")
+        defaults.set(allPending, forKey: "pendingDittos")
         defaults.synchronize()
     }
-    
-    //=================
+
     // MARK: - Helpers
-    
-    func preview(ditto: String) -> String {
-        return ditto
-            .stringByReplacingOccurrencesOfString("\n", withString: " ")
-            .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
+
+    private func pendingDittos(for categoryTitle: String) -> [String]? {
+        defaults.synchronize()
+        guard let allPending = defaults.dictionary(forKey: "pendingDittos") as? [String: [String]],
+              let pendingCats = defaults.array(forKey: "pendingCategories") as? [String],
+              pendingCats.contains(categoryTitle) else { return nil }
+        return allPending[categoryTitle]
     }
-    
 }

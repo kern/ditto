@@ -1,26 +1,18 @@
 import UIKit
 
-class AddDittoFromClipboardViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelegate {
-    
+final class AddDittoFromClipboardViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+
     let dittoStore = DittoStore()
-    
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
-        return 1
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        1
     }
-    
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        if dittoStore.isEmpty() {
-            return 1
-        } else {
-            return dittoStore.countCategories()
-        }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        dittoStore.isEmpty ? 1 : dittoStore.categoryCount
     }
-    
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
-        if dittoStore.isEmpty() {
-            return "General"
-        } else {
-            return dittoStore.getCategory(row)
-        }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        dittoStore.isEmpty ? "General" : dittoStore.category(at: row).title
     }
 }

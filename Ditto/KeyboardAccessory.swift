@@ -1,48 +1,45 @@
-import UIKit
+import SwiftUI
 
-class KeyboardAccessory: UIToolbar {
-    
-    let categoryLabel: UILabel
-    let categoryField: CategoryField
+/// Keyboard accessory toolbar showing the selected category for ditto editing.
+struct KeyboardAccessoryBar: View {
 
-    init(categoryPicker: CategoryPicker) {
-        
-        categoryLabel = UILabel(frame: CGRectZero)
-        categoryField = CategoryField(frame: CGRectZero, categoryPicker: categoryPicker)
-        super.init(frame: CGRectMake(0, 0, 0, 35))
-        
-        categoryLabel.textColor = UIColor.purpleColor()
-        categoryLabel.text = "Category"
-        categoryLabel.textAlignment = .Left
-        addSubview(categoryLabel)
-        addSubview(categoryField)
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: Selector("accessoryClicked:"))
-        addGestureRecognizer(tapGesture)
-        userInteractionEnabled = true
+    let categories: [DittoCategory]
+    @Binding var selectedCategoryIndex: Int
+    @State private var isPickerExpanded = false
 
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Text("Category")
+                    .foregroundStyle(.purple)
+                Spacer()
+                if isPickerExpanded {
+                    Button("Done") {
+                        isPickerExpanded = false
+                    }
+                    .foregroundStyle(.purple)
+                    .fontWeight(.bold)
+                } else {
+                    Button(categories.indices.contains(selectedCategoryIndex) ? categories[selectedCategoryIndex].title : "") {
+                        isPickerExpanded = true
+                    }
+                    .foregroundStyle(.purple)
+                    .fontWeight(.bold)
+                }
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+            .background(Color(.systemGray6))
+
+            if isPickerExpanded {
+                Picker("Category", selection: $selectedCategoryIndex) {
+                    ForEach(Array(categories.enumerated()), id: \.offset) { index, cat in
+                        Text(cat.title).tag(index)
+                    }
+                }
+                .pickerStyle(.wheel)
+                .background(Color(.systemGray6))
+            }
+        }
     }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSubviews() {
-        categoryLabel.sizeToFit()
-        var labelFrame = categoryLabel.frame
-        labelFrame.origin.x = 11
-        labelFrame.size.height = frame.height
-        categoryLabel.frame = labelFrame
-
-        var fieldFrame = categoryField.frame
-        fieldFrame.origin.x = CGRectGetMaxX(labelFrame) + 11
-        fieldFrame.size.width = frame.width - fieldFrame.origin.x - 11
-        fieldFrame.size.height = frame.height
-        categoryField.frame = fieldFrame
-    }
-    
-    func accessoryClicked(sender: UITapGestureRecognizer) {
-        categoryField.becomeFirstResponder()
-    }
-    
 }

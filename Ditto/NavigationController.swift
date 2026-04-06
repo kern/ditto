@@ -1,19 +1,12 @@
-import UIKit
+import SwiftUI
 
-class NavigationController: UINavigationController {
+/// Custom color theme used throughout the app.
+extension Color {
+    static let dittoAccent = Color.purple
+}
 
-    override init(rootViewController: UIViewController) {
-        super.init(rootViewController: rootViewController)
-        navigationBar.barTintColor = UIColor.purpleColor()
-        navigationBar.tintColor = UIColor.whiteColor()
-    }
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
+/// Shared styling constants.
+enum DittoTheme {
+    static let accentColor = Color.purple
+    static let maxCategoryCount = 8
 }

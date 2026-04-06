@@ -1,311 +1,286 @@
-import UIKit
-import CoreData
+import Foundation
+import SwiftData
 
-class DittoStore : NSObject {
-    
-    let MAX_CATEGORIES = 8
-    let PRESET_CATEGORIES = ["Instructions", "Driving", "Business", "Dating 🔥❤️"]
-    let PRESET_DITTOS = [
+/// Central data store managing all Ditto persistence via SwiftData.
+/// Uses a shared App Group container so the keyboard extension can access the same data.
+@Observable
+final class DittoStore {
+
+    static let maxCategories = 8
+    static let appGroupIdentifier = "group.io.kern.ditto"
+
+    let modelContainer: ModelContainer
+    let modelContext: ModelContext
+
+    static let presetCategories = ["Instructions", "Driving", "Business", "Dating"]
+    static let presetDittos: [String: [String]] = [
         "Instructions": [
-            "Welcome to Ditto! 👋",
-            "Add Ditto in Settings > General > Keyboard > Keyboards.",
-            "You must allow full access for Ditto to work properly. After you've added the Ditto keyboard, select it, and turn on Allow Full Access.",
-            "We DO NOT access ANYTHING that you type on the keyboard.",
-            "Everything is saved privately on your device. 🔒",
+            "Welcome to Ditto!",
             "Use the Ditto app to customize your dittos.",
             "Add a triple underscore ___ to your ditto to control where your cursor lands.",
-            "You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try! You can expand long dittos within the keyboard by holding them down. Go ahead and give this one a try!",
+            "You can expand long dittos within the keyboard by holding them down.",
             "Hold down a keyboard tab to expand the category title, and swipe on the tab bar for quick access."
         ],
-        
         "Driving": [
             "I'm driving, can you call me?",
             "I'll be there in ___ minutes!",
             "What's the address?",
-            "Can't text, I'm driving 🚘"
+            "Can't text, I'm driving"
         ],
-        
         "Business": [
-            "Hi ___,\n\nIt was great meeting you today. I'd love to chat in more detail about possible business opportunities. Please let me know your availability.\n\nBest,\nAsaf Avidan Antonir",
-            "My name is Asaf, and I work at Shmoogle on the search team. We are always looking for talented candidates to join our team, and with your impressive background, we think you could be a great fit. Please let me know if you are interested, and if so, your availability to chat this week."
+            "Hi ___,\n\nIt was great meeting you today. I'd love to chat in more detail about possible business opportunities. Please let me know your availability.\n\nBest",
+            "My name is ___, and I work at ___. We are always looking for talented candidates to join our team. Please let me know if you are interested."
         ],
-        
-        "Dating 🔥❤️": [
-            "I'm not a photographer, but I can picture us together. 📷",
-            "Was your dad a thief? Because someone stole the stars from the sky and put them in your eyes ✨👀✨.",
+        "Dating": [
+            "I'm not a photographer, but I can picture us together.",
             "Do you have a Band-Aid? Because I just scraped my knee falling for you."
         ]
     ]
-    
-    let defaults = NSUserDefaults(suiteName: "group.io.kern.ditto")!
-    
-    static var managedObjectModel: NSManagedObjectModel = {
-        let modelURL = NSBundle.mainBundle().URLForResource("Ditto", withExtension: "momd")!
-        return NSManagedObjectModel(contentsOfURL: modelURL)!
-    }()
-    
-    static var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
-        
-        let directory = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier("group.io.kern.ditto")
-        let storeURL = directory?.URLByAppendingPathComponent("Ditto.sqlite")
-        
-        let options = [
-            NSMigratePersistentStoresAutomaticallyOption: NSNumber(bool: true),
-            NSInferMappingModelAutomaticallyOption: NSNumber(bool: true)
-        ]
-        
-        let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-        
-        var err: NSError? = nil
-        do {
-            try persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: options)
-        } catch var error as NSError {
-            err = error
-            fatalError(err!.localizedDescription)
-        } catch {
-            fatalError()
+
+    init(modelContainer: ModelContainer) {
+        self.modelContainer = modelContainer
+        self.modelContext = ModelContext(modelContainer)
+        ensureProfileExists()
+    }
+
+    /// Convenience initializer for production use with the shared App Group container.
+    convenience init() {
+        let schema = Schema([Profile.self, DittoCategory.self, DittoItem.self])
+        let config: ModelConfiguration
+        if let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: DittoStore.appGroupIdentifier) {
+            let storeURL = groupURL.appendingPathComponent("Ditto.store")
+            config = ModelConfiguration("Ditto", schema: schema, url: storeURL)
+        } else {
+            config = ModelConfiguration("Ditto", schema: schema)
         }
-        
-        return persistentStoreCoordinator
-        
-    }()
-    
-    static var managedObjectContext: NSManagedObjectContext = {
-        var managedObjectContext = NSManagedObjectContext()
-        managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
-        return managedObjectContext
-    }()
-    
-    //===================
-    // MARK: Persistence
-    
-    lazy var context: NSManagedObjectContext = {
-        return DittoStore.managedObjectContext
-    }()
-    
-    func save() {
-        var err: NSError? = nil
+
         do {
-            try DittoStore.managedObjectContext.save()
-        } catch let error as NSError {
-            err = error
-            fatalError(err!.localizedDescription)
+            let container = try ModelContainer(for: schema, configurations: [config])
+            self.init(modelContainer: container)
+        } catch {
+            fatalError("Failed to create ModelContainer: \(error)")
         }
     }
-    
-    func createProfile() -> Profile {
-        
-        let profile = NSEntityDescription.insertNewObjectForEntityForName("Profile", inManagedObjectContext: DittoStore.managedObjectContext) as! Profile
-        for categoryName in PRESET_CATEGORIES {
-            let category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: DittoStore.managedObjectContext) as! Category
-            category.profile = profile
-            category.title = categoryName
-            
-            for dittoText in PRESET_DITTOS[categoryName]! {
-                let ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: DittoStore.managedObjectContext) as! Ditto
-                ditto.category = category
-                ditto.text = dittoText
+
+    // MARK: - Profile
+
+    func getProfile() -> Profile {
+        let descriptor = FetchDescriptor<Profile>()
+        let profiles = (try? modelContext.fetch(descriptor)) ?? []
+        if let profile = profiles.first {
+            return profile
+        }
+        return createProfile()
+    }
+
+    private func ensureProfileExists() {
+        let descriptor = FetchDescriptor<Profile>()
+        let count = (try? modelContext.fetchCount(descriptor)) ?? 0
+        if count == 0 {
+            _ = createProfile()
+        }
+    }
+
+    @discardableResult
+    private func createProfile() -> Profile {
+        let profile = Profile()
+        modelContext.insert(profile)
+
+        for categoryName in Self.presetCategories {
+            let category = DittoCategory(title: categoryName, profile: profile)
+            modelContext.insert(category)
+            profile.categories.append(category)
+            profile.appendCategoryToOrder(category)
+
+            for dittoText in Self.presetDittos[categoryName] ?? [] {
+                let ditto = DittoItem(text: dittoText, category: category)
+                modelContext.insert(ditto)
+                category.dittos.append(ditto)
+                category.appendDittoToOrder(ditto)
             }
         }
-        
-        // Migrate dittos from V1
-        defaults.synchronize()
-        if let dittos = defaults.arrayForKey("dittos") as? [String] {
-            let category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: DittoStore.managedObjectContext) as! Category
-            category.profile = profile
-            category.title = "General"
-            
-            for dittoText in dittos {
-                let ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: DittoStore.managedObjectContext) as! Ditto
-                ditto.category = category
-                ditto.text = dittoText
-            }
-        }
-        
-        defaults.removeObjectForKey("dittos")
-        defaults.synchronize()
-        
+
+        // Migrate pending dittos from UserDefaults (V1 compatibility)
+        migratePendingDittos(profile: profile)
+
         save()
-        
         return profile
     }
-    
-    func getProfile() -> Profile {
-        let fetchRequest = NSFetchRequest(entityName: "Profile")
-        var error: NSError?
-        do {
-            let profiles = try DittoStore.managedObjectContext.executeFetchRequest(fetchRequest)
-            if profiles.count > 0 {
-                return profiles[0] as! Profile
-            } else {
-                return self.createProfile()
-            }
-        } catch let error1 as NSError {
-            error = error1
-            fatalError(error!.localizedDescription)
-        }
-        
-    }
-    
-    //===============
-    // MARK: Getters
-    
-    func getCategories() -> [String] {
-        return Array(getProfile().categories).map({ (category) in
-            let c = category as! Category
-            return c.title
-        })
-        
-    }
-    
-    func getCategory(categoryIndex: Int) -> String {
-        let category = getProfile().categories[categoryIndex] as! Category
-        return category.title
-    }
-    
-    func getDittosInCategory(categoryIndex: Int) -> [String] {
-        let category = getProfile().categories[categoryIndex] as! Category
-        let dittos = Array(category.dittos)
-        return dittos.map({ (ditto) in
-            let d = ditto as! Ditto
-            return d.text
-        })
-    }
-    
-    func getDittoInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
-        let category = getProfile().categories[categoryIndex] as! Category
-        let ditto = category.dittos[dittoIndex] as! Ditto
-        return ditto.text
-    }
-    
-    func getDittoPreviewInCategory(categoryIndex: Int, index dittoIndex: Int) -> String {
-        return preview(getDittoInCategory(categoryIndex, index: dittoIndex))
-    }
-    
-    //==================
-    // MARK: - Counting
-    
-    func isEmpty() -> Bool {
-        return countCategories() == 0
-    }
-    
-    func oneCategory() -> Bool {
-        return countCategories() == 1
-    }
-    
-    func countInCategory(categoryIndex: Int) -> Int {
-        let category = getProfile().categories[categoryIndex] as! Category
-        return category.dittos.count
-    }
-    
-    func countCategories() -> Int {
-        return getProfile().categories.count
-    }
-    
-    //=============================
-    // MARK: - Category Management
-    
-    func canCreateNewCategory() -> Bool {
-        return countCategories() < MAX_CATEGORIES
-    }
-    
-    func addCategoryWithName(name: String) {
-        let category = NSEntityDescription.insertNewObjectForEntityForName("Category", inManagedObjectContext: context) as! Category
-        category.profile = getProfile()
-        category.title = name
-        save()
-    }
-    
-    func removeCategoryAtIndex(categoryIndex: Int) {
-        let category = getProfile().categories[categoryIndex] as! Category
-        context.deleteObject(category)
-        save()
-    }
-    
-    func moveCategoryFromIndex(fromIndex: Int, toIndex: Int) {
-        let categories = getProfile().categories.mutableCopy() as! NSMutableOrderedSet
-        let category = categories[fromIndex] as! Category
-        categories.removeObjectAtIndex(fromIndex)
-        categories.insertObject(category, atIndex: toIndex)
-        getProfile().categories = categories as NSOrderedSet
-        save()
-    }
-    
-    func editCategoryAtIndex(index: Int, name: String) {
-        let category = getProfile().categories[index] as! Category
-        category.title = name
-        save()
-    }
-    
-    //==========================
-    // MARK: - Ditto Management
-    
-    func addDittoToCategory(categoryIndex: Int, text: String) {
-        let ditto = NSEntityDescription.insertNewObjectForEntityForName("Ditto", inManagedObjectContext: context) as! Ditto
-        ditto.category = getProfile().categories[categoryIndex] as! Category
-        ditto.text = text
-        save()
-    }
-    
-    func removeDittoFromCategory(categoryIndex: Int, index dittoIndex: Int) {
-        let category = getProfile().categories[categoryIndex] as! Category
-        let ditto = category.dittos[dittoIndex] as! Ditto
-        context.deleteObject(ditto)
-        save()
-    }
-    
-    func moveDittoFromCategory(fromCategoryIndex: Int, index fromDittoIndex: Int, toCategory toCategoryIndex: Int, index toDittoIndex: Int) {
-        
-        if fromCategoryIndex == toCategoryIndex {
-            let category = getProfile().categories[fromCategoryIndex] as! Category
-            let dittos = category.dittos.mutableCopy() as! NSMutableOrderedSet
-            let ditto = dittos[fromDittoIndex] as! Ditto
-            dittos.removeObjectAtIndex(fromDittoIndex)
-            dittos.insertObject(ditto, atIndex: toDittoIndex)
-            category.dittos = dittos as NSOrderedSet
-        
-        
-        } else {
-            
-            let fromCategory = getProfile().categories[fromCategoryIndex] as! Category
-            let toCategory = getProfile().categories[toCategoryIndex] as! Category
-            
-            let fromDittos = fromCategory.dittos.mutableCopy() as! NSMutableOrderedSet
-            let toDittos = toCategory.dittos.mutableCopy() as! NSMutableOrderedSet
-            
-            let ditto = fromDittos[fromDittoIndex] as! Ditto
-            
-            fromDittos.removeObjectAtIndex(fromDittoIndex)
-            toDittos.insertObject(ditto, atIndex: toDittoIndex)
 
-            fromCategory.dittos = fromDittos as NSOrderedSet
-            toCategory.dittos = toDittos as NSOrderedSet
+    // MARK: - Categories
+
+    var categories: [DittoCategory] {
+        getProfile().orderedCategories
+    }
+
+    var categoryCount: Int {
+        getProfile().orderedCategories.count
+    }
+
+    var canCreateNewCategory: Bool {
+        categoryCount < Self.maxCategories
+    }
+
+    var isEmpty: Bool {
+        categoryCount == 0
+    }
+
+    func category(at index: Int) -> DittoCategory {
+        getProfile().orderedCategories[index]
+    }
+
+    func addCategory(title: String) {
+        let profile = getProfile()
+        let category = DittoCategory(title: title, profile: profile)
+        modelContext.insert(category)
+        profile.categories.append(category)
+        profile.appendCategoryToOrder(category)
+        save()
+    }
+
+    func removeCategory(at index: Int) {
+        let profile = getProfile()
+        let category = profile.orderedCategories[index]
+        profile.removeCategoryFromOrder(category)
+        modelContext.delete(category)
+        save()
+    }
+
+    func moveCategory(fromIndex: Int, toIndex: Int) {
+        let profile = getProfile()
+        profile.moveCategoryOrder(fromIndex: fromIndex, toIndex: toIndex)
+        save()
+    }
+
+    func updateCategory(at index: Int, title: String) {
+        let category = category(at: index)
+        category.title = title
+        save()
+    }
+
+    // MARK: - Dittos
+
+    func dittos(inCategoryAt index: Int) -> [DittoItem] {
+        category(at: index).orderedDittos
+    }
+
+    func ditto(inCategoryAt categoryIndex: Int, at dittoIndex: Int) -> DittoItem {
+        category(at: categoryIndex).orderedDittos[dittoIndex]
+    }
+
+    func dittoCount(inCategoryAt index: Int) -> Int {
+        category(at: index).orderedDittos.count
+    }
+
+    func addDitto(text: String, toCategoryAt index: Int) {
+        let cat = category(at: index)
+        let ditto = DittoItem(text: text, category: cat)
+        modelContext.insert(ditto)
+        cat.dittos.append(ditto)
+        cat.appendDittoToOrder(ditto)
+        save()
+    }
+
+    func removeDitto(inCategoryAt categoryIndex: Int, at dittoIndex: Int) {
+        let cat = category(at: categoryIndex)
+        let item = cat.orderedDittos[dittoIndex]
+        cat.removeDittoFromOrder(item)
+        modelContext.delete(item)
+        save()
+    }
+
+    func updateDitto(inCategoryAt categoryIndex: Int, at dittoIndex: Int, text: String) {
+        let item = ditto(inCategoryAt: categoryIndex, at: dittoIndex)
+        item.text = text
+        save()
+    }
+
+    func moveDitto(fromCategory: Int, fromIndex: Int, toCategory: Int, toIndex: Int) {
+        let srcCat = category(at: fromCategory)
+        let srcDittos = srcCat.orderedDittos
+        let item = srcDittos[fromIndex]
+
+        if fromCategory == toCategory {
+            srcCat.moveDittoOrder(fromIndex: fromIndex, toIndex: toIndex)
+        } else {
+            let dstCat = category(at: toCategory)
+            srcCat.removeDittoFromOrder(item)
+            item.category = dstCat
+            dstCat.dittos.append(item)
+            // Insert at specific position in order
+            if toIndex < dstCat.dittoOrder.count {
+                dstCat.dittoOrder.insert(item.persistentModelID, at: toIndex)
+            } else {
+                dstCat.appendDittoToOrder(item)
+            }
         }
-        
         save()
     }
-    
-    func moveDittoFromCategory(fromCategoryIndex: Int, index dittoIndex: Int, toCategory toCategoryIndex: Int) {
-        moveDittoFromCategory(fromCategoryIndex,
-            index: dittoIndex,
-            toCategory: toCategoryIndex,
-            index: countInCategory(toCategoryIndex))
+
+    func moveDitto(fromCategory: Int, fromIndex: Int, toCategory: Int) {
+        let count = dittoCount(inCategoryAt: toCategory)
+        moveDitto(fromCategory: fromCategory, fromIndex: fromIndex, toCategory: toCategory, toIndex: count)
     }
-    
-    func editDittoInCategory(categoryIndex: Int, index dittoIndex: Int, text: String) {
-        let category = getProfile().categories[categoryIndex] as! Category
-        let ditto = category.dittos[dittoIndex] as! Ditto
-        ditto.text = text
+
+    // MARK: - Persistence
+
+    func save() {
+        do {
+            try modelContext.save()
+        } catch {
+            print("DittoStore save error: \(error)")
+        }
+    }
+
+    // MARK: - Pending Dittos Migration
+
+    private func migratePendingDittos(profile: Profile) {
+        guard let defaults = UserDefaults(suiteName: Self.appGroupIdentifier) else { return }
+        defaults.synchronize()
+
+        guard let pendingDittos = defaults.dictionary(forKey: "pendingDittos") as? [String: [String]],
+              let pendingCategories = defaults.array(forKey: "pendingCategories") as? [String] else { return }
+
+        let orderedCats = profile.orderedCategories
+        for cat in orderedCats {
+            if pendingCategories.contains(cat.title),
+               let texts = pendingDittos[cat.title] {
+                for text in texts {
+                    let ditto = DittoItem(text: text, category: cat)
+                    modelContext.insert(ditto)
+                    cat.dittos.append(ditto)
+                    cat.appendDittoToOrder(ditto)
+                }
+            }
+        }
+
+        defaults.removeObject(forKey: "pendingDittos")
+        defaults.removeObject(forKey: "pendingCategories")
+        defaults.synchronize()
+    }
+
+    func loadPendingDittos() {
+        guard let defaults = UserDefaults(suiteName: Self.appGroupIdentifier) else { return }
+        defaults.synchronize()
+
+        guard let pendingDittos = defaults.dictionary(forKey: "pendingDittos") as? [String: [String]],
+              let _ = defaults.array(forKey: "pendingCategories") as? [String] else { return }
+
+        let cats = categories
+        for cat in cats {
+            if let texts = pendingDittos[cat.title] {
+                for text in texts {
+                    let ditto = DittoItem(text: text, category: cat)
+                    modelContext.insert(ditto)
+                    cat.dittos.append(ditto)
+                    cat.appendDittoToOrder(ditto)
+                }
+            }
+        }
+
+        defaults.removeObject(forKey: "pendingDittos")
+        defaults.removeObject(forKey: "pendingCategories")
+        defaults.synchronize()
         save()
     }
-    
-    //=================
-    // MARK: - Helpers
-    
-    func preview(ditto: String) -> String {
-        return ditto
-            .stringByReplacingOccurrencesOfString("\n", withString: " ")
-            .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
-    }
-    
 }
