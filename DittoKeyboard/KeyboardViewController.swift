@@ -166,7 +166,7 @@ final class KeyboardViewController: UIInputViewController,
     func refreshTabButtons() {
         guard !dittoStore.isEmpty, !dittoStore.hasOneCategory else { return }
         tabViews.forEach { $0.removeFromSuperview() }
-        let w = tabWidth; let h = tabBar.bounds.height
+        let w = tabWidth; let h = tabBarHeight
         tabViews = (0..<tabCount).map { i in
             let tab = UIView(frame: CGRect(x: CGFloat(i) * w, y: 0, width: w, height: h))
             tab.backgroundColor = colorForTab(i)
@@ -181,7 +181,7 @@ final class KeyboardViewController: UIInputViewController,
     }
 
     func selectedTabArrowPath() -> CGPath {
-        let h = tabBar.bounds.height
+        let h = tabBarHeight
         let path = UIBezierPath()
         path.move(to: CGPoint(x: -7, y: h))
         path.addLine(to: CGPoint(x: 7, y: h))

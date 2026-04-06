@@ -267,7 +267,7 @@ struct DittoListView: View {
                 } header: {
                     Text(cat.title)
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.primary)
                 }
             }
         }
