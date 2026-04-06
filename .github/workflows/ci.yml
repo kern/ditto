@@ -76,28 +76,41 @@ jobs:
       - name: List available simulators
         run: xcrun simctl list devices available | grep -i iphone | head -20
 
+      - name: Build for testing
+        run: |
+          set -o pipefail
+          xcodebuild build-for-testing \
+            -project Ditto.xcodeproj \
+            -scheme Ditto \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee /tmp/build_output.log | tail -30
+
+      - name: Show build errors
+        if: failure()
+        run: |
+          grep -i 'error' /tmp/build_output.log | grep -v 'warning:' | tail -40 | while IFS= read -r line; do
+            echo "::error::BUILD: $line"
+          done
+
       - name: Run tests
         run: |
-          xcodebuild test \
+          set -o pipefail
+          xcodebuild test-without-building \
             -project Ditto.xcodeproj \
             -scheme Ditto \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             -resultBundlePath TestResults.xcresult \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            2>&1 | tee /tmp/test_output.log; \
-          TEST_EXIT=${PIPESTATUS[0]}; \
-          if [ $TEST_EXIT -ne 0 ]; then \
-            echo "::group::Test errors"; \
-            grep -E '(error:|fatal error|cannot find|no such module|linker|undefined|failed to|ld:|clang: error|exit code)' /tmp/test_output.log | head -30 | while IFS= read -r line; do \
-              echo "::error::$line"; \
-            done; \
-            echo "::endgroup::"; \
-            echo "::group::Last 50 lines"; \
-            tail -50 /tmp/test_output.log; \
-            echo "::endgroup::"; \
-            exit $TEST_EXIT; \
-          fi
+            2>&1 | tee /tmp/test_output.log | tail -30
+
+      - name: Show test errors
+        if: failure()
+        run: |
+          grep -i 'error\|failed\|failure' /tmp/test_output.log | tail -40 | while IFS= read -r line; do
+            echo "::error::TEST: $line"
+          done
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
