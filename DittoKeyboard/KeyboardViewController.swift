@@ -93,6 +93,7 @@ final class KeyboardViewController: UIInputViewController,
         super.viewWillLayoutSubviews()
         keyboardHeightConstraint.constant = keyboardHeight
         tabBarHeightConstraint.constant = tabBarHeight
+        selectedTabArrow.path = selectedTabArrowPath()
         refreshTabButtons()
         tableView.beginUpdates(); tableView.endUpdates()
     }

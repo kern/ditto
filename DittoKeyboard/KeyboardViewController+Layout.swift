@@ -11,6 +11,7 @@ extension KeyboardViewController {
         keyboardHeightConstraint = keyboardView.heightAnchor.constraint(equalToConstant: keyboardHeight)
         NSLayoutConstraint.activate([
             keyboardView.topAnchor.constraint(equalTo: view.topAnchor),
+            keyboardView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             keyboardView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             keyboardView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             keyboardHeightConstraint,
