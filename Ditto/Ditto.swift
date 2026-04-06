@@ -5,6 +5,7 @@ import SwiftData
 final class DittoItem {
     var text: String = ""
     var useCount: Int = 0
+    var sortOrder: Int = 0
     var category: DittoCategory?
 
     init(text: String, category: DittoCategory? = nil) {

@@ -10,7 +10,6 @@ struct DittoCategoryTests {
         let cat = DittoCategory(title: "Business")
         #expect(cat.title == "Business")
         #expect(cat.dittos.isEmpty)
-        #expect(cat.dittoOrder.isEmpty)
     }
 
     @Test("Ordered dittos returns empty for new category")
@@ -27,7 +26,6 @@ struct ProfileTests {
     func initEmpty() {
         let profile = Profile()
         #expect(profile.categories.isEmpty)
-        #expect(profile.categoryOrder.isEmpty)
     }
 
     @Test("Ordered categories returns empty for new profile")
