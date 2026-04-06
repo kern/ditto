@@ -25,6 +25,9 @@ struct DittoRowView: View {
     List {
         DittoRowView(text: "Hello, this is a sample ditto text")
         DittoRowView(text: "Short one")
-        DittoRowView(text: "A very long ditto that should be truncated after two lines because it contains so much text that it would overflow", showDisclosure: false)
+        DittoRowView(
+            text: "A very long ditto that should be truncated after two lines because it contains so much text",
+            showDisclosure: false
+        )
     }
 }

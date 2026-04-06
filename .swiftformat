@@ -1,5 +1,4 @@
 --swiftversion 6.0
---minversion 0.54
 
 # File options
 --exclude Ditto/Ditto.xcdatamodeld
@@ -9,47 +8,30 @@
 --indentcase false
 --trimwhitespace always
 --voidtype void
---wrapcollections before-first
---wraparguments before-first
---wrapparameters before-first
---closingparen balanced
 --commas always
---decimalgrouping 3
---exponentcase lowercase
---fractiongrouping disabled
 --header ignore
---hexliteralcase uppercase
 --importgrouping alpha
 --linebreaks lf
 --maxwidth 150
---operatorfunc spaced
---patternlet hoist
---ranges spaced
 --self remove
 --semicolons inline
 --stripunusedargs closure-only
---trailingclosures
---typeattributes prev-line
---varattributes same-line
 --wrapconditions preserve
---wrapternary default
+--wraparguments preserve
+--wrapparameters preserve
+--wrapcollections preserve
+--closingparen balanced
 
 # Rules
---enable blankLinesBetweenScopes
---enable blankLinesAtEndOfScope
---enable blankLinesAtStartOfScope
 --enable consecutiveSpaces
 --enable duplicateImports
---enable elseOnSameLine
 --enable emptyBraces
---enable leadingDelimiters
 --enable redundantInit
 --enable redundantLet
 --enable redundantNilInit
 --enable redundantParens
 --enable redundantReturn
 --enable redundantSelf
---enable redundantType
 --enable redundantVoidReturnType
 --enable sortImports
 --enable spaceAroundBraces
@@ -64,3 +46,9 @@
 --enable spaceInsideGenerics
 --enable spaceInsideParens
 --enable trailingSpace
+
+# Disable problematic rules
+--disable blankLinesBetweenScopes
+--disable blankLinesAtEndOfScope
+--disable blankLinesAtStartOfScope
+--disable wrapMultilineStatementBraces

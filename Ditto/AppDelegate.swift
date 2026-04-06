@@ -9,8 +9,12 @@ struct DittoApp: App {
 
     init() {
         // Start with local-only; iCloud sync is enabled after verifying subscription
-        let container = try! CloudSyncManager.makeModelContainer(cloudSyncEnabled: false)
-        _store = State(initialValue: DittoStore(modelContainer: container))
+        do {
+            let container = try CloudSyncManager.makeModelContainer(cloudSyncEnabled: false)
+            _store = State(initialValue: DittoStore(modelContainer: container))
+        } catch {
+            fatalError("Failed to create ModelContainer: \(error)")
+        }
     }
 
     var body: some Scene {

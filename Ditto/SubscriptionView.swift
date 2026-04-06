@@ -34,7 +34,11 @@ struct SubscriptionView: View {
 
                     // Features
                     VStack(alignment: .leading, spacing: 16) {
-                        featureRow(icon: "arrow.triangle.2.circlepath", title: "iCloud Sync", description: "Access your dittos on all your Apple devices")
+                        featureRow(
+                            icon: "arrow.triangle.2.circlepath",
+                            title: "iCloud Sync",
+                            description: "Access your dittos on all your Apple devices"
+                        )
                         featureRow(icon: "lock.shield", title: "Private & Secure", description: "Your data stays encrypted in your personal iCloud")
                         featureRow(icon: "bolt.fill", title: "Instant Updates", description: "Changes sync automatically in real-time")
                     }

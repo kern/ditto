@@ -33,6 +33,7 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
     var backspaceTimer: DelayedRepeatTimer?
     let defaults = UserDefaults(suiteName: "group.io.kern.ditto")!
 
+    // swiftlint:disable:next line_length
     let addDittoTextInputPlaceholder = "Select and copy desired text... if it doesn't appear, you may need to turn on \"Allow Full Access\" in your device's keyboard settings."
 
     var tabViews: [UIView] = []
@@ -302,7 +303,7 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
         }
     }
 
-    @IBAction func dittoLongPressed(_ sender: UILongPressGestureRecognizer) {
+    @IBAction private func dittoLongPressed(_ sender: UILongPressGestureRecognizer) {
         guard sender.state == .began else { return }
         let p = sender.location(in: tableView)
         if let indexPath = tableView.indexPathForRow(at: p) {
@@ -312,11 +313,11 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
 
     // MARK: - Button Actions
 
-    @IBAction func nextKeyboardButtonClicked() {
+    @IBAction private func nextKeyboardButtonClicked() {
         advanceToNextInputMode()
     }
 
-    @IBAction func dittoButtonClicked() {
+    @IBAction private func dittoButtonClicked() {
         guard !dittoStore.isEmpty else { return }
 
         if addDittoView.isHidden {
@@ -335,39 +336,39 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
         }
     }
 
-    @IBAction func returnButtonClicked() {
+    @IBAction private func returnButtonClicked() {
         textDocumentProxy.insertText("\n")
     }
 
-    @IBAction func backspaceButtonDown() {
+    @IBAction private func backspaceButtonDown() {
         backspaceFire()
         backspaceTimer = DelayedRepeatTimer(delay: 0.5, interval: 0.1) { [weak self] in
             self?.backspaceFire()
         }
     }
 
-    @IBAction func backspaceButtonUp() {
+    @IBAction private func backspaceButtonUp() {
         backspaceTimer?.invalidate()
         backspaceTimer = nil
     }
 
-    @IBAction func spaceButtonClicked() {
+    @IBAction private func spaceButtonClicked() {
         textDocumentProxy.insertText(" ")
     }
 
-    @IBAction func numberClicked(_ button: UIButton) {
+    @IBAction private func numberClicked(_ button: UIButton) {
         if let char = button.titleLabel?.text {
             textDocumentProxy.insertText(char)
         }
     }
 
-    @IBAction func pasteButtonClicked(_ sender: UIButton) {
+    @IBAction private func pasteButtonClicked(_ sender: UIButton) {
         if let text = UIPasteboard.general.string {
             addDittoTextInput.text = text
         }
     }
 
-    @IBAction func addDittoButtonClicked(_ sender: UIButton) {
+    @IBAction private func addDittoButtonClicked(_ sender: UIButton) {
         guard addDittoTextInput.text != addDittoTextInputPlaceholder else { return }
         let categoryIndex = categoryPicker.selectedRow(inComponent: 0)
         dittoStore.addDitto(text: addDittoTextInput.text, toCategoryAt: categoryIndex)
@@ -376,7 +377,7 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
         addDittoButton.isEnabled = false
     }
 
-    @IBAction func categoryBarTapped(_ sender: UITapGestureRecognizer) {
+    @IBAction private func categoryBarTapped(_ sender: UITapGestureRecognizer) {
         guard UIPasteboard.general.string != nil else { return }
 
         if categoryPicker.isHidden {

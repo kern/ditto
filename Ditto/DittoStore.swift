@@ -28,7 +28,9 @@ final class DittoStore {
             "Can't text, I'm driving"
         ],
         "Business": [
+            // swiftlint:disable:next line_length
             "Hi ___,\n\nIt was great meeting you today. I'd love to chat in more detail about possible business opportunities. Please let me know your availability.\n\nBest",
+            // swiftlint:disable:next line_length
             "My name is ___, and I work at ___. We are always looking for talented candidates to join our team. Please let me know if you are interested."
         ],
         "Dating": [
@@ -264,7 +266,7 @@ final class DittoStore {
         defaults.synchronize()
 
         guard let pendingDittos = defaults.dictionary(forKey: "pendingDittos") as? [String: [String]],
-              let _ = defaults.array(forKey: "pendingCategories") as? [String] else { return }
+              defaults.array(forKey: "pendingCategories") is [String] else { return }
 
         let cats = categories
         for cat in cats {
