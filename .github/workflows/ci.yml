@@ -32,17 +32,18 @@ jobs:
       - name: Install SwiftFormat
         run: brew install swiftformat
 
-      - name: Check formatting
+      - name: Run SwiftFormat
+        run: swiftformat . --verbose 2>&1 | tail -100
+
+      - name: Check for changes
         run: |
-          swiftformat . --verbose 2>&1 | tail -50
           if ! git diff --quiet; then
-            echo "SwiftFormat would change these files:"
+            echo "::group::Files that need formatting"
             git diff --name-only
-            echo "---"
-            git diff --stat
-            echo "--- Full diff ---"
+            echo "::endgroup::"
+            echo "::group::Full diff"
             git diff
-            echo "::error::SwiftFormat found formatting issues. See diff above."
+            echo "::endgroup::"
             exit 1
           fi
           echo "All files formatted correctly"
