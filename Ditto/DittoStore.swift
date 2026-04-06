@@ -19,7 +19,6 @@ final class DittoStore {
             "Use the Ditto app to customize your dittos.",
             "Add a triple underscore ___ to your ditto to control where your cursor lands.",
             "You can expand long dittos within the keyboard by holding them down.",
-            // swiftlint:disable:next line_length
             "Hold down a keyboard tab to expand the category title, and swipe on the tab bar for quick access."
         ],
         "Driving": [
