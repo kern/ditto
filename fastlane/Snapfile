@@ -9,7 +9,6 @@ scheme("Ditto")
 app_identifier("io.kern.Ditto")
 
 output_directory("./fastlane/screenshots")
-output_files("*.png")
 clear_previous_screenshots(true)
 
 # Show 9:41 AM with full battery/signal — standard App Store look
