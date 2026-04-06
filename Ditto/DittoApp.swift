@@ -15,6 +15,10 @@ struct DittoApp: App {
     @State private var store: DittoStore
 
     init() {
+        if Self.isTestEnvironment {
+            UIView.setAnimationsEnabled(false)
+        }
+
         // Start with local-only; iCloud sync is enabled after verifying subscription
         do {
             let container = try CloudSyncManager.makeModelContainer(cloudSyncEnabled: false)
