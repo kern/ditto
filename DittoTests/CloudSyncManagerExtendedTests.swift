@@ -11,7 +11,7 @@ struct CloudSyncManagerExtendedTests {
         // This may or may not succeed depending on App Group availability in tests
         // but the code path should not crash
         let schema = Schema([Profile.self, DittoCategory.self, DittoItem.self])
-        #expect(schema.entities.count > 0)
+        #expect(!schema.entities.isEmpty)
     }
 
     @Test("App group and CloudKit identifiers are consistent")

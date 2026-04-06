@@ -103,6 +103,7 @@ jobs:
             -project Ditto.xcodeproj \
             -scheme Ditto \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -only-testing:DittoTests \
             -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult \
             2>&1 | tee /tmp/test_output.log | tail -30

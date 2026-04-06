@@ -26,26 +26,26 @@ struct DittoItemExtendedTests {
     @Test("Empty text has empty preview")
     func emptyTextPreview() {
         let item = DittoItem(text: "")
-        #expect(item.preview == "")
+        #expect(item.preview.isEmpty)
     }
 
     @Test("Preview with only whitespace")
     func whitespaceOnlyPreview() {
         let item = DittoItem(text: "   ")
-        #expect(item.preview == "")
+        #expect(item.preview.isEmpty)
     }
 
     @Test("Preview with only newlines")
     func newlineOnlyPreview() {
         let item = DittoItem(text: "\n\n\n")
-        #expect(item.preview == "")
+        #expect(item.preview.isEmpty)
     }
 
     @Test("Process empty text returns empty")
     func processEmptyText() {
         let item = DittoItem(text: "")
         let (text, rewind) = item.processedTextForInsertion()
-        #expect(text == "")
+        #expect(text.isEmpty)
         #expect(rewind == 0)
     }
 
@@ -99,6 +99,6 @@ struct DittoItemExtendedTests {
         let (text, rewind) = item.processedTextForInsertion()
         // Only first match is processed
         #expect(text == "Hello  and ___ end")
-        #expect(rewind == 15) // " and ___ end" = 12 chars after removing ___
+        #expect(rewind == 12) // " and ___ end" = 12 chars after first ___
     }
 }
