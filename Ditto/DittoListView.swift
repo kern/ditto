@@ -40,7 +40,7 @@ struct DittoListView: View {
             .frame(maxHeight: .infinity)
             .navigationTitle("Ditto")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.dittoAccent, for: .navigationBar)
+            .toolbarBackground(Color.dittoNavBar, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
@@ -90,7 +90,7 @@ struct DittoListView: View {
                                 showSubscription = true
                             } label: {
                                 Label(
-                                    subscriptionManager.isProSubscriber ? "Manage Subscription" : "Upgrade to Pro",
+                                    subscriptionManager.isProSubscriber ? "iCloud Sync" : "Enable iCloud Sync",
                                     systemImage: subscriptionManager.isProSubscriber ? "checkmark.icloud" : "icloud"
                                 )
                             }

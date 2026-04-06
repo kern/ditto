@@ -59,7 +59,12 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
 
         keyboardHeightConstraint = keyboardView.heightAnchor.constraint(equalToConstant: keyboardHeight)
 
-        bottomBar.backgroundColor = UIColor(white: 0.85, alpha: 1)
+        bottomBar.backgroundColor = UIColor(dynamicProvider: { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(white: 0.18, alpha: 1)
+                : UIColor(white: 0.85, alpha: 1)
+        })
+        tableView.backgroundColor = .systemBackground
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DittoCell")
 
         categoryPicker.delegate = addDittoViewController

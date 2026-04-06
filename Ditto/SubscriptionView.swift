@@ -113,11 +113,6 @@ struct SubscriptionView: View {
                     title: "Private & Secure",
                     description: "Your data stays encrypted in your personal iCloud"
                 )
-                featureRow(
-                    icon: "bolt.fill",
-                    title: "Instant Updates",
-                    description: "Changes sync automatically in real-time"
-                )
             }
             .padding(.horizontal, 24)
 

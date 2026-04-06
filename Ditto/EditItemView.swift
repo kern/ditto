@@ -51,7 +51,7 @@ struct EditItemView: View {
             }
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.dittoAccent, for: .navigationBar)
+            .toolbarBackground(Color.dittoNavBar, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
