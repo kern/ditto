@@ -83,7 +83,7 @@ struct DittoListView: View {
                             Button {
                                 showKeyboardSetup = true
                             } label: {
-                                Label("Set Up Keyboard", systemImage: KeyboardSetupStatus.hasFullAccess ? "keyboard.badge.checkmark" : "keyboard")
+                                Label("Set Up Keyboard", systemImage: KeyboardSetupStatus.hasFullAccess ? "keyboard.fill" : "keyboard")
                             }
 
                             Button {

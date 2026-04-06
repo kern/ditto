@@ -61,9 +61,6 @@
     },
     "You can only create up to %@ categories. Delete a category before creating a new one." : {
 
-    },
-    "You're subscribed" : {
-
     }
   },
   "version" : "1.0"

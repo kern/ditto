@@ -15,6 +15,12 @@
 		CC000001AAAA000000000002 /* CloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000012 /* CloudSyncManager.swift */; };
 		CC000001AAAA000000000003 /* SubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000013 /* SubscriptionView.swift */; };
 		CC000001AAAA000000000004 /* LegacyDataMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000014 /* LegacyDataMigrator.swift */; };
+		CC000001AAAA000000000016 /* DittoImportExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000019 /* DittoImportExport.swift */; };
+		CC000001AAAA00000000001A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA00000000001B /* Localizable.xcstrings */; };
+		CC000001AAAA00000000001C /* SyncSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA00000000001D /* SyncSettings.swift */; };
+		CC000001AAAA00000000001E /* SyncConflictResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA00000000001F /* SyncConflictResolver.swift */; };
+		CC000001AAAA000000000020 /* SyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000021 /* SyncSettingsView.swift */; };
+		CC000001AAAA000000000022 /* KeyboardSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000023 /* KeyboardSetupView.swift */; };
 		CC000002AAAA000000000001 /* DittoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000011 /* DittoItemTests.swift */; };
 		CC000002AAAA000000000002 /* DittoCategoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000012 /* DittoCategoryTests.swift */; };
 		CC000002AAAA000000000003 /* DittoStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000013 /* DittoStoreTests.swift */; };
@@ -31,6 +37,7 @@
 		CC000002AAAA00000000001E /* CloudSyncManagerExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000027 /* CloudSyncManagerExtendedTests.swift */; };
 		CC000002AAAA00000000001F /* DittoItemExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000028 /* DittoItemExtendedTests.swift */; };
 		CC000002AAAA000000000020 /* DittoCategoryExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000029 /* DittoCategoryExtendedTests.swift */; };
+		CC000002AAAA000000000030 /* SyncConflictResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000031 /* SyncConflictResolverTests.swift */; };
 		DD000001AAAA000000000003 /* DittoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000001AAAA000000000002 /* DittoUITests.swift */; };
 		E80587AF1B8865C80035B80B /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80587AE1B8865C80035B80B /* Profile.swift */; };
 		E80587B01B8865C80035B80B /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80587AE1B8865C80035B80B /* Profile.swift */; };
@@ -62,13 +69,6 @@
 		FAFD8ACB1B6856FA000B2364 /* DittoCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD8AC91B6856FA000B2364 /* DittoCategory.swift */; };
 		FAFD8ACD1B6856FA000B2364 /* DittoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD8ACC1B6856FA000B2364 /* DittoItem.swift */; };
 		FAFD8ACE1B6856FA000B2364 /* DittoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD8ACC1B6856FA000B2364 /* DittoItem.swift */; };
-		CC000001AAAA000000000016 /* DittoImportExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000019 /* DittoImportExport.swift */; };
-		CC000001AAAA00000000001A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA00000000001B /* Localizable.xcstrings */; };
-		CC000001AAAA00000000001C /* SyncSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA00000000001D /* SyncSettings.swift */; };
-		CC000001AAAA00000000001E /* SyncConflictResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA00000000001F /* SyncConflictResolver.swift */; };
-		CC000001AAAA000000000020 /* SyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000021 /* SyncSettingsView.swift */; };
-		CC000001AAAA000000000022 /* KeyboardSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000023 /* KeyboardSetupView.swift */; };
-		CC000002AAAA000000000030 /* SyncConflictResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000031 /* SyncConflictResolverTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +115,12 @@
 		CC000001AAAA000000000012 /* CloudSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncManager.swift; sourceTree = "<group>"; };
 		CC000001AAAA000000000013 /* SubscriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionView.swift; sourceTree = "<group>"; };
 		CC000001AAAA000000000014 /* LegacyDataMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyDataMigrator.swift; sourceTree = "<group>"; };
+		CC000001AAAA000000000019 /* DittoImportExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoImportExport.swift; sourceTree = "<group>"; };
+		CC000001AAAA00000000001B /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		CC000001AAAA00000000001D /* SyncSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSettings.swift; sourceTree = "<group>"; };
+		CC000001AAAA00000000001F /* SyncConflictResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncConflictResolver.swift; sourceTree = "<group>"; };
+		CC000001AAAA000000000021 /* SyncSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSettingsView.swift; sourceTree = "<group>"; };
+		CC000001AAAA000000000023 /* KeyboardSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardSetupView.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000011 /* DittoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoItemTests.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000012 /* DittoCategoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoCategoryTests.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000013 /* DittoStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoStoreTests.swift; sourceTree = "<group>"; };
@@ -131,6 +137,7 @@
 		CC000002AAAA000000000027 /* CloudSyncManagerExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncManagerExtendedTests.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000028 /* DittoItemExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoItemExtendedTests.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000029 /* DittoCategoryExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoCategoryExtendedTests.swift; sourceTree = "<group>"; };
+		CC000002AAAA000000000031 /* SyncConflictResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncConflictResolverTests.swift; sourceTree = "<group>"; };
 		CC000004AAAA000000000001 /* DittoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD000001AAAA000000000001 /* DittoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD000001AAAA000000000002 /* DittoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoUITests.swift; sourceTree = "<group>"; };
@@ -164,13 +171,6 @@
 		FAFCAE7319F98CF7000F0318 /* NewItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewItemView.swift; sourceTree = "<group>"; };
 		FAFD8AC91B6856FA000B2364 /* DittoCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DittoCategory.swift; path = Ditto/DittoCategory.swift; sourceTree = "<group>"; };
 		FAFD8ACC1B6856FA000B2364 /* DittoItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DittoItem.swift; path = Ditto/DittoItem.swift; sourceTree = "<group>"; };
-		CC000001AAAA000000000019 /* DittoImportExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoImportExport.swift; sourceTree = "<group>"; };
-		CC000001AAAA00000000001B /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		CC000001AAAA00000000001D /* SyncSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSettings.swift; sourceTree = "<group>"; };
-		CC000001AAAA00000000001F /* SyncConflictResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncConflictResolver.swift; sourceTree = "<group>"; };
-		CC000001AAAA000000000021 /* SyncSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSettingsView.swift; sourceTree = "<group>"; };
-		CC000001AAAA000000000023 /* KeyboardSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardSetupView.swift; sourceTree = "<group>"; };
-		CC000002AAAA000000000031 /* SyncConflictResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncConflictResolverTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -300,7 +300,6 @@
 				CC000001AAAA00000000001F /* SyncConflictResolver.swift */,
 				CC000001AAAA000000000021 /* SyncSettingsView.swift */,
 				CC000001AAAA000000000023 /* KeyboardSetupView.swift */,
-
 				6A1E54992F842CC200D18AF4 /* DittoProducts.storekit */,
 				FA237AB519F9C70F007E67D5 /* View Controllers */,
 				FA70EAB719F5A49D00960EE2 /* Images.xcassets */,
@@ -578,7 +577,6 @@
 				CC000001AAAA00000000001E /* SyncConflictResolver.swift in Sources */,
 				CC000001AAAA000000000020 /* SyncSettingsView.swift in Sources */,
 				CC000001AAAA000000000022 /* KeyboardSetupView.swift in Sources */,
-
 				CC000001AAAA000000000002 /* CloudSyncManager.swift in Sources */,
 				CC000001AAAA000000000003 /* SubscriptionView.swift in Sources */,
 				CC000001AAAA000000000004 /* LegacyDataMigrator.swift in Sources */,
@@ -741,6 +739,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Ditto/Ditto.entitlements;
+				DEVELOPMENT_TEAM = G8DHPYJA37;
 				INFOPLIST_FILE = Ditto/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Ditto;
@@ -753,6 +752,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Ditto/Ditto.entitlements;
+				DEVELOPMENT_TEAM = G8DHPYJA37;
 				INFOPLIST_FILE = Ditto/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Ditto;
@@ -764,6 +764,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = DittoKeyboard/DittoKeyboard.entitlements;
+				DEVELOPMENT_TEAM = G8DHPYJA37;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -780,6 +781,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = DittoKeyboard/DittoKeyboard.entitlements;
+				DEVELOPMENT_TEAM = G8DHPYJA37;
 				INFOPLIST_FILE = DittoKeyboard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_NAME = DittoKeyboard;

@@ -1,19 +1,28 @@
 import UIKit
 
-/// Light-styled keyboard button used for letter and standard keys.
+/// Light-styled keyboard button (letter and standard input keys).
 final class LightKeyboardButton: UIButton {
 
-    private let normalColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)
-    private let highlightedColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1)
+    private static let normalColor = UIColor(dynamicProvider: { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.40, alpha: 1)
+            : UIColor(white: 0.98, alpha: 1)
+    })
+
+    private static let highlightedColor = UIColor(dynamicProvider: { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.50, alpha: 1)
+            : UIColor(white: 0.88, alpha: 1)
+    })
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        backgroundColor = normalColor
+        backgroundColor = Self.normalColor
     }
 
     override var isHighlighted: Bool {
         didSet {
-            backgroundColor = isHighlighted ? highlightedColor : normalColor
+            backgroundColor = isHighlighted ? Self.highlightedColor : Self.normalColor
         }
     }
 }

@@ -71,15 +71,25 @@ final class SubscriptionManager {
         }
     }
 
-    // MARK: - Restore
+    // MARK: - Restore / Refresh
 
+    /// Lightweight refresh — checks current entitlements without hitting the server.
+    /// Safe to call on view appear.
     @MainActor
-    func restorePurchases() async {
+    func refreshEntitlements() async {
         for await result in Transaction.currentEntitlements {
             if let transaction = try? checkVerified(result) {
                 purchasedProductIDs.insert(transaction.productID)
             }
         }
+    }
+
+    /// Full restore — syncs with the App Store server first, then refreshes entitlements.
+    /// Only call when the user explicitly taps "Restore Purchases".
+    @MainActor
+    func restorePurchases() async throws {
+        try await AppStore.sync()
+        await refreshEntitlements()
     }
 
     // MARK: - Transaction Listener

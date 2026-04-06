@@ -1,19 +1,28 @@
 import UIKit
 
-/// Dark-styled keyboard button used for numeric and special keys.
+/// Dark-styled keyboard button (action keys: backspace, space, return, globe).
 final class DarkKeyboardButton: UIButton {
 
-    private let normalColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1)
-    private let highlightedColor = UIColor(red: 0.75, green: 0.75, blue: 0.75, alpha: 1)
+    private static let normalColor = UIColor(dynamicProvider: { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.24, alpha: 1)
+            : UIColor(white: 0.68, alpha: 1)
+    })
+
+    private static let highlightedColor = UIColor(dynamicProvider: { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.32, alpha: 1)
+            : UIColor(white: 0.58, alpha: 1)
+    })
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        backgroundColor = normalColor
+        backgroundColor = Self.normalColor
     }
 
     override var isHighlighted: Bool {
         didSet {
-            backgroundColor = isHighlighted ? highlightedColor : normalColor
+            backgroundColor = isHighlighted ? Self.highlightedColor : Self.normalColor
         }
     }
 }

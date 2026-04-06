@@ -43,7 +43,7 @@ struct DittoApp: App {
                 .tint(.dittoAccent)
                 .task {
                     guard !Self.isTestEnvironment else { return }
-                    await subscriptionManager.restorePurchases()
+                    await subscriptionManager.refreshEntitlements()
                     if subscriptionManager.isProSubscriber && syncSettings.syncEnabled {
                         upgradeToCloudSync()
                     }

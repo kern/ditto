@@ -8,7 +8,9 @@ struct SubscriptionView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var isPurchasing = false
+    @State private var isRestoring = false
     @State private var errorMessage: String?
+    @State private var restoreMessage: String?
     @State private var selectedProduct: Product?
 
     var body: some View {
@@ -28,9 +30,18 @@ struct SubscriptionView: View {
             }
             .task {
                 await subscriptionManager.loadProducts()
-                await subscriptionManager.restorePurchases()
+                await subscriptionManager.refreshEntitlements()
             }
         }
+    }
+
+    private var subscribedPlanLabel: String {
+        if subscriptionManager.purchasedProductIDs.contains(SubscriptionManager.proYearlyProductID) {
+            return "Yearly plan"
+        } else if subscriptionManager.purchasedProductIDs.contains(SubscriptionManager.proMonthlyProductID) {
+            return "Monthly plan"
+        }
+        return "You're subscribed"
     }
 
     private var subscribedContent: some View {
@@ -44,7 +55,7 @@ struct SubscriptionView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
 
-                Text("You're subscribed")
+                Text(subscribedPlanLabel)
                     .font(.title3)
                     .foregroundStyle(.secondary)
             }
@@ -73,6 +84,15 @@ struct SubscriptionView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .padding(.top, 8)
+
+            Button("Manage Subscription") {
+                if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
+                    UIApplication.shared.open(url)
+                }
+            }
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .padding(.bottom, 32)
         }
     }
 
@@ -133,9 +153,13 @@ struct SubscriptionView: View {
                 .padding()
             } else {
                 VStack(spacing: 12) {
+                    let monthlyPrice = subscriptionManager.products.first {
+                        $0.id == SubscriptionManager.proMonthlyProductID
+                    }?.price
                     ForEach(subscriptionManager.products, id: \.id) { product in
                         ProductCard(
                             product: product,
+                            monthlyPrice: product.id == SubscriptionManager.proYearlyProductID ? monthlyPrice : nil,
                             isSelected: selectedProduct?.id == product.id,
                             isPurchasing: isPurchasing
                         ) {
@@ -176,14 +200,24 @@ struct SubscriptionView: View {
             }
 
             // Restore
-            Button("Restore Purchases") {
-                Task {
-                    await subscriptionManager.restorePurchases()
+            if isRestoring {
+                ProgressView()
+                    .padding(.bottom, 24)
+            } else {
+                VStack(spacing: 6) {
+                    Button("Restore Purchases") {
+                        Task { await restore() }
+                    }
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    if let restoreMessage {
+                        Text(restoreMessage)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
+                .padding(.bottom, 24)
             }
-            .font(.footnote)
-            .foregroundStyle(.secondary)
-            .padding(.bottom, 24)
         }
     }
 
@@ -218,12 +252,28 @@ struct SubscriptionView: View {
             errorMessage = "Purchase failed. Please try again."
         }
     }
+
+    private func restore() async {
+        isRestoring = true
+        restoreMessage = nil
+        defer { isRestoring = false }
+
+        do {
+            try await subscriptionManager.restorePurchases()
+            restoreMessage = subscriptionManager.isProSubscriber
+                ? "Subscription restored."
+                : "No active subscription found."
+        } catch {
+            restoreMessage = "Restore failed. Please try again."
+        }
+    }
 }
 
 /// A selectable card for a StoreKit product.
 private struct ProductCard: View {
 
     let product: Product
+    let monthlyPrice: Decimal? // nil when this card IS the monthly option
     let isSelected: Bool
     let isPurchasing: Bool
     let action: () -> Void
@@ -233,11 +283,12 @@ private struct ProductCard: View {
     }
 
     private var savingsText: String? {
-        guard isYearly else { return nil }
-        // $0.99/mo * 12 = $11.88/yr vs $7.99/yr
-        let monthlyAnnualized = Decimal(0.99) * 12
-        let savings = Int(((monthlyAnnualized - product.price) / monthlyAnnualized * 100) as NSDecimalNumber)
-        return "Save \(savings)%"
+        guard isYearly, let monthly = monthlyPrice, monthly > 0 else { return nil }
+        let annualized = monthly * 12
+        guard annualized > product.price else { return nil }
+        let pct = Int(NSDecimalNumber(decimal: (annualized - product.price) / annualized * 100).rounding(accordingToBehavior: nil).intValue)
+        guard pct > 0 else { return nil }
+        return "Save \(pct)%"
     }
 
     var body: some View {
