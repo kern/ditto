@@ -14,6 +14,7 @@ jobs:
   swiftlint:
     name: SwiftLint
     runs-on: macos-15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -26,6 +27,7 @@ jobs:
   swiftformat:
     name: SwiftFormat
     runs-on: macos-15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -51,11 +53,9 @@ jobs:
   build:
     name: Build
     runs-on: macos-15
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-
-      - name: List available schemes
-        run: xcodebuild -project Ditto.xcodeproj -list
 
       - name: Build Ditto
         run: |
@@ -69,12 +69,9 @@ jobs:
   test:
     name: Tests
     runs-on: macos-15
-    needs: build
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-
-      - name: List available simulators
-        run: xcrun simctl list devices available | grep -i iphone | head -20
 
       - name: Build for testing
         run: |
@@ -140,7 +137,7 @@ jobs:
   ui-test:
     name: UI Tests
     runs-on: macos-15
-    needs: build
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
