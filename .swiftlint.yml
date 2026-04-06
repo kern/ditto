@@ -1,0 +1,62 @@
+included:
+  - Ditto
+  - DittoKeyboard
+  - DittoTests
+
+excluded:
+  - Ditto/Ditto.xcdatamodeld
+
+disabled_rules:
+  - trailing_comma
+  - opening_brace
+  - todo
+
+opt_in_rules:
+  - empty_count
+  - closure_spacing
+  - contains_over_first_not_nil
+  - discouraged_object_literal
+  - empty_string
+  - first_where
+  - modifier_order
+  - overridden_super_call
+  - private_action
+  - private_outlet
+  - redundant_nil_coalescing
+  - sorted_first_last
+  - unowned_variable_capture
+  - vertical_whitespace_closing_braces
+
+line_length:
+  warning: 150
+  error: 200
+
+type_body_length:
+  warning: 400
+  error: 500
+
+file_length:
+  warning: 500
+  error: 700
+
+function_body_length:
+  warning: 60
+  error: 100
+
+identifier_name:
+  min_length:
+    warning: 1
+  excluded:
+    - i
+    - id
+    - x
+    - y
+    - w
+    - h
+    - p
+
+nesting:
+  type_level: 2
+  function_level: 3
+
+reporter: xcode
