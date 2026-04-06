@@ -6,6 +6,8 @@
 #   ASC_ISSUER_ID           App Store Connect API issuer UUID
 #   ASC_PRIVATE_KEY         Contents of the .p8 key file (newlines preserved)
 #   DEVELOPMENT_TEAM        Apple Developer Team ID (e.g. ABCDE12345)
+#
+# Optional (CI only — not needed when running locally with certs in Keychain):
 #   DIST_CERT_P12_BASE64    Base64-encoded distribution certificate (.p12)
 #   DIST_CERT_PASSWORD      Password for the .p12 file
 #
@@ -30,8 +32,7 @@ KEYCHAIN_PASSWORD="$(openssl rand -hex 16)"
 
 check_env() {
     local missing=()
-    for var in ASC_KEY_ID ASC_ISSUER_ID ASC_PRIVATE_KEY DEVELOPMENT_TEAM \
-               DIST_CERT_P12_BASE64 DIST_CERT_PASSWORD; do
+    for var in ASC_KEY_ID ASC_ISSUER_ID ASC_PRIVATE_KEY DEVELOPMENT_TEAM; do
         [[ -z "${!var:-}" ]] && missing+=("$var")
     done
     if [[ ${#missing[@]} -gt 0 ]]; then
@@ -41,8 +42,8 @@ check_env() {
 }
 
 cleanup() {
-    echo "→ Cleaning up temporary keychain and files..."
-    security delete-keychain "$KEYCHAIN_NAME" 2>/dev/null || true
+    echo "→ Cleaning up..."
+    [[ -n "${DIST_CERT_P12_BASE64:-}" ]] && security delete-keychain "$KEYCHAIN_NAME" 2>/dev/null || true
     rm -f "$ASC_KEY_PATH" "$REPO_ROOT/build/cert.p12"
 }
 trap cleanup EXIT
@@ -56,6 +57,12 @@ derive_build_number() {
 # ── Setup ────────────────────────────────────────────────────────────────────
 
 setup_keychain() {
+    # Only needed in CI where certs aren't already in the system keychain
+    if [[ -z "${DIST_CERT_P12_BASE64:-}" ]]; then
+        echo "→ Skipping keychain setup (using existing certs from login keychain)"
+        return
+    fi
+
     echo "→ Setting up temporary keychain..."
     security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
     security set-keychain-settings -lut 3600 "$KEYCHAIN_NAME"
