@@ -130,6 +130,10 @@ extension KeyboardViewController {
             categoryButton.heightAnchor.constraint(equalToConstant: 44),
         ])
 
+        // Actions row must be added before addDittoTextView so the cross-view constraint has a common ancestor
+        addDittoActionsRow.translatesAutoresizingMaskIntoConstraints = false
+        addDittoView.addSubview(addDittoActionsRow)
+
         // Text view (clipboard content)
         addDittoTextView.isEditable = false
         addDittoTextView.isSelectable = false
@@ -142,10 +146,6 @@ extension KeyboardViewController {
             addDittoTextView.trailingAnchor.constraint(equalTo: addDittoView.trailingAnchor, constant: -6),
             addDittoTextView.bottomAnchor.constraint(equalTo: addDittoActionsRow.topAnchor),
         ])
-
-        // Actions row (Paste | Add Ditto, 44pt)
-        addDittoActionsRow.translatesAutoresizingMaskIntoConstraints = false
-        addDittoView.addSubview(addDittoActionsRow)
         NSLayoutConstraint.activate([
             addDittoActionsRow.leadingAnchor.constraint(equalTo: addDittoView.leadingAnchor),
             addDittoActionsRow.trailingAnchor.constraint(equalTo: addDittoView.trailingAnchor),
