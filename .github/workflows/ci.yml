@@ -73,6 +73,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Verify simulator
+        run: |
+          echo "Available iPhone simulators:"
+          xcrun simctl list devices available | grep -i iphone | head -10
+          DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone 16" | head -1 | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}')
+          if [ -n "$DEVICE_ID" ]; then
+            xcrun simctl boot "$DEVICE_ID" 2>/dev/null || true
+            echo "Simulator ready: $DEVICE_ID"
+          else
+            echo "::warning::iPhone 16 simulator not found, xcodebuild will create one"
+          fi
+
       - name: Build for testing
         run: |
           set -o pipefail
@@ -141,45 +153,46 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: List available simulators
+        run: xcrun simctl list devices available | grep -i iphone | head -20
+
       - name: Boot simulator
         run: |
           DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone 16" | head -1 | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}')
           if [ -n "$DEVICE_ID" ]; then
             xcrun simctl boot "$DEVICE_ID" 2>/dev/null || true
+            echo "Booted simulator: $DEVICE_ID"
+          else
+            echo "Warning: iPhone 16 simulator not found"
           fi
-
-      - name: Build for UI testing
-        run: |
-          set -o pipefail
-          xcodebuild build-for-testing \
-            -project Ditto.xcodeproj \
-            -scheme Ditto \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            2>&1 | tee /tmp/ui_build_output.log | tail -30
 
       - name: Run UI tests
         timeout-minutes: 10
         run: |
           set -o pipefail
-          xcodebuild test-without-building \
+          xcodebuild test \
             -project Ditto.xcodeproj \
             -scheme Ditto \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             -only-testing:DittoUITests \
+            -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 120 \
+            -maximum-test-execution-time-allowance 300 \
             -resultBundlePath UITestResults.xcresult \
-            2>&1 | tee /tmp/ui_test_output.log | tail -30
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee /tmp/ui_test_output.log | tail -50
 
       - name: Show UI test output
         if: always()
         run: |
-          echo "=== Last 80 lines of UI test output ==="
-          tail -80 /tmp/ui_test_output.log || true
+          echo "=== Last 100 lines of UI test output ==="
+          tail -100 /tmp/ui_test_output.log || true
           echo ""
           echo "=== Errors and failures ==="
-          grep -i 'error\|failed\|failure\|assertion' /tmp/ui_test_output.log | tail -40 | while IFS= read -r line; do
+          grep -i 'error\|failed\|failure\|assertion\|timeout' /tmp/ui_test_output.log | tail -40 | while IFS= read -r line; do
             echo "::error::UI TEST: $line"
           done
 
