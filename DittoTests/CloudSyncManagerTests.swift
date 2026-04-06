@@ -1,6 +1,6 @@
-import Testing
 import Foundation
 import SwiftData
+import Testing
 @testable import Ditto
 
 @Suite("CloudSyncManager Tests")

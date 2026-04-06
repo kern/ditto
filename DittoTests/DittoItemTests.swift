@@ -1,5 +1,5 @@
-import Testing
 import Foundation
+import Testing
 @testable import Ditto
 
 @Suite("DittoItem Model Tests")

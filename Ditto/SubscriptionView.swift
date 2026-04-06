@@ -1,5 +1,5 @@
-import SwiftUI
 import StoreKit
+import SwiftUI
 
 /// Paywall view showing Ditto Pro subscription options for iCloud sync.
 struct SubscriptionView: View {
