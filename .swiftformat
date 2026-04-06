@@ -11,4 +11,5 @@
 --wraparguments preserve
 --wrapparameters preserve
 --wrapcollections preserve
---rules sortImports,trailingSpace,consecutiveSpaces,duplicateImports
+--importgrouping testable-bottom
+--rules trailingSpace,consecutiveSpaces,duplicateImports
