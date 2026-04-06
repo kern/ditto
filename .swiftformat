@@ -12,4 +12,4 @@
 --wrapparameters preserve
 --wrapcollections preserve
 --importgrouping testable-bottom
---rules trailingSpace,consecutiveSpaces,duplicateImports
+--rules sortImports,trailingSpace,consecutiveSpaces,duplicateImports
