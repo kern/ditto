@@ -2,31 +2,31 @@ import UIKit
 
 final class KeyboardViewController: UIInputViewController, UITableViewDelegate, UITableViewDataSource {
 
-    @IBOutlet var keyboardView: UIView!
-    @IBOutlet var tableView: UITableView!
-    @IBOutlet var numericKeys: UIView!
-    @IBOutlet var bottomBar: UIView!
-    @IBOutlet var tabBar: UIView!
-    @IBOutlet var noDittosLabel: UILabel!
-    @IBOutlet var tabTitleLabel: UILabel!
+    @IBOutlet private var keyboardView: UIView!
+    @IBOutlet private var tableView: UITableView!
+    @IBOutlet private var numericKeys: UIView!
+    @IBOutlet private var bottomBar: UIView!
+    @IBOutlet private var tabBar: UIView!
+    @IBOutlet private var noDittosLabel: UILabel!
+    @IBOutlet private var tabTitleLabel: UILabel!
 
-    @IBOutlet var backspaceButton: UIButton!
-    @IBOutlet var nextKeyboardButton: UIButton!
-    @IBOutlet var returnButton: UIButton!
-    @IBOutlet var spaceButton: UIButton!
-    @IBOutlet var decimalButton: UIButton!
-    @IBOutlet var dittoButton: UIButton!
+    @IBOutlet private var backspaceButton: UIButton!
+    @IBOutlet private var nextKeyboardButton: UIButton!
+    @IBOutlet private var returnButton: UIButton!
+    @IBOutlet private var spaceButton: UIButton!
+    @IBOutlet private var decimalButton: UIButton!
+    @IBOutlet private var dittoButton: UIButton!
 
-    @IBOutlet var addDittoTextInput: UITextView!
-    @IBOutlet var addDittoView: UIView!
-    @IBOutlet var categoryPicker: UIPickerView!
-    @IBOutlet var addDittoTextView: UITextView!
-    @IBOutlet var selectedCategory: UILabel!
-    @IBOutlet var addDittoButtons: UIView!
-    @IBOutlet var addDittoButton: UIButton!
+    @IBOutlet private var addDittoTextInput: UITextView!
+    @IBOutlet private var addDittoView: UIView!
+    @IBOutlet private var categoryPicker: UIPickerView!
+    @IBOutlet private var addDittoTextView: UITextView!
+    @IBOutlet private var selectedCategory: UILabel!
+    @IBOutlet private var addDittoButtons: UIView!
+    @IBOutlet private var addDittoButton: UIButton!
 
-    var keyboardHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var tabBarHeightConstraint: NSLayoutConstraint!
+    private var keyboardHeightConstraint: NSLayoutConstraint!
+    @IBOutlet private var tabBarHeightConstraint: NSLayoutConstraint!
 
     let dittoStore: PendingDittoStore
     let addDittoViewController = AddDittoFromClipboardViewController()
