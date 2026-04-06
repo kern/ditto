@@ -172,10 +172,14 @@ jobs:
             -resultBundlePath UITestResults.xcresult \
             2>&1 | tee /tmp/ui_test_output.log | tail -30
 
-      - name: Show UI test errors
-        if: failure()
+      - name: Show UI test output
+        if: always()
         run: |
-          grep -i 'error\|failed\|failure' /tmp/ui_test_output.log | tail -40 | while IFS= read -r line; do
+          echo "=== Last 80 lines of UI test output ==="
+          tail -80 /tmp/ui_test_output.log || true
+          echo ""
+          echo "=== Errors and failures ==="
+          grep -i 'error\|failed\|failure\|assertion' /tmp/ui_test_output.log | tail -40 | while IFS= read -r line; do
             echo "::error::UI TEST: $line"
           done
 
