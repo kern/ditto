@@ -4,7 +4,9 @@ import SwiftUI
 @main
 struct DittoApp: App {
 
-    @State private var subscriptionManager = SubscriptionManager()
+    @State private var subscriptionManager = SubscriptionManager(
+        startListening: NSClassFromString("XCTestCase") == nil
+    )
     @State private var store: DittoStore
 
     init() {
