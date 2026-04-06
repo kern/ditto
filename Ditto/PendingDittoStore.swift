@@ -42,7 +42,7 @@ final class PendingDittoStore {
 
     func dittos(inCategoryAt index: Int) -> [DittoItem] {
         var items = dittoStore.dittos(inCategoryAt: index)
-        let categoryTitle = self.categoryTitle(at: index)
+        let categoryTitle = categoryTitle(at: index)
 
         // Append any pending dittos from UserDefaults
         if let pending = pendingDittos(for: categoryTitle) {
@@ -54,7 +54,7 @@ final class PendingDittoStore {
 
     func dittoCount(inCategoryAt index: Int) -> Int {
         var count = dittoStore.dittoCount(inCategoryAt: index)
-        let categoryTitle = self.categoryTitle(at: index)
+        let categoryTitle = categoryTitle(at: index)
 
         if let pending = pendingDittos(for: categoryTitle) {
             count += pending.count
@@ -75,7 +75,7 @@ final class PendingDittoStore {
 
     func addDitto(text: String, toCategoryAt index: Int) {
         defaults.synchronize()
-        let categoryTitle = self.categoryTitle(at: index)
+        let categoryTitle = categoryTitle(at: index)
 
         var allPending = defaults.dictionary(forKey: "pendingDittos") as? [String: [String]] ?? [:]
         var pendingCats = defaults.array(forKey: "pendingCategories") as? [String] ?? []
