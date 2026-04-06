@@ -34,11 +34,15 @@ jobs:
 
       - name: Check formatting
         run: |
-          swiftformat .
+          swiftformat . --verbose 2>&1 | tail -50
           if ! git diff --quiet; then
-            echo "::error::SwiftFormat found formatting issues:"
+            echo "SwiftFormat would change these files:"
             git diff --name-only
+            echo "---"
+            git diff --stat
+            echo "--- Full diff ---"
             git diff
+            echo "::error::SwiftFormat found formatting issues. See diff above."
             exit 1
           fi
           echo "All files formatted correctly"
