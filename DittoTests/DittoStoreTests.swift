@@ -93,7 +93,7 @@ struct DittoStoreTests {
         let store = try makeTestStore()
         let instructionsCat = store.categories.first { $0.title == "Instructions" }
         #expect(instructionsCat != nil)
-        #expect(instructionsCat!.orderedDittos.count > 0)
+        #expect(!instructionsCat!.orderedDittos.isEmpty)
     }
 
     @Test("Add ditto to category")
