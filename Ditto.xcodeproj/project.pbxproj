@@ -52,6 +52,16 @@
 		CC000002AAAA000000000005 /* SubscriptionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000015 /* SubscriptionManagerTests.swift */; };
 		CC000002AAAA000000000006 /* CloudSyncManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000016 /* CloudSyncManagerTests.swift */; };
 		CC000002AAAA000000000007 /* LegacyDataMigratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000017 /* LegacyDataMigratorTests.swift */; };
+			CC000002AAAA000000000018 /* DittoObjectTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000021 /* DittoObjectTypeTests.swift */; };
+			CC000002AAAA000000000019 /* EditTargetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000022 /* EditTargetTests.swift */; };
+			CC000002AAAA00000000001A /* ThemeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000023 /* ThemeTests.swift */; };
+			CC000002AAAA00000000001B /* DittoStoreEdgeCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000024 /* DittoStoreEdgeCaseTests.swift */; };
+			CC000002AAAA00000000001C /* PendingDittoStoreExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000025 /* PendingDittoStoreExtendedTests.swift */; };
+			CC000002AAAA00000000001D /* SubscriptionManagerExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000026 /* SubscriptionManagerExtendedTests.swift */; };
+			CC000002AAAA00000000001E /* CloudSyncManagerExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000027 /* CloudSyncManagerExtendedTests.swift */; };
+			CC000002AAAA00000000001F /* DittoItemExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000028 /* DittoItemExtendedTests.swift */; };
+			CC000002AAAA000000000020 /* DittoCategoryExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000029 /* DittoCategoryExtendedTests.swift */; };
+			DD000001AAAA000000000003 /* DittoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000001AAAA000000000002 /* DittoUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +79,14 @@
 			remoteGlobalIDString = FA70EAAA19F5A49D00960EE2;
 			remoteInfo = Ditto;
 		};
+
+			DD000002AAAA000000000006 /* PBXContainerItemProxy */ = {
+				isa = PBXContainerItemProxy;
+				containerPortal = FA70EAA319F5A49D00960EE2 /* Project object */;
+				proxyType = 1;
+				remoteGlobalIDString = FA70EAAA19F5A49D00960EE2;
+				remoteInfo = Ditto;
+			};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -130,6 +148,17 @@
 		CC000002AAAA000000000016 /* CloudSyncManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncManagerTests.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000017 /* LegacyDataMigratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyDataMigratorTests.swift; sourceTree = "<group>"; };
 		CC000004AAAA000000000001 /* DittoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+			CC000002AAAA000000000021 /* DittoObjectTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoObjectTypeTests.swift; sourceTree = "<group>"; };
+			CC000002AAAA000000000022 /* EditTargetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTargetTests.swift; sourceTree = "<group>"; };
+			CC000002AAAA000000000023 /* ThemeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTests.swift; sourceTree = "<group>"; };
+			CC000002AAAA000000000024 /* DittoStoreEdgeCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoStoreEdgeCaseTests.swift; sourceTree = "<group>"; };
+			CC000002AAAA000000000025 /* PendingDittoStoreExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingDittoStoreExtendedTests.swift; sourceTree = "<group>"; };
+			CC000002AAAA000000000026 /* SubscriptionManagerExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManagerExtendedTests.swift; sourceTree = "<group>"; };
+			CC000002AAAA000000000027 /* CloudSyncManagerExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncManagerExtendedTests.swift; sourceTree = "<group>"; };
+			CC000002AAAA000000000028 /* DittoItemExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoItemExtendedTests.swift; sourceTree = "<group>"; };
+			CC000002AAAA000000000029 /* DittoCategoryExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoCategoryExtendedTests.swift; sourceTree = "<group>"; };
+			DD000001AAAA000000000002 /* DittoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoUITests.swift; sourceTree = "<group>"; };
+			DD000001AAAA000000000001 /* DittoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +183,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+
+			DD000002AAAA000000000003 /* Frameworks */ = {
+				isa = PBXFrameworksBuildPhase;
+				buildActionMask = 2147483647;
+				files = (
+				);
+				runOnlyForDeploymentPostprocessing = 0;
+			};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -174,6 +211,7 @@
 				FA70EAAD19F5A49D00960EE2 /* Ditto */,
 				FA70EAD519F5A56300960EE2 /* DittoKeyboard */,
 				CC000005AAAA000000000001 /* DittoTests */,
+					DD000004AAAA000000000001 /* DittoUITests */,
 				FA70EAAC19F5A49D00960EE2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -188,6 +226,15 @@
 				CC000002AAAA000000000015 /* SubscriptionManagerTests.swift */,
 				CC000002AAAA000000000016 /* CloudSyncManagerTests.swift */,
 				CC000002AAAA000000000017 /* LegacyDataMigratorTests.swift */,
+					CC000002AAAA000000000029 /* DittoCategoryExtendedTests.swift */,
+					CC000002AAAA000000000028 /* DittoItemExtendedTests.swift */,
+					CC000002AAAA000000000027 /* CloudSyncManagerExtendedTests.swift */,
+					CC000002AAAA000000000026 /* SubscriptionManagerExtendedTests.swift */,
+					CC000002AAAA000000000025 /* PendingDittoStoreExtendedTests.swift */,
+					CC000002AAAA000000000024 /* DittoStoreEdgeCaseTests.swift */,
+					CC000002AAAA000000000023 /* ThemeTests.swift */,
+					CC000002AAAA000000000022 /* EditTargetTests.swift */,
+					CC000002AAAA000000000021 /* DittoObjectTypeTests.swift */,
 			);
 			path = DittoTests;
 			sourceTree = "<group>";
@@ -197,6 +244,7 @@
 			children = (
 				FA70EAAB19F5A49D00960EE2 /* Ditto.app */,
 				FA70EAD419F5A56300960EE2 /* DittoKeyboard.appex */,
+					DD000001AAAA000000000001 /* DittoUITests.xctest */,
 				CC000004AAAA000000000001 /* DittoTests.xctest */,
 			);
 			name = Products;
@@ -270,6 +318,15 @@
 			name = Data;
 			sourceTree = "<group>";
 		};
+
+			DD000004AAAA000000000001 /* DittoUITests */ = {
+				isa = PBXGroup;
+				children = (
+					DD000001AAAA000000000002 /* DittoUITests.swift */,
+				);
+				path = DittoUITests;
+				sourceTree = "<group>";
+			};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -327,6 +384,25 @@
 			productReference = CC000004AAAA000000000001 /* DittoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+
+			DD000002AAAA000000000001 /* DittoUITests */ = {
+				isa = PBXNativeTarget;
+				buildConfigurationList = DD000003AAAA000000000001 /* Build configuration list for PBXNativeTarget "DittoUITests" */;
+				buildPhases = (
+					DD000002AAAA000000000002 /* Sources */,
+					DD000002AAAA000000000003 /* Frameworks */,
+					DD000002AAAA000000000004 /* Resources */,
+				);
+				buildRules = (
+				);
+				dependencies = (
+					DD000002AAAA000000000005 /* PBXTargetDependency */,
+				);
+				name = DittoUITests;
+				productName = DittoUITests;
+				productReference = DD000001AAAA000000000001 /* DittoUITests.xctest */;
+				productType = "com.apple.product-type.bundle.ui-testing";
+			};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -404,6 +480,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+
+			DD000002AAAA000000000004 /* Resources */ = {
+				isa = PBXResourcesBuildPhase;
+				buildActionMask = 2147483647;
+				files = (
+				);
+				runOnlyForDeploymentPostprocessing = 0;
+			};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -462,9 +546,27 @@
 				CC000002AAAA000000000005 /* SubscriptionManagerTests.swift in Sources */,
 				CC000002AAAA000000000006 /* CloudSyncManagerTests.swift in Sources */,
 				CC000002AAAA000000000007 /* LegacyDataMigratorTests.swift in Sources */,
+					CC000002AAAA000000000020 /* DittoCategoryExtendedTests.swift in Sources */,
+					CC000002AAAA00000000001F /* DittoItemExtendedTests.swift in Sources */,
+					CC000002AAAA00000000001E /* CloudSyncManagerExtendedTests.swift in Sources */,
+					CC000002AAAA00000000001D /* SubscriptionManagerExtendedTests.swift in Sources */,
+					CC000002AAAA00000000001C /* PendingDittoStoreExtendedTests.swift in Sources */,
+					CC000002AAAA00000000001B /* DittoStoreEdgeCaseTests.swift in Sources */,
+					CC000002AAAA00000000001A /* ThemeTests.swift in Sources */,
+					CC000002AAAA000000000019 /* EditTargetTests.swift in Sources */,
+					CC000002AAAA000000000018 /* DittoObjectTypeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+
+			DD000002AAAA000000000002 /* Sources */ = {
+				isa = PBXSourcesBuildPhase;
+				buildActionMask = 2147483647;
+				files = (
+					DD000001AAAA000000000003 /* DittoUITests.swift in Sources */,
+				);
+				runOnlyForDeploymentPostprocessing = 0;
+			};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -478,6 +580,12 @@
 			target = FA70EAAA19F5A49D00960EE2 /* Ditto */;
 			targetProxy = CC000003AAAA000000000001 /* PBXContainerItemProxy */;
 		};
+
+			DD000002AAAA000000000005 /* PBXTargetDependency */ = {
+				isa = PBXTargetDependency;
+				target = FA70EAAA19F5A49D00960EE2 /* Ditto */;
+				targetProxy = DD000002AAAA000000000006 /* PBXContainerItemProxy */;
+			};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -664,6 +772,35 @@
 			};
 			name = Release;
 		};
+
+			DD000003AAAA000000000002 /* Debug */ = {
+				isa = XCBuildConfiguration;
+				buildSettings = {
+					CODE_SIGN_IDENTITY = "iPhone Developer";
+					GENERATE_INFOPLIST_FILE = YES;
+					IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+					LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+					PRODUCT_BUNDLE_IDENTIFIER = io.kern.DittoUITests;
+					PRODUCT_NAME = "$(TARGET_NAME)";
+					SWIFT_VERSION = 5.0;
+					TEST_TARGET_NAME = Ditto;
+				};
+				name = Debug;
+			};
+			DD000003AAAA000000000003 /* Release */ = {
+				isa = XCBuildConfiguration;
+				buildSettings = {
+					CODE_SIGN_IDENTITY = "iPhone Developer";
+					GENERATE_INFOPLIST_FILE = YES;
+					IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+					LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+					PRODUCT_BUNDLE_IDENTIFIER = io.kern.DittoUITests;
+					PRODUCT_NAME = "$(TARGET_NAME)";
+					SWIFT_VERSION = 5.0;
+					TEST_TARGET_NAME = Ditto;
+				};
+				name = Release;
+			};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -703,6 +840,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+
+			DD000003AAAA000000000001 /* Build configuration list for PBXNativeTarget "DittoUITests" */ = {
+				isa = XCConfigurationList;
+				buildConfigurations = (
+					DD000003AAAA000000000002 /* Debug */,
+					DD000003AAAA000000000003 /* Release */,
+				);
+				defaultConfigurationIsVisible = 0;
+				defaultConfigurationName = Release;
+			};
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */

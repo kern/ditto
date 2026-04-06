@@ -83,6 +83,7 @@ jobs:
             -project Ditto.xcodeproj \
             -scheme Ditto \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -enableCodeCoverage YES \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
@@ -95,13 +96,14 @@ jobs:
             echo "::error::BUILD: $line"
           done
 
-      - name: Run tests
+      - name: Run unit tests with coverage
         run: |
           set -o pipefail
           xcodebuild test-without-building \
             -project Ditto.xcodeproj \
             -scheme Ditto \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult \
             2>&1 | tee /tmp/test_output.log | tail -30
 
@@ -112,10 +114,75 @@ jobs:
             echo "::error::TEST: $line"
           done
 
+      - name: Generate coverage report
+        if: always()
+        run: |
+          if [ -d TestResults.xcresult ]; then
+            echo "## Code Coverage Report" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            xcrun xccov view --report TestResults.xcresult 2>/dev/null | head -60 >> $GITHUB_STEP_SUMMARY || echo "Coverage data not available" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+
+            echo "### Coverage Details"
+            xcrun xccov view --report TestResults.xcresult 2>/dev/null || echo "No coverage data"
+          fi
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-results
           path: TestResults.xcresult
+          retention-days: 7
+
+  ui-test:
+    name: UI Tests
+    runs-on: macos-15
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Boot simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone 16" | head -1 | grep -oE '[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}')
+          if [ -n "$DEVICE_ID" ]; then
+            xcrun simctl boot "$DEVICE_ID" 2>/dev/null || true
+          fi
+
+      - name: Build for UI testing
+        run: |
+          set -o pipefail
+          xcodebuild build-for-testing \
+            -project Ditto.xcodeproj \
+            -scheme Ditto \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee /tmp/ui_build_output.log | tail -30
+
+      - name: Run UI tests
+        run: |
+          set -o pipefail
+          xcodebuild test-without-building \
+            -project Ditto.xcodeproj \
+            -scheme Ditto \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -only-testing:DittoUITests \
+            -resultBundlePath UITestResults.xcresult \
+            2>&1 | tee /tmp/ui_test_output.log | tail -30
+
+      - name: Show UI test errors
+        if: failure()
+        run: |
+          grep -i 'error\|failed\|failure' /tmp/ui_test_output.log | tail -40 | while IFS= read -r line; do
+            echo "::error::UI TEST: $line"
+          done
+
+      - name: Upload UI test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ui-test-results
+          path: UITestResults.xcresult
           retention-days: 7
