@@ -449,6 +449,7 @@
 				FA70EAAA19F5A49D00960EE2 /* Ditto */,
 				FA70EAD319F5A56300960EE2 /* DittoKeyboard */,
 				CC000006AAAA000000000001 /* DittoTests */,
+				DD000002AAAA000000000001 /* DittoUITests */,
 			);
 		};
 /* End PBXProject section */
