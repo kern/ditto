@@ -46,12 +46,14 @@
 		CC000001AAAA000000000001 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000011 /* SubscriptionManager.swift */; };
 		CC000001AAAA000000000002 /* CloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000012 /* CloudSyncManager.swift */; };
 		CC000001AAAA000000000003 /* SubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000013 /* SubscriptionView.swift */; };
+		CC000001AAAA000000000004 /* LegacyDataMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000014 /* LegacyDataMigrator.swift */; };
 		CC000002AAAA000000000001 /* DittoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000011 /* DittoItemTests.swift */; };
 		CC000002AAAA000000000002 /* DittoCategoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000012 /* DittoCategoryTests.swift */; };
 		CC000002AAAA000000000003 /* DittoStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000013 /* DittoStoreTests.swift */; };
 		CC000002AAAA000000000004 /* PendingDittoStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000014 /* PendingDittoStoreTests.swift */; };
 		CC000002AAAA000000000005 /* SubscriptionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000015 /* SubscriptionManagerTests.swift */; };
 		CC000002AAAA000000000006 /* CloudSyncManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000016 /* CloudSyncManagerTests.swift */; };
+		CC000002AAAA000000000007 /* LegacyDataMigratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002AAAA000000000017 /* LegacyDataMigratorTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,12 +125,14 @@
 		CC000001AAAA000000000011 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
 		CC000001AAAA000000000012 /* CloudSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncManager.swift; sourceTree = "<group>"; };
 		CC000001AAAA000000000013 /* SubscriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionView.swift; sourceTree = "<group>"; };
+		CC000001AAAA000000000014 /* LegacyDataMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyDataMigrator.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000011 /* DittoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoItemTests.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000012 /* DittoCategoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoCategoryTests.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000013 /* DittoStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoStoreTests.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000014 /* PendingDittoStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingDittoStoreTests.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000015 /* SubscriptionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManagerTests.swift; sourceTree = "<group>"; };
 		CC000002AAAA000000000016 /* CloudSyncManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncManagerTests.swift; sourceTree = "<group>"; };
+		CC000002AAAA000000000017 /* LegacyDataMigratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyDataMigratorTests.swift; sourceTree = "<group>"; };
 		CC000004AAAA000000000001 /* DittoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DittoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -189,6 +193,7 @@
 				CC000002AAAA000000000014 /* PendingDittoStoreTests.swift */,
 				CC000002AAAA000000000015 /* SubscriptionManagerTests.swift */,
 				CC000002AAAA000000000016 /* CloudSyncManagerTests.swift */,
+				CC000002AAAA000000000017 /* LegacyDataMigratorTests.swift */,
 			);
 			path = DittoTests;
 			sourceTree = "<group>";
@@ -218,6 +223,7 @@
 				CC000001AAAA000000000011 /* SubscriptionManager.swift */,
 				CC000001AAAA000000000012 /* CloudSyncManager.swift */,
 				CC000001AAAA000000000013 /* SubscriptionView.swift */,
+				CC000001AAAA000000000014 /* LegacyDataMigrator.swift */,
 				FA237AB519F9C70F007E67D5 /* View Controllers */,
 				FA70EAB919F5A49D00960EE2 /* LaunchScreen.xib */,
 				FA70EAB719F5A49D00960EE2 /* Images.xcassets */,
@@ -432,6 +438,7 @@
 				CC000001AAAA000000000001 /* SubscriptionManager.swift in Sources */,
 				CC000001AAAA000000000002 /* CloudSyncManager.swift in Sources */,
 				CC000001AAAA000000000003 /* SubscriptionView.swift in Sources */,
+				CC000001AAAA000000000004 /* LegacyDataMigrator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,6 +469,7 @@
 				CC000002AAAA000000000004 /* PendingDittoStoreTests.swift in Sources */,
 				CC000002AAAA000000000005 /* SubscriptionManagerTests.swift in Sources */,
 				CC000002AAAA000000000006 /* CloudSyncManagerTests.swift in Sources */,
+				CC000002AAAA000000000007 /* LegacyDataMigratorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

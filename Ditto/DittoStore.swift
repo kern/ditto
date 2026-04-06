@@ -76,6 +76,13 @@ final class DittoStore {
     }
 
     private func ensureProfileExists() {
+        // Try migrating legacy Core Data store first
+        if LegacyDataMigrator.needsMigration {
+            if LegacyDataMigrator.migrateIfNeeded(into: modelContext) {
+                return // Migration created the profile with existing data
+            }
+        }
+
         let descriptor = FetchDescriptor<Profile>()
         let count = (try? modelContext.fetchCount(descriptor)) ?? 0
         if count == 0 {
