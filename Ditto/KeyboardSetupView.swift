@@ -65,13 +65,13 @@ struct KeyboardSetupView: View {
                     if hasFullAccess {
                         HStack(spacing: 8) {
                             Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(.green)
+                                .foregroundStyle(.dittoAccent)
                             Text("Ditto keyboard is active")
                                 .fontWeight(.medium)
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
-                        .background(.green.opacity(0.1), in: Capsule())
+                        .background(Color.dittoAccent.opacity(0.1), in: Capsule())
                     } else {
                         Button {
                             if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -129,7 +129,7 @@ private struct SetupStep: View {
             VStack(spacing: 0) {
                 ZStack {
                     Circle()
-                        .fill(isComplete ? Color.green : Color.dittoAccent)
+                        .fill(Color.dittoAccent)
                         .frame(width: 32, height: 32)
                     if isComplete {
                         Image(systemName: "checkmark")
