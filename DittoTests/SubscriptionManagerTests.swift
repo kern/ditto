@@ -7,7 +7,7 @@ struct SubscriptionManagerTests {
 
     @Test("Initial state is not subscribed")
     func initialState() {
-        let manager = SubscriptionManager()
+        let manager = SubscriptionManager(startListening: false)
         #expect(!manager.isProSubscriber)
         #expect(manager.products.isEmpty)
         #expect(manager.purchasedProductIDs.isEmpty)
@@ -15,7 +15,7 @@ struct SubscriptionManagerTests {
 
     @Test("isProSubscriber is false with empty purchases")
     func notSubscribed() {
-        let manager = SubscriptionManager()
+        let manager = SubscriptionManager(startListening: false)
         #expect(!manager.isProSubscriber)
     }
 

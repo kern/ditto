@@ -13,20 +13,20 @@ struct SubscriptionManagerExtendedTests {
 
     @Test("isLoading starts false")
     func isLoadingDefault() {
-        let manager = SubscriptionManager()
+        let manager = SubscriptionManager(startListening: false)
         #expect(!manager.isLoading)
     }
 
     @Test("isProSubscriber is false when purchasedProductIDs is empty")
     func notProByDefault() {
-        let manager = SubscriptionManager()
+        let manager = SubscriptionManager(startListening: false)
         #expect(manager.purchasedProductIDs.isEmpty)
         #expect(!manager.isProSubscriber)
     }
 
     @Test("Products list starts empty")
     func productsEmpty() {
-        let manager = SubscriptionManager()
+        let manager = SubscriptionManager(startListening: false)
         #expect(manager.products.isEmpty)
     }
 }

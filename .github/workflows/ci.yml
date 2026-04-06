@@ -97,6 +97,7 @@ jobs:
           done
 
       - name: Run unit tests with coverage
+        timeout-minutes: 10
         run: |
           set -o pipefail
           xcodebuild test-without-building \
@@ -163,6 +164,7 @@ jobs:
             2>&1 | tee /tmp/ui_build_output.log | tail -30
 
       - name: Run UI tests
+        timeout-minutes: 10
         run: |
           set -o pipefail
           xcodebuild test-without-building \

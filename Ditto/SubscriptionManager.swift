@@ -18,7 +18,8 @@ final class SubscriptionManager {
 
     private var updateTask: Task<Void, Never>?
 
-    init() {
+    init(startListening: Bool = true) {
+        guard startListening else { return }
         updateTask = Task { [weak self] in
             await self?.listenForTransactions()
         }
