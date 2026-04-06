@@ -59,19 +59,7 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
 
         keyboardHeightConstraint = keyboardView.heightAnchor.constraint(equalToConstant: keyboardHeight)
 
-        let keyboardBg = UIColor(dynamicProvider: { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(white: 0.14, alpha: 1)
-                : UIColor(white: 0.86, alpha: 1)
-        })
-        keyboardView.backgroundColor = keyboardBg
-        addDittoView.backgroundColor = keyboardBg
-        bottomBar.backgroundColor = UIColor(dynamicProvider: { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(white: 0.18, alpha: 1)
-                : UIColor(white: 0.82, alpha: 1)
-        })
-        tableView.backgroundColor = .clear
+        setupAppearance()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DittoCell")
 
         categoryPicker.delegate = addDittoViewController
@@ -206,19 +194,20 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
             return CAShapeLayer()
         }
 
+        let arrowColor = Self.keyboardBg.resolvedColor(with: traitCollection).cgColor
         let shape = CAShapeLayer()
         tabBar.layer.addSublayer(shape)
         shape.opacity = 1
         shape.lineWidth = 0
         shape.lineJoin = .miter
-        shape.strokeColor = UIColor.white.cgColor
-        shape.fillColor = UIColor.white.cgColor
+        shape.strokeColor = arrowColor
+        shape.fillColor = arrowColor
         shape.path = selectedTabArrowPath()
         shape.zPosition = 1
         return shape
     }
 
-    func refreshTabButtons() {
+func refreshTabButtons() {
         guard !dittoStore.isEmpty, !dittoStore.hasOneCategory else { return }
 
         tabViews.forEach { $0.removeFromSuperview() }
@@ -456,5 +445,55 @@ final class KeyboardViewController: UIInputViewController, UITableViewDelegate, 
         } else {
             addDittoTextInput.text = addDittoTextInputPlaceholder
         }
+    }
+}
+
+// MARK: - Appearance
+
+extension KeyboardViewController {
+
+    static let keyboardBg = UIColor(dynamicProvider: { t in
+        t.userInterfaceStyle == .dark ? UIColor(white: 0.14, alpha: 1) : UIColor(white: 0.86, alpha: 1)
+    })
+
+    func setupAppearance() {
+        let bg = Self.keyboardBg
+        let actionBg = UIColor(dynamicProvider: { t in
+            t.userInterfaceStyle == .dark ? UIColor(white: 0.24, alpha: 1) : UIColor(white: 0.68, alpha: 1)
+        })
+        let inputBg = UIColor(dynamicProvider: { t in
+            t.userInterfaceStyle == .dark ? UIColor(white: 0.40, alpha: 1) : UIColor(white: 0.98, alpha: 1)
+        })
+        let iconTint = UIColor(dynamicProvider: { t in
+            t.userInterfaceStyle == .dark ? UIColor(white: 0.95, alpha: 1) : UIColor(white: 0.1, alpha: 1)
+        })
+        // Cover every XIB-hardcoded white surface, including the root view
+        for v in [view, keyboardView, numericKeys, addDittoView] { v?.backgroundColor = bg }
+        tableView.backgroundColor = .clear
+        bottomBar.backgroundColor = UIColor(dynamicProvider: { t in
+            t.userInterfaceStyle == .dark ? UIColor(white: 0.18, alpha: 1) : UIColor(white: 0.82, alpha: 1)
+        })
+        // SF Symbol bottom-bar buttons
+        let sym = UIImage.SymbolConfiguration(pointSize: 17, weight: .medium)
+        for (button, name) in [(nextKeyboardButton, "globe"), (backspaceButton, "delete.backward"),
+                               (returnButton, "return"), (dittoButton, "plus")] {
+            button?.setImage(UIImage(systemName: name, withConfiguration: sym), for: .normal)
+            button?.tintColor = iconTint
+            button?.backgroundColor = actionBg
+        }
+        spaceButton.setImage(nil, for: .normal)
+        spaceButton.backgroundColor = inputBg
+        spaceButton.setTitleColor(iconTint, for: .normal)
+        // Arrow colour = keyboard bg, creating a notch effect regardless of mode
+        let arrow = bg.resolvedColor(with: traitCollection).cgColor
+        selectedTabArrow.fillColor = arrow
+        selectedTabArrow.strokeColor = arrow
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle else { return }
+        setupAppearance()
+        refreshTabButtons()
     }
 }
