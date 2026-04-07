@@ -21,8 +21,9 @@ platform :ios do
       screenshots_path:     "./fastlane/screenshots",
       skip_binary_upload:   true,
       skip_metadata:        true,
-      skip_app_version_strings: true,
       overwrite_screenshots: true,
+      force:                true,
+      run_precheck_before_submit: false,
       submit_for_review:    false
     )
   end

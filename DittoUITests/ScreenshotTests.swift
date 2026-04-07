@@ -33,7 +33,7 @@ final class ScreenshotTests: XCTestCase {
         snapshot("02_categories")
 
         // 3 — New ditto sheet
-        let plus = app.navigationBars.firstMatch.buttons.element(boundBy: 1)
+        let plus = app.navigationBars.firstMatch.buttons["Add"]
         XCTAssertTrue(plus.waitForExistence(timeout: 5))
         plus.tap()
         sleep(1)

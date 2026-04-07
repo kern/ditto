@@ -19,7 +19,14 @@ echo ""
 # ── Capture ───────────────────────────────────────────────────────────────────
 
 echo "→ Capturing screenshots on simulator..."
-fastlane snapshot
+# Prefer Homebrew Ruby fastlane (2.232+) over system Ruby fastlane (2.204, broken with current ASC API)
+HOMEBREW_FASTLANE="/opt/homebrew/opt/ruby/bin/ruby /opt/homebrew/lib/ruby/gems/3.4.0/gems/fastlane-2.232.2/bin/fastlane"
+if [[ -f /opt/homebrew/lib/ruby/gems/3.4.0/gems/fastlane-2.232.2/bin/fastlane ]]; then
+    FASTLANE_BIN="${FASTLANE_BIN:-$HOMEBREW_FASTLANE}"
+else
+    FASTLANE_BIN="${FASTLANE_BIN:-fastlane}"
+fi
+"$FASTLANE_BIN" snapshot
 
 echo ""
 echo "✓ Screenshots saved to fastlane/screenshots/"
@@ -40,7 +47,7 @@ if [[ -z "${ASC_KEY_ID:-}" || -z "${ASC_ISSUER_ID:-}" || -z "${ASC_PRIVATE_KEY:-
 fi
 
 echo "→ Uploading screenshots to App Store Connect..."
-fastlane upload_screenshots
+"$FASTLANE_BIN" upload_screenshots
 
 echo ""
 echo "✅  Done. Check App Store Connect to review the uploaded screenshots."

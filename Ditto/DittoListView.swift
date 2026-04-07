@@ -112,6 +112,7 @@ struct DittoListView: View {
                             Image(systemName: "plus")
                                 .foregroundStyle(.white)
                         }
+                        .accessibilityLabel("Add")
                     }
                 }
             }
@@ -180,7 +181,8 @@ struct DittoListView: View {
             }
             .onAppear {
                 let key = "hasShownKeyboardSetup"
-                if !UserDefaults.standard.bool(forKey: key) {
+                let isScreenshots = CommandLine.arguments.contains("--screenshots")
+                if !isScreenshots && !UserDefaults.standard.bool(forKey: key) {
                     UserDefaults.standard.set(true, forKey: key)
                     showKeyboardSetup = true
                 }
