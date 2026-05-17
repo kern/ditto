@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SwiftData
 
 /// Migrates data from the legacy NSUserDefaults-backed store (v1/v2) to the new SwiftData store.
@@ -23,11 +24,21 @@ enum LegacyDataMigrator {
     private static let legacyCategoriesKey = "categories"
     private static let legacyDittosKey = "dittos"
 
+    private static let log = Logger(subsystem: "io.kern.ditto", category: "LegacyDataMigrator")
+
     /// Returns true if legacy NSUserDefaults content exists and hasn't been migrated yet.
     static var needsMigration: Bool {
-        guard let defaults = UserDefaults(suiteName: appGroupIdentifier) else { return false }
-        if defaults.bool(forKey: migrationCompleteKey) { return false }
-        return !readLegacyCategories().isEmpty
+        guard let defaults = UserDefaults(suiteName: appGroupIdentifier) else {
+            log.debug("needsMigration: App Group defaults unavailable, assuming no migration needed")
+            return false
+        }
+        if defaults.bool(forKey: migrationCompleteKey) {
+            log.debug("needsMigration: completion flag is set, skipping")
+            return false
+        }
+        let legacy = readLegacyCategories()
+        log.debug("needsMigration: found \(legacy.count, privacy: .public) legacy categories")
+        return !legacy.isEmpty
     }
 
     // MARK: - Migration
@@ -41,19 +52,26 @@ enum LegacyDataMigrator {
     static func migrateIfNeeded(into context: ModelContext) -> Bool {
         let legacyCategories = readLegacyCategories()
         guard !legacyCategories.isEmpty else {
+            log.info("migrateIfNeeded: no legacy data found, marking complete")
             markComplete()
             return false
         }
+
+        let totalDittos = legacyCategories.reduce(0) { $0 + $1.dittos.count }
+        log.info(
+            "migrateIfNeeded: starting migration of \(legacyCategories.count, privacy: .public) categories, \(totalDittos, privacy: .public) dittos"
+        )
 
         writeMigratedData(legacyCategories, into: context)
 
         do {
             try context.save()
         } catch {
-            print("Legacy data migration save failed: \(error)")
+            log.error("migrateIfNeeded: save failed: \(error.localizedDescription, privacy: .public)")
             return false
         }
 
+        log.info("migrateIfNeeded: migration succeeded, marking complete")
         markComplete()
         return true
     }
@@ -71,6 +89,10 @@ enum LegacyDataMigrator {
     private static func readLegacyCategories() -> [LegacyCategory] {
         let groupCategories = readLegacyCategories(from: UserDefaults(suiteName: appGroupIdentifier))
         let standardCategories = readLegacyCategories(from: .standard)
+
+        log.debug(
+            "readLegacyCategories: app-group=\(groupCategories.count, privacy: .public), standard=\(standardCategories.count, privacy: .public)"
+        )
 
         if standardCategories.isEmpty { return groupCategories }
         if groupCategories.isEmpty { return standardCategories }
@@ -95,6 +117,7 @@ enum LegacyDataMigrator {
                 merged.append(cat)
             }
         }
+        log.debug("readLegacyCategories: merged to \(merged.count, privacy: .public) unique categories")
         return merged
     }
 
@@ -117,8 +140,10 @@ enum LegacyDataMigrator {
         let profile: Profile
         let descriptor = FetchDescriptor<Profile>()
         if let existing = (try? context.fetch(descriptor))?.first {
+            log.debug("writeMigratedData: merging into existing profile")
             profile = existing
         } else {
+            log.debug("writeMigratedData: creating new profile")
             profile = Profile()
             context.insert(profile)
         }
@@ -130,6 +155,9 @@ enum LegacyDataMigrator {
         )
 
         var nextCategorySortOrder = profile.orderedCategories.count
+        var newCategoryCount = 0
+        var newDittoCount = 0
+        var skippedDittoCount = 0
 
         for legacyCat in categories {
             let category: DittoCategory
@@ -141,19 +169,30 @@ enum LegacyDataMigrator {
                 nextCategorySortOrder += 1
                 context.insert(category)
                 profile.categories?.append(category)
+                newCategoryCount += 1
             }
 
             let existingTexts = Set((category.dittos ?? []).map { $0.text })
             var nextDittoSortOrder = (category.dittos ?? []).count
 
-            for text in legacyCat.dittos where !existingTexts.contains(text) {
+            for text in legacyCat.dittos {
+                guard !existingTexts.contains(text) else {
+                    skippedDittoCount += 1
+                    continue
+                }
                 let item = DittoItem(text: text, category: category)
                 item.sortOrder = nextDittoSortOrder
                 nextDittoSortOrder += 1
                 context.insert(item)
                 category.dittos?.append(item)
+                newDittoCount += 1
             }
         }
+
+        log.info(
+            // swiftlint:disable:next line_length
+            "writeMigratedData: inserted \(newCategoryCount, privacy: .public) new categories, \(newDittoCount, privacy: .public) new dittos (skipped \(skippedDittoCount, privacy: .public) duplicates)"
+        )
     }
 
     // MARK: - Cleanup
