@@ -1,177 +1,155 @@
-import CoreData
 import Foundation
 import SwiftData
 
-/// Migrates data from the legacy Core Data store (v1/v2) to the new SwiftData store.
+/// Migrates data from the legacy NSUserDefaults-backed store (v1/v2) to the new SwiftData store.
 ///
-/// The old Core Data model used entities: Profile, Category, Ditto
-/// with ordered relationships and snake_case attributes (use_count).
-/// This migrator reads the old store, creates equivalent SwiftData objects,
-/// and removes the old store files after successful migration.
-@available(iOS, deprecated: 18.0, message: "Remove once all users have migrated from Core Data (target: v4.0)")
+/// The pre-3.0 app persisted user content directly in NSUserDefaults under two keys:
+///   - "categories": `[String]` — ordered list of category titles
+///   - "dittos":     `[String: [String]]` — category title → ordered list of ditto texts
+///
+/// Some installs wrote to the shared App Group suite (once the keyboard extension shipped),
+/// while earlier installs wrote to `UserDefaults.standard`. We check both, prefer whichever
+/// has data, and merge if both are populated.
+///
+/// IMPORTANT: We deliberately do NOT delete the legacy keys from NSUserDefaults after a
+/// successful migration. Keeping the source data intact lets users roll back to an older
+/// build (or re-run the migration) without data loss.
+@available(iOS, deprecated: 18.0, message: "Remove once all users have migrated from NSUserDefaults (target: v4.0)")
 enum LegacyDataMigrator {
 
     private static let appGroupIdentifier = "group.io.kern.ditto"
-    private static let migrationCompleteKey = "legacyCoreDataMigrationComplete"
+    private static let migrationCompleteKey = "legacyUserDefaultsMigrationComplete"
 
-    /// Returns true if legacy Core Data files exist and haven't been migrated yet.
+    private static let legacyCategoriesKey = "categories"
+    private static let legacyDittosKey = "dittos"
+
+    /// Returns true if legacy NSUserDefaults content exists and hasn't been migrated yet.
     static var needsMigration: Bool {
         guard let defaults = UserDefaults(suiteName: appGroupIdentifier) else { return false }
         if defaults.bool(forKey: migrationCompleteKey) { return false }
-        return legacyStoreURL != nil
-    }
-
-    /// The URL of the legacy Core Data SQLite store, if it exists.
-    private static var legacyStoreURL: URL? {
-        guard let groupURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: appGroupIdentifier
-        ) else { return nil }
-
-        // Check common Core Data store filenames from the old app
-        let candidates = [
-            groupURL.appendingPathComponent("Ditto.sqlite"),
-            groupURL.appendingPathComponent("ditto.sqlite")
-        ]
-        for url in candidates where FileManager.default.fileExists(atPath: url.path) {
-            return url
-        }
-
-        // Also check the default application support directory
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-        if let url = appSupport?.appendingPathComponent("Ditto.sqlite"),
-           FileManager.default.fileExists(atPath: url.path) {
-            return url
-        }
-
-        return nil
+        return !readLegacyCategories().isEmpty
     }
 
     // MARK: - Migration
 
-    /// Migrates legacy Core Data content into the given SwiftData model context.
+    /// Migrates legacy NSUserDefaults content into the given SwiftData model context.
     /// Returns `true` if data was migrated, `false` if no legacy data was found.
+    ///
+    /// The legacy NSUserDefaults entries are preserved (not deleted) so the source data
+    /// remains available for rollback or repeated migration runs.
     @discardableResult
     static func migrateIfNeeded(into context: ModelContext) -> Bool {
-        guard let storeURL = legacyStoreURL else {
+        let legacyCategories = readLegacyCategories()
+        guard !legacyCategories.isEmpty else {
             markComplete()
             return false
         }
+
+        writeMigratedData(legacyCategories, into: context)
 
         do {
-            let legacyData = try readLegacyStore(at: storeURL)
-            if legacyData.isEmpty {
-                markComplete()
-                cleanupLegacyFiles(at: storeURL)
-                return false
-            }
-
-            writeMigratedData(legacyData, into: context)
             try context.save()
-
-            markComplete()
-            cleanupLegacyFiles(at: storeURL)
-            return true
         } catch {
-            print("Legacy data migration failed: \(error)")
+            print("Legacy data migration save failed: \(error)")
             return false
         }
+
+        markComplete()
+        return true
     }
 
     // MARK: - Read Legacy Store
 
     private struct LegacyCategory {
         let title: String
-        let dittos: [LegacyDitto]
+        let dittos: [String]
     }
 
-    private struct LegacyDitto {
-        let text: String
-        let useCount: Int
-    }
+    /// Reads ordered legacy categories from both the App Group suite and standard defaults,
+    /// merging duplicates by title (App Group takes precedence; standard contributes any
+    /// categories or trailing dittos missing from the group store).
+    private static func readLegacyCategories() -> [LegacyCategory] {
+        let groupCategories = readLegacyCategories(from: UserDefaults(suiteName: appGroupIdentifier))
+        let standardCategories = readLegacyCategories(from: .standard)
 
-    private static func readLegacyStore(at url: URL) throws -> [LegacyCategory] {
-        guard let modelURL = Bundle.main.url(forResource: "Ditto", withExtension: "momd")
-                ?? Bundle.main.url(forResource: "Ditto", withExtension: "mom"),
-              let model = NSManagedObjectModel(contentsOf: modelURL) else {
-            print("Legacy Core Data model not found in bundle")
-            return []
+        if standardCategories.isEmpty { return groupCategories }
+        if groupCategories.isEmpty { return standardCategories }
+
+        // Merge: keep order from group, then append any group-missing categories from standard.
+        // For shared categories, union the ditto lists while preserving group order.
+        var titleToIndex: [String: Int] = [:]
+        var merged: [LegacyCategory] = []
+        for cat in groupCategories {
+            titleToIndex[cat.title] = merged.count
+            merged.append(cat)
         }
-
-        let container = NSPersistentContainer(name: "Ditto", managedObjectModel: model)
-        let description = NSPersistentStoreDescription(url: url)
-        description.isReadOnly = true
-        description.shouldMigrateStoreAutomatically = true
-        description.shouldInferMappingModelAutomatically = true
-        container.persistentStoreDescriptions = [description]
-
-        var loadError: Error?
-        container.loadPersistentStores { _, error in
-            loadError = error
-        }
-        if let error = loadError { throw error }
-
-        let moc = container.viewContext
-
-        // Fetch the profile to get ordered categories
-        let profileRequest = NSFetchRequest<NSManagedObject>(entityName: "Profile")
-        let profiles = try moc.fetch(profileRequest)
-
-        guard let profile = profiles.first else {
-            // No profile means no data to migrate - try fetching categories directly
-            return try readCategoriesWithoutProfile(moc: moc)
-        }
-
-        // Core Data ordered relationship returns NSOrderedSet
-        guard let categoriesSet = profile.value(forKey: "categories") as? NSOrderedSet else {
-            return []
-        }
-
-        var result: [LegacyCategory] = []
-        for case let categoryObj as NSManagedObject in categoriesSet {
-            let category = readCategory(categoryObj)
-            result.append(category)
-        }
-        return result
-    }
-
-    private static func readCategoriesWithoutProfile(moc: NSManagedObjectContext) throws -> [LegacyCategory] {
-        let request = NSFetchRequest<NSManagedObject>(entityName: "Category")
-        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        let categories = try moc.fetch(request)
-        return categories.map { readCategory($0) }
-    }
-
-    private static func readCategory(_ obj: NSManagedObject) -> LegacyCategory {
-        let title = obj.value(forKey: "title") as? String ?? ""
-
-        var dittos: [LegacyDitto] = []
-        if let dittosSet = obj.value(forKey: "dittos") as? NSOrderedSet {
-            for case let dittoObj as NSManagedObject in dittosSet {
-                let text = dittoObj.value(forKey: "text") as? String ?? ""
-                let useCount = (dittoObj.value(forKey: "use_count") as? Int) ?? 0
-                dittos.append(LegacyDitto(text: text, useCount: useCount))
+        for cat in standardCategories {
+            if let idx = titleToIndex[cat.title] {
+                var combined = merged[idx].dittos
+                for text in cat.dittos where !combined.contains(text) {
+                    combined.append(text)
+                }
+                merged[idx] = LegacyCategory(title: merged[idx].title, dittos: combined)
+            } else {
+                titleToIndex[cat.title] = merged.count
+                merged.append(cat)
             }
         }
+        return merged
+    }
 
-        return LegacyCategory(title: title, dittos: dittos)
+    private static func readLegacyCategories(from defaults: UserDefaults?) -> [LegacyCategory] {
+        guard let defaults else { return [] }
+        guard let titles = defaults.array(forKey: legacyCategoriesKey) as? [String],
+              !titles.isEmpty else { return [] }
+        let dittosByTitle = defaults.dictionary(forKey: legacyDittosKey) as? [String: [String]] ?? [:]
+
+        return titles.map { title in
+            LegacyCategory(title: title, dittos: dittosByTitle[title] ?? [])
+        }
     }
 
     // MARK: - Write Migrated Data
 
     private static func writeMigratedData(_ categories: [LegacyCategory], into context: ModelContext) {
-        let profile = Profile()
-        context.insert(profile)
+        // Reuse an existing Profile if one was already created (e.g. by a previous
+        // partial run); otherwise create a new one.
+        let profile: Profile
+        let descriptor = FetchDescriptor<Profile>()
+        if let existing = (try? context.fetch(descriptor))?.first {
+            profile = existing
+        } else {
+            profile = Profile()
+            context.insert(profile)
+        }
 
-        for (catIndex, legacyCat) in categories.enumerated() {
-            let category = DittoCategory(title: legacyCat.title, profile: profile)
-            category.sortOrder = catIndex
-            context.insert(category)
-            profile.categories?.append(category)
+        // Track titles already in the profile so we don't duplicate preset categories.
+        let existingByTitle = Dictionary(
+            profile.orderedCategories.map { ($0.title, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
 
-            for (dittoIndex, legacyDitto) in legacyCat.dittos.enumerated() {
-                let item = DittoItem(text: legacyDitto.text, category: category)
-                item.useCount = legacyDitto.useCount
-                item.sortOrder = dittoIndex
+        var nextCategorySortOrder = profile.orderedCategories.count
+
+        for legacyCat in categories {
+            let category: DittoCategory
+            if let existing = existingByTitle[legacyCat.title] {
+                category = existing
+            } else {
+                category = DittoCategory(title: legacyCat.title, profile: profile)
+                category.sortOrder = nextCategorySortOrder
+                nextCategorySortOrder += 1
+                context.insert(category)
+                profile.categories?.append(category)
+            }
+
+            let existingTexts = Set((category.dittos ?? []).map { $0.text })
+            var nextDittoSortOrder = (category.dittos ?? []).count
+
+            for text in legacyCat.dittos where !existingTexts.contains(text) {
+                let item = DittoItem(text: text, category: category)
+                item.sortOrder = nextDittoSortOrder
+                nextDittoSortOrder += 1
                 context.insert(item)
                 category.dittos?.append(item)
             }
@@ -180,16 +158,9 @@ enum LegacyDataMigrator {
 
     // MARK: - Cleanup
 
+    /// Records that migration finished. The legacy NSUserDefaults entries are intentionally
+    /// left in place so the source data is preserved.
     private static func markComplete() {
         UserDefaults(suiteName: appGroupIdentifier)?.set(true, forKey: migrationCompleteKey)
-    }
-
-    private static func cleanupLegacyFiles(at storeURL: URL) {
-        let fm = FileManager.default
-        let suffixes = ["", "-shm", "-wal", "-journal"]
-        for suffix in suffixes {
-            let url = URL(fileURLWithPath: storeURL.path + suffix)
-            try? fm.removeItem(at: url)
-        }
     }
 }
