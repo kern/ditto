@@ -6,10 +6,10 @@ import Testing
 @Suite("LegacyDataMigrator Tests", .serialized)
 struct LegacyDataMigratorTests {
 
-    private static let appGroupSuite = "group.io.kern.ditto"
-    private static let completeKey = "legacyUserDefaultsMigrationComplete"
-    private static let categoriesKey = "categories"
-    private static let dittosKey = "dittos"
+    private let appGroupSuite = "group.io.kern.ditto"
+    private let completeKey = "legacyUserDefaultsMigrationComplete"
+    private let categoriesKey = "categories"
+    private let dittosKey = "dittos"
 
     private struct DefaultsSnapshot {
         let complete: Bool
@@ -19,11 +19,11 @@ struct LegacyDataMigratorTests {
         let stdDittos: Any?
     }
 
-    private static func appGroupDefaults() -> UserDefaults? {
+    private func appGroupDefaults() -> UserDefaults? {
         UserDefaults(suiteName: appGroupSuite)
     }
 
-    private static func snapshot() -> DefaultsSnapshot {
+    private func snapshot() -> DefaultsSnapshot {
         let group = appGroupDefaults()
         return DefaultsSnapshot(
             complete: group?.bool(forKey: completeKey) ?? false,
@@ -34,7 +34,7 @@ struct LegacyDataMigratorTests {
         )
     }
 
-    private static func restore(_ snap: DefaultsSnapshot) {
+    private func restore(_ snap: DefaultsSnapshot) {
         let group = appGroupDefaults()
         group?.set(snap.complete, forKey: completeKey)
         group?.set(snap.categories, forKey: categoriesKey)
@@ -43,7 +43,7 @@ struct LegacyDataMigratorTests {
         UserDefaults.standard.set(snap.stdDittos, forKey: dittosKey)
     }
 
-    private static func clearAll() {
+    private func clearAll() {
         let group = appGroupDefaults()
         group?.removeObject(forKey: completeKey)
         group?.removeObject(forKey: categoriesKey)
@@ -52,7 +52,7 @@ struct LegacyDataMigratorTests {
         UserDefaults.standard.removeObject(forKey: dittosKey)
     }
 
-    private static func makeContext() throws -> ModelContext {
+    private func makeContext() throws -> ModelContext {
         let schema = Schema([Profile.self, DittoCategory.self, DittoItem.self])
         let config = ModelConfiguration("Migration-\(UUID())", schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         let container = try ModelContainer(for: schema, configurations: [config])
@@ -107,7 +107,7 @@ struct LegacyDataMigratorTests {
         appGroupDefaults()?.set(titles, forKey: categoriesKey)
         appGroupDefaults()?.set(dittos, forKey: dittosKey)
 
-        let context = try Self.makeContext()
+        let context = try makeContext()
         let result = LegacyDataMigrator.migrateIfNeeded(into: context)
         #expect(result)
 
@@ -130,7 +130,7 @@ struct LegacyDataMigratorTests {
         appGroupDefaults()?.set(titles, forKey: categoriesKey)
         appGroupDefaults()?.set(dittos, forKey: dittosKey)
 
-        let context = try Self.makeContext()
+        let context = try makeContext()
         _ = LegacyDataMigrator.migrateIfNeeded(into: context)
 
         // Legacy entries must remain in NSUserDefaults after migration
@@ -147,7 +147,7 @@ struct LegacyDataMigratorTests {
         UserDefaults.standard.set(["Old"], forKey: categoriesKey)
         UserDefaults.standard.set(["Old": ["legacy ditto"]], forKey: dittosKey)
 
-        let context = try Self.makeContext()
+        let context = try makeContext()
         let result = LegacyDataMigrator.migrateIfNeeded(into: context)
         #expect(result)
 
