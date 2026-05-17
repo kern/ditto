@@ -69,7 +69,7 @@ jobs:
   test:
     name: Tests
     runs-on: macos-15
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -106,7 +106,7 @@ jobs:
           done
 
       - name: Run unit tests with coverage
-        timeout-minutes: 10
+        timeout-minutes: 15
         run: |
           set -o pipefail
           xcodebuild test-without-building \
@@ -116,12 +116,19 @@ jobs:
             -only-testing:DittoTests \
             -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult \
-            2>&1 | tee /tmp/test_output.log | tail -30
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 60 \
+            -maximum-test-execution-time-allowance 180 \
+            2>&1 | tee /tmp/test_output.log
 
       - name: Show test errors
         if: failure()
         run: |
-          grep -i 'error\|failed\|failure' /tmp/test_output.log | tail -40 | while IFS= read -r line; do
+          echo "=== Last 200 lines of test output ==="
+          tail -200 /tmp/test_output.log || true
+          echo ""
+          echo "=== Errors and failures ==="
+          grep -iE 'error|failed|failure|timed out|hung' /tmp/test_output.log | tail -40 | while IFS= read -r line; do
             echo "::error::TEST: $line"
           done
 
@@ -149,7 +156,7 @@ jobs:
   ui-test:
     name: UI Tests
     runs-on: macos-15
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -180,7 +187,7 @@ jobs:
             2>&1 | tee /tmp/ui_build_output.log | tail -20
 
       - name: Run UI tests
-        timeout-minutes: 10
+        timeout-minutes: 15
         run: |
           set -o pipefail
           xcodebuild test-without-building \
@@ -196,7 +203,7 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            2>&1 | tee /tmp/ui_test_output.log | tail -50
+            2>&1 | tee /tmp/ui_test_output.log
 
       - name: Show UI test output
         if: always()

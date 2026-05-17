@@ -24,7 +24,7 @@ struct DittoApp: App {
         do {
             let container = try CloudSyncManager.makeModelContainer(cloudSyncEnabled: false)
 
-            // Migrate legacy Core Data store before creating DittoStore,
+            // Migrate legacy NSUserDefaults-backed store before creating DittoStore,
             // so ensureProfileExists() finds migrated data instead of creating presets
             if LegacyDataMigrator.needsMigration {
                 let migrationContext = ModelContext(container)
