@@ -4,8 +4,8 @@ import SwiftData
 /// Migrates data from the legacy NSUserDefaults-backed store (v1/v2) to the new SwiftData store.
 ///
 /// The pre-3.0 app persisted user content directly in NSUserDefaults under two keys:
-///   - "categories": `[String]` — ordered list of category titles
-///   - "dittos":     `[String: [String]]` — category title → ordered list of ditto texts
+/// - "categories": `[String]` — ordered list of category titles
+/// - "dittos": `[String: [String]]` — category title → ordered list of ditto texts
 ///
 /// Some installs wrote to the shared App Group suite (once the keyboard extension shipped),
 /// while earlier installs wrote to `UserDefaults.standard`. We check both, prefer whichever

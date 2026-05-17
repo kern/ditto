@@ -11,13 +11,21 @@ struct LegacyDataMigratorTests {
     private static let categoriesKey = "categories"
     private static let dittosKey = "dittos"
 
+    private struct DefaultsSnapshot {
+        let complete: Bool
+        let categories: Any?
+        let dittos: Any?
+        let stdCategories: Any?
+        let stdDittos: Any?
+    }
+
     private static func appGroupDefaults() -> UserDefaults? {
         UserDefaults(suiteName: appGroupSuite)
     }
 
-    private static func snapshot() -> (complete: Bool, categories: Any?, dittos: Any?, stdCategories: Any?, stdDittos: Any?) {
+    private static func snapshot() -> DefaultsSnapshot {
         let group = appGroupDefaults()
-        return (
+        return DefaultsSnapshot(
             complete: group?.bool(forKey: completeKey) ?? false,
             categories: group?.object(forKey: categoriesKey),
             dittos: group?.object(forKey: dittosKey),
@@ -26,7 +34,7 @@ struct LegacyDataMigratorTests {
         )
     }
 
-    private static func restore(_ snap: (complete: Bool, categories: Any?, dittos: Any?, stdCategories: Any?, stdDittos: Any?)) {
+    private static func restore(_ snap: DefaultsSnapshot) {
         let group = appGroupDefaults()
         group?.set(snap.complete, forKey: completeKey)
         group?.set(snap.categories, forKey: categoriesKey)
