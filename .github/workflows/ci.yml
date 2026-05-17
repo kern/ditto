@@ -116,6 +116,9 @@ jobs:
             -only-testing:DittoTests \
             -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 60 \
+            -maximum-test-execution-time-allowance 180 \
             2>&1 | tee /tmp/test_output.log
 
       - name: Show test errors
