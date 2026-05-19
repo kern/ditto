@@ -145,6 +145,13 @@ struct SubscriptionView: View {
                     Text("Unable to load subscription options.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                    if !subscriptionManager.loadErrorMessage.isEmpty {
+                        Text(subscriptionManager.loadErrorMessage)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
                     Button("Try Again") {
                         Task { await subscriptionManager.loadProducts() }
                     }

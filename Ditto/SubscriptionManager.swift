@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import StoreKit
 
 /// Manages the Ditto Pro subscription that unlocks iCloud sync.
@@ -8,9 +9,14 @@ final class SubscriptionManager {
     static let proMonthlyProductID = "io.kern.ditto.pro.monthly"
     static let proYearlyProductID = "io.kern.ditto.pro.yearly"
 
+    private static let log = Logger(subsystem: "io.kern.ditto", category: "SubscriptionManager")
+
     private(set) var products: [Product] = []
     private(set) var purchasedProductIDs: Set<String> = []
     private(set) var isLoading = false
+    /// Diagnostic message from the last load attempt, surfaced to the UI when no products
+    /// could be fetched. Empty string when products loaded successfully.
+    private(set) var loadErrorMessage: String = ""
 
     var isProSubscriber: Bool {
         !purchasedProductIDs.isEmpty
@@ -34,17 +40,42 @@ final class SubscriptionManager {
     @MainActor
     func loadProducts() async {
         isLoading = true
+        loadErrorMessage = ""
         defer { isLoading = false }
 
-        do {
-            products = try await Product.products(for: [
-                Self.proMonthlyProductID,
-                Self.proYearlyProductID
-            ])
-            products.sort { $0.price < $1.price }
-        } catch {
-            print("Failed to load products: \(error)")
+        let productIDs = [Self.proMonthlyProductID, Self.proYearlyProductID]
+        Self.log.info("loadProducts: requesting \(productIDs.count, privacy: .public) product IDs")
+
+        // StoreKit can briefly return an empty array on cold launch before the
+        // App Store connection is ready. Retry with backoff so we don't show a
+        // false "Unable to load" to users (or to App Store reviewers).
+        let backoff: [UInt64] = [0, 1_500_000_000, 3_000_000_000] // 0s, 1.5s, 3s
+        for (attempt, delay) in backoff.enumerated() {
+            if delay > 0 {
+                try? await Task.sleep(nanoseconds: delay)
+            }
+            do {
+                let fetched = try await Product.products(for: productIDs)
+                Self.log.info(
+                    "loadProducts: attempt \(attempt + 1, privacy: .public) returned \(fetched.count, privacy: .public) products"
+                )
+                if !fetched.isEmpty {
+                    products = fetched.sorted { $0.price < $1.price }
+                    return
+                }
+                // Empty result with no error usually means the products aren't
+                // approved/published in App Store Connect, or the StoreKit
+                // account hasn't synced yet. Continue retrying.
+                loadErrorMessage = "No products returned from the App Store. They may still be pending review."
+            } catch {
+                Self.log.error(
+                    "loadProducts: attempt \(attempt + 1, privacy: .public) failed: \(error.localizedDescription, privacy: .public)"
+                )
+                loadErrorMessage = error.localizedDescription
+            }
         }
+
+        Self.log.error("loadProducts: exhausted retries with no products")
     }
 
     // MARK: - Purchase
