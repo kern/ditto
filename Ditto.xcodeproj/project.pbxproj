@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6A1E549A2F842CC200D18AF4 /* DittoProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6A1E54992F842CC200D18AF4 /* DittoProducts.storekit */; };
-		6A1E549B2F842CC200D18AF4 /* DittoProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6A1E54992F842CC200D18AF4 /* DittoProducts.storekit */; };
-		6A1E549C2F842CC200D18AF4 /* DittoProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6A1E54992F842CC200D18AF4 /* DittoProducts.storekit */; };
-		6A1E549D2F842CC200D18AF4 /* DittoProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6A1E54992F842CC200D18AF4 /* DittoProducts.storekit */; };
 		CC000001AAAA000000000001 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000011 /* SubscriptionManager.swift */; };
 		CC000001AAAA000000000002 /* CloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000012 /* CloudSyncManager.swift */; };
 		CC000001AAAA000000000003 /* SubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000013 /* SubscriptionView.swift */; };
@@ -481,7 +477,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A1E549C2F842CC200D18AF4 /* DittoProducts.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,7 +484,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A1E549D2F842CC200D18AF4 /* DittoProducts.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -499,7 +493,6 @@
 			files = (
 				FA70EAB819F5A49D00960EE2 /* Images.xcassets in Resources */,
 				CC000001AAAA00000000001A /* Localizable.xcstrings in Resources */,
-				6A1E549A2F842CC200D18AF4 /* DittoProducts.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,7 +501,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAFD8AC81B685182000B2364 /* Ditto.xcdatamodeld in Resources */,
-				6A1E549B2F842CC200D18AF4 /* DittoProducts.storekit in Resources */,
 				FA70EAEA19F5C17700960EE2 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
