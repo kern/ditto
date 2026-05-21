@@ -6,8 +6,8 @@ import StoreKit
 @Observable
 final class SubscriptionManager {
 
-    static let proMonthlyProductID = "io.kern.ditto.pro.monthly"
-    static let proYearlyProductID = "io.kern.ditto.pro.yearly"
+    static let proMonthlyProductID = "io.kern.ditto.monthly"
+    static let proYearlyProductID = "io.kern.ditto.yearly"
 
     private static let log = Logger(subsystem: "io.kern.ditto", category: "SubscriptionManager")
 

@@ -95,7 +95,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "io.kern.ditto.pro.monthly",
+          "productID" : "io.kern.ditto.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Monthly",
           "subscriptionGroupID" : "8C8E3DF6",
@@ -123,7 +123,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "io.kern.ditto.pro.yearly",
+          "productID" : "io.kern.ditto.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Yearly",
           "subscriptionGroupID" : "8C8E3DF6",
