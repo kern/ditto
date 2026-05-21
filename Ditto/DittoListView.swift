@@ -90,7 +90,7 @@ struct DittoListView: View {
                                 showSubscription = true
                             } label: {
                                 Label(
-                                    subscriptionManager.isProSubscriber ? "Manage Subscription" : "Enable iCloud Sync",
+                                    subscriptionManager.isProSubscriber ? "Manage Subscription" : "Upgrade to Pro",
                                     systemImage: subscriptionManager.isProSubscriber ? "checkmark.icloud" : "icloud"
                                 )
                             }
