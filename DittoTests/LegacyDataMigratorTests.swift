@@ -171,4 +171,147 @@ struct LegacyDataMigratorTests {
         #expect(!result)
         #expect(appGroupDefaults()?.bool(forKey: completeKey) == true)
     }
+
+    // MARK: - WAL sidecar recovery
+
+    @Test("extractPhrases pulls TEXT records out of synthetic WAL frames")
+    func walParserExtractsTextRecords() throws {
+        let wal = makeSyntheticWAL(phrases: [
+            "meeting at ___",
+            "OOO today",
+            "on my way"
+        ])
+        let walURL = try writeTempFile(wal, suffix: ".sqlite-wal")
+        defer { try? FileManager.default.removeItem(at: walURL) }
+
+        let phrases = WALSidecarRecovery.extractPhrases(from: walURL)
+        #expect(phrases.contains("meeting at ___"))
+        #expect(phrases.contains("OOO today"))
+        #expect(phrases.contains("on my way"))
+    }
+
+    @Test("extractPhrases drops too-short strings and Core Data internals")
+    func walParserFiltersNoise() throws {
+        let wal = makeSyntheticWAL(phrases: [
+            "a",                                 // 1 char → dropped
+            "Z_PRIMARYKEY",                      // Core Data internal → dropped
+            "Z_METADATA blob",                   // Core Data internal prefix → dropped
+            "real ditto phrase"                  // user content → kept
+        ])
+        let walURL = try writeTempFile(wal, suffix: ".sqlite-wal")
+        defer { try? FileManager.default.removeItem(at: walURL) }
+
+        let phrases = WALSidecarRecovery.extractPhrases(from: walURL)
+        #expect(phrases.contains("real ditto phrase"))
+        #expect(!phrases.contains("a"))
+        #expect(!phrases.contains("Z_PRIMARYKEY"))
+        #expect(!phrases.contains("Z_METADATA blob"))
+    }
+
+    @Test("extractPhrases returns empty for a file without WAL magic")
+    func walParserRejectsGarbage() throws {
+        let walURL = try writeTempFile(Data(repeating: 0xFF, count: 200), suffix: ".sqlite-wal")
+        defer { try? FileManager.default.removeItem(at: walURL) }
+
+        #expect(WALSidecarRecovery.extractPhrases(from: walURL).isEmpty)
+    }
+
+    @Test("extractPhrases deduplicates repeated phrases across frames")
+    func walParserDeduplicates() throws {
+        let wal = makeSyntheticWAL(phrases: ["duplicate phrase", "duplicate phrase", "unique phrase"])
+        let walURL = try writeTempFile(wal, suffix: ".sqlite-wal")
+        defer { try? FileManager.default.removeItem(at: walURL) }
+
+        let phrases = WALSidecarRecovery.extractPhrases(from: walURL)
+        #expect(phrases.filter { $0 == "duplicate phrase" }.count == 1)
+        #expect(phrases.contains("unique phrase"))
+    }
+
+    // MARK: - Synthetic WAL builder
+
+    /// Writes `data` to a uniquely-named temp file with the given suffix and returns its URL.
+    private func writeTempFile(_ data: Data, suffix: String) throws -> URL {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString + suffix)
+        try data.write(to: url)
+        return url
+    }
+
+    /// Builds a minimal valid SQLite WAL file containing a single frame whose page is a
+    /// table B-tree leaf with one cell per input string. Each cell is a record with one
+    /// TEXT column. Page size is 4096; the page is page #2 so the parser doesn't apply
+    /// the 100-byte SQLite-DB-header offset.
+    ///
+    /// Strings must be ≤127 bytes after UTF-8 encoding (so all varints fit in 1 byte);
+    /// that's plenty for ditto-sized phrases and keeps this helper readable.
+    private func makeSyntheticWAL(phrases: [String]) -> Data {
+        let pageSize = 4096
+        var wal = Data()
+
+        // WAL header (32 bytes, big-endian on disk)
+        wal.append(contentsOf: [0x37, 0x7F, 0x06, 0x82])    // magic
+        wal.appendUInt32BE(3_007_000)                       // file format version
+        wal.appendUInt32BE(UInt32(pageSize))                // page size
+        wal.appendUInt32BE(0)                               // checkpoint sequence
+        wal.appendUInt32BE(0)                               // salt-1
+        wal.appendUInt32BE(0)                               // salt-2
+        wal.appendUInt32BE(0)                               // checksum-1
+        wal.appendUInt32BE(0)                               // checksum-2
+
+        // Frame header (24 bytes)
+        wal.appendUInt32BE(2)                               // page number (>1 to skip DB header)
+        wal.appendUInt32BE(UInt32(phrases.count))           // commit size
+        wal.appendUInt32BE(0)                               // salt-1
+        wal.appendUInt32BE(0)                               // salt-2
+        wal.appendUInt32BE(0)                               // checksum-1
+        wal.appendUInt32BE(0)                               // checksum-2
+
+        // Build cells, placing them at the tail of the page (SQLite cell content area).
+        var page = [UInt8](repeating: 0, count: pageSize)
+        var cellOffsets: [Int] = []
+        var contentCursor = pageSize
+        for (i, phrase) in phrases.enumerated() {
+            let textBytes = Array(phrase.utf8)
+            precondition(textBytes.count <= 127, "Synthetic builder only supports short strings")
+            let serialType = UInt8(textBytes.count * 2 + 13)
+            let headerLength: UInt8 = 2                     // header_length varint + serial_type varint
+            let payloadLength = UInt8(Int(headerLength) + textBytes.count)
+            let rowid = UInt8(i + 1)
+            let cell: [UInt8] = [payloadLength, rowid, headerLength, serialType] + textBytes
+            contentCursor -= cell.count
+            for (j, byte) in cell.enumerated() {
+                page[contentCursor + j] = byte
+            }
+            cellOffsets.append(contentCursor)
+        }
+
+        // Page header (8 bytes)
+        page[0] = 0x0D                                      // table leaf
+        page[1] = 0; page[2] = 0                            // first freeblock = none
+        page[3] = UInt8(phrases.count >> 8)
+        page[4] = UInt8(phrases.count & 0xFF)               // cell count
+        let contentStart = UInt16(cellOffsets.last ?? pageSize)
+        page[5] = UInt8(contentStart >> 8)
+        page[6] = UInt8(contentStart & 0xFF)
+        page[7] = 0                                         // fragmented free bytes
+
+        // Cell pointer array (in rowid/insertion order)
+        for (i, offset) in cellOffsets.enumerated() {
+            let ptrPos = 8 + i * 2
+            page[ptrPos] = UInt8(offset >> 8)
+            page[ptrPos + 1] = UInt8(offset & 0xFF)
+        }
+
+        wal.append(contentsOf: page)
+        return wal
+    }
+}
+
+private extension Data {
+    mutating func appendUInt32BE(_ value: UInt32) {
+        append(UInt8((value >> 24) & 0xFF))
+        append(UInt8((value >> 16) & 0xFF))
+        append(UInt8((value >> 8) & 0xFF))
+        append(UInt8(value & 0xFF))
+    }
 }

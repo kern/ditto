@@ -11,6 +11,7 @@
 		CC000001AAAA000000000002 /* CloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000012 /* CloudSyncManager.swift */; };
 		CC000001AAAA000000000003 /* SubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000013 /* SubscriptionView.swift */; };
 		CC000001AAAA000000000004 /* LegacyDataMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000014 /* LegacyDataMigrator.swift */; };
+		CC000001AAAA000000000030 /* WALSidecarRecovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000031 /* WALSidecarRecovery.swift */; };
 		CC000001AAAA000000000016 /* DittoImportExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA000000000019 /* DittoImportExport.swift */; };
 		CC000001AAAA00000000001A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA00000000001B /* Localizable.xcstrings */; };
 		CC000001AAAA00000000001C /* SyncSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001AAAA00000000001D /* SyncSettings.swift */; };
@@ -111,6 +112,7 @@
 		CC000001AAAA000000000012 /* CloudSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncManager.swift; sourceTree = "<group>"; };
 		CC000001AAAA000000000013 /* SubscriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionView.swift; sourceTree = "<group>"; };
 		CC000001AAAA000000000014 /* LegacyDataMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyDataMigrator.swift; sourceTree = "<group>"; };
+		CC000001AAAA000000000031 /* WALSidecarRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WALSidecarRecovery.swift; sourceTree = "<group>"; };
 		CC000001AAAA000000000019 /* DittoImportExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DittoImportExport.swift; sourceTree = "<group>"; };
 		CC000001AAAA00000000001B /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		CC000001AAAA00000000001D /* SyncSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSettings.swift; sourceTree = "<group>"; };
@@ -291,6 +293,7 @@
 				CC000001AAAA000000000012 /* CloudSyncManager.swift */,
 				CC000001AAAA000000000013 /* SubscriptionView.swift */,
 				CC000001AAAA000000000014 /* LegacyDataMigrator.swift */,
+				CC000001AAAA000000000031 /* WALSidecarRecovery.swift */,
 				CC000001AAAA000000000019 /* DittoImportExport.swift */,
 				CC000001AAAA00000000001B /* Localizable.xcstrings */,
 				CC000001AAAA00000000001D /* SyncSettings.swift */,
@@ -572,6 +575,7 @@
 				CC000001AAAA000000000002 /* CloudSyncManager.swift in Sources */,
 				CC000001AAAA000000000003 /* SubscriptionView.swift in Sources */,
 				CC000001AAAA000000000004 /* LegacyDataMigrator.swift in Sources */,
+				CC000001AAAA000000000030 /* WALSidecarRecovery.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

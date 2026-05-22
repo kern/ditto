@@ -207,10 +207,17 @@ struct DittoListView: View {
                 }
             } message: {
                 if let preview = legacyRecoveryPreview {
-                    Text(
-                        // swiftlint:disable:next line_length
-                        "Found \(preview.dittoCount) dittos across \(preview.categoryCount) categories from your previous version of Ditto. Recovering will merge them into your current library; duplicates will be skipped."
-                    )
+                    if preview.isWALRecovery {
+                        Text(
+                            // swiftlint:disable:next line_length
+                            "Found \(preview.dittoCount) recoverable phrases in a backup file from your previous version of Ditto. The original category structure couldn't be preserved — recovered phrases will be added to a single \"Recovered\" category for you to re-organize."
+                        )
+                    } else {
+                        Text(
+                            // swiftlint:disable:next line_length
+                            "Found \(preview.dittoCount) dittos across \(preview.categoryCount) categories from your previous version of Ditto. Recovering will merge them into your current library; duplicates will be skipped."
+                        )
+                    }
                 }
             }
             .alert("Recovery Complete", isPresented: .init(
