@@ -692,3 +692,5 @@ enum LegacyDataMigrator {
         return inserted
     }
 }
+
+// swiftlint:enable file_length type_body_length

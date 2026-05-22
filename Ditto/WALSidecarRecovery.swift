@@ -101,40 +101,68 @@ enum WALSidecarRecovery {
         guard let (_, n2) = readVarint(bytes, at: cursor) else { return }
         cursor += n2
 
-        let payloadEnd = cursor + Int(payloadLength)
         // If the payload extends past the page, this cell uses overflow pages.
         // Skip — extracting from overflow without the main DB's free-page map is
         // not worth the complexity for typical ditto-sized text.
+        let payloadEnd = cursor + Int(payloadLength)
         guard payloadEnd <= pageEnd, payloadEnd <= bytes.count else { return }
 
-        let recordStart = cursor
-        guard let (headerLength, hLen) = readVarint(bytes, at: cursor) else { return }
-        var headerCursor = cursor + hLen
-        let headerEnd = recordStart + Int(headerLength)
-        guard headerEnd <= payloadEnd else { return }
+        guard let (serials, bodyStart) = parseRecordHeader(bytes, at: cursor, payloadEnd: payloadEnd) else { return }
+        extractTexts(bytes, serials: serials, bodyStart: bodyStart, payloadEnd: payloadEnd, into: &results)
+    }
+
+    /// Parses the record header at `offset`, returning the list of serial-type codes
+    /// and the offset where the record body starts. Returns nil if the header is
+    /// truncated or doesn't fit in the payload.
+    private static func parseRecordHeader(
+        _ bytes: [UInt8],
+        at offset: Int,
+        payloadEnd: Int
+    ) -> (serials: [UInt64], bodyStart: Int)? {
+        guard let (headerLength, hLen) = readVarint(bytes, at: offset) else { return nil }
+        var headerCursor = offset + hLen
+        let headerEnd = offset + Int(headerLength)
+        guard headerEnd <= payloadEnd else { return nil }
 
         var serials: [UInt64] = []
         while headerCursor < headerEnd {
-            guard let (st, sz) = readVarint(bytes, at: headerCursor) else { return }
+            guard let (st, sz) = readVarint(bytes, at: headerCursor) else { return nil }
             serials.append(st)
             headerCursor += sz
         }
+        return (serials, headerEnd)
+    }
 
-        var body = headerEnd
+    /// Walks the record body once per serial type, decoding TEXT-typed fields and
+    /// inserting the keepable ones into `results`. Stops if any field would read
+    /// past `payloadEnd`.
+    private static func extractTexts(
+        _ bytes: [UInt8],
+        serials: [UInt64],
+        bodyStart: Int,
+        payloadEnd: Int,
+        into results: inout Set<String>
+    ) {
+        var body = bodyStart
         for st in serials {
             let info = serialTypeInfo(st)
             guard body + info.size <= payloadEnd else { return }
-            if info.isText && info.size > 0 {
-                let slice = Array(bytes[body..<(body + info.size)])
-                if let raw = String(bytes: slice, encoding: .utf8) {
-                    let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-                    if trimmed.count >= 2, trimmed.count <= 5000, !isInternalString(trimmed) {
-                        results.insert(trimmed)
-                    }
-                }
+            if info.isText, info.size > 0, let text = decodeKeepableText(bytes, at: body, size: info.size) {
+                results.insert(text)
             }
             body += info.size
         }
+    }
+
+    /// Decodes `size` bytes at `offset` as UTF-8, trims whitespace, and returns the
+    /// string only if it passes the keepable-content filter (length bounds + not a
+    /// known Core Data internal identifier).
+    private static func decodeKeepableText(_ bytes: [UInt8], at offset: Int, size: Int) -> String? {
+        let slice = Array(bytes[offset..<(offset + size)])
+        guard let raw = String(bytes: slice, encoding: .utf8) else { return nil }
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.count >= 2, trimmed.count <= 5000, !isInternalString(trimmed) else { return nil }
+        return trimmed
     }
 
     private static func serialTypeInfo(_ st: UInt64) -> (size: Int, isText: Bool) {
