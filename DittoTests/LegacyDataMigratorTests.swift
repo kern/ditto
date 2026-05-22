@@ -155,4 +155,83 @@ struct LegacyDataMigratorTests {
         #expect(profile.orderedCategories.map { $0.title } == ["Old"])
         #expect(profile.orderedCategories.first?.orderedDittos.map { $0.text } == ["legacy ditto"])
     }
+
+    @Test("Flat dittos=[String] (v1/2.0 shape) is migrated into a single category")
+    func migratesFlatArrayFormat() throws {
+        let snap = snapshot()
+        defer { restore(snap) }
+
+        clearAll()
+        let flat = ["hello", "running late", "on my way"]
+        appGroupDefaults()?.set(flat, forKey: dittosKey)
+
+        #expect(LegacyDataMigrator.needsMigration)
+
+        let context = try makeContext()
+        let result = LegacyDataMigrator.migrateIfNeeded(into: context)
+        #expect(result)
+
+        let profile = try #require(try context.fetch(FetchDescriptor<Profile>()).first)
+        let categories = profile.orderedCategories
+        #expect(categories.count == 1)
+        #expect(categories.first?.title == LegacyDataMigrator.flatRecoveryCategoryTitle)
+        #expect(categories.first?.orderedDittos.map { $0.text } == flat)
+    }
+
+    @Test("recoverNow ignores the completion flag and imports legacy data")
+    func recoverNowIgnoresFlag() throws {
+        let snap = snapshot()
+        defer { restore(snap) }
+
+        clearAll()
+        appGroupDefaults()?.set(["hi", "bye"], forKey: dittosKey)
+        // Simulate a previous launch that marked migration complete (e.g. the
+        // 3.0.0 Core Data migrator that never touched this NSUserDefaults blob,
+        // or any future build that prematurely sets the flag).
+        appGroupDefaults()?.set(true, forKey: completeKey)
+        #expect(!LegacyDataMigrator.needsMigration)
+
+        // hasRecoverableLegacyData and previewRecoverableData ignore the flag.
+        #expect(LegacyDataMigrator.hasRecoverableLegacyData)
+        let preview = try #require(LegacyDataMigrator.previewRecoverableData())
+        #expect(preview.dittoCount == 2)
+        #expect(preview.categoryCount == 1)
+
+        let context = try makeContext()
+        let inserted = LegacyDataMigrator.recoverNow(into: context)
+        #expect(inserted == 2)
+
+        let profile = try #require(try context.fetch(FetchDescriptor<Profile>()).first)
+        #expect(profile.orderedCategories.first?.orderedDittos.map { $0.text } == ["hi", "bye"])
+    }
+
+    @Test("recoverNow skips dittos that already exist in the SwiftData store")
+    func recoverNowDedupes() throws {
+        let snap = snapshot()
+        defer { restore(snap) }
+
+        clearAll()
+        appGroupDefaults()?.set(["hello", "world"], forKey: dittosKey)
+
+        let context = try makeContext()
+        // Seed the context with one of the dittos already present in the legacy data,
+        // in a category with the same title the flat-format migrator will use.
+        let profile = Profile()
+        context.insert(profile)
+        let category = DittoCategory(title: LegacyDataMigrator.flatRecoveryCategoryTitle, profile: profile)
+        category.sortOrder = 0
+        context.insert(category)
+        profile.categories?.append(category)
+        let existing = DittoItem(text: "hello", category: category)
+        existing.sortOrder = 0
+        context.insert(existing)
+        category.dittos?.append(existing)
+        try context.save()
+
+        let inserted = LegacyDataMigrator.recoverNow(into: context)
+        #expect(inserted == 1) // only "world" is new
+
+        let refreshed = try #require(try context.fetch(FetchDescriptor<Profile>()).first)
+        #expect(refreshed.orderedCategories.first?.orderedDittos.map { $0.text } == ["hello", "world"])
+    }
 }
