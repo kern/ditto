@@ -1,3 +1,10 @@
+// swiftlint:disable file_length type_body_length
+//
+// This type concentrates discovery / read / write / telemetry for the v2 Core Data
+// migration AND the orphan-WAL fallback in one place because they share state
+// (App Group resolution, completion flag, logging category, outcome telemetry).
+// Splitting them would force that state to be passed around or duplicated.
+
 import CoreData
 import Foundation
 import OSLog
@@ -52,30 +59,38 @@ enum LegacyDataMigrator {
         return exists
     }
 
-    /// True if a legacy SQLite file is on disk *anywhere* we know to look, regardless of
-    /// whether we can actually open it. The "Recover Old Dittos" menu item uses this so
-    /// users with an unreadable-but-present store still see the entry point — they get a
-    /// useful error from `recoverNow` instead of a silently-missing menu item.
-    static var hasRecoverableLegacyData: Bool {
-        legacyStoreURL != nil
-    }
-
     /// Snapshot for the confirmation alert.
     struct RecoveryPreview {
         let categoryCount: Int
         let dittoCount: Int
+        /// True when the only thing on disk is an orphaned WAL sidecar (no main
+        /// `.sqlite`). Category structure is unrecoverable in this mode — items
+        /// land in a single "Recovered" bucket — so the UI surfaces a different
+        /// confirmation message.
+        let isWALRecovery: Bool
     }
 
     /// Reads the legacy store (without mutating it) and returns how many categories /
-    /// dittos would be imported. Returns nil if there's no recoverable store on disk
-    /// or the file is present but unreadable.
+    /// dittos would be imported. When the main `.sqlite` is missing but a `-wal`
+    /// sidecar exists, falls back to a WAL-frame extraction preview. Returns nil if
+    /// nothing is recoverable from either path.
     static func previewRecoverableData() -> RecoveryPreview? {
-        guard let url = legacyStoreURL else { return nil }
-        guard let legacy = try? readLegacyStore(at: url), !legacy.isEmpty else { return nil }
-        return RecoveryPreview(
-            categoryCount: legacy.count,
-            dittoCount: legacy.reduce(0) { $0 + $1.dittos.count }
-        )
+        if let url = legacyStoreURL,
+           let legacy = try? readLegacyStore(at: url),
+           !legacy.isEmpty {
+            return RecoveryPreview(
+                categoryCount: legacy.count,
+                dittoCount: legacy.reduce(0) { $0 + $1.dittos.count },
+                isWALRecovery: false
+            )
+        }
+        if let walURL = findOrphanWAL() {
+            let phrases = WALSidecarRecovery.extractPhrases(from: walURL)
+            if !phrases.isEmpty {
+                return RecoveryPreview(categoryCount: 1, dittoCount: phrases.count, isWALRecovery: true)
+            }
+        }
+        return nil
     }
 
     /// Outcome of a manual recovery attempt. Surfaced in the UI so users see *why* nothing
@@ -114,8 +129,15 @@ enum LegacyDataMigrator {
     /// flag. Never deletes the legacy store. Returns a structured result so the UI can
     /// distinguish "nothing on disk" from "file present but unreadable" from "successfully
     /// imported N dittos".
+    ///
+    /// If the main `.sqlite` is gone but a `-wal` sidecar survives, falls through to a raw
+    /// WAL-frame extraction that pulls candidate phrases out of the journal directly.
+    /// Category structure is lost in that mode — phrases land in a "Recovered" bucket.
     static func recoverNow(into context: ModelContext) -> RecoveryResult {
         guard let storeURL = legacyStoreURL else {
+            if let walURL = findOrphanWAL() {
+                return runWALSidecarRecovery(at: walURL, into: context)
+            }
             log.info("recoverNow: no legacy store on disk")
             logOutcome(source: "manual", outcome: "nothing_on_disk")
             return .nothingOnDisk
@@ -319,6 +341,28 @@ enum LegacyDataMigrator {
                 if !fm.fileExists(atPath: main.path) {
                     return sidecar
                 }
+            }
+        }
+        return nil
+    }
+
+    /// Returns the URL of a `.sqlite-wal` file that has no main `.sqlite` alongside it.
+    /// Distinct from `findOrphanWALOrSHM` — that one's for diagnostic logging and accepts
+    /// either sidecar; this one only returns `-wal`, the only file that actually carries
+    /// page data we can extract from. SHM files contain just the WAL index and are useless
+    /// without the WAL.
+    private static func findOrphanWAL() -> URL? {
+        let fm = FileManager.default
+        guard let groupURL = fm.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier) else {
+            return nil
+        }
+        let names = ["Ditto.sqlite", "ditto.sqlite", "Ditto.SQLite"]
+        for base in names {
+            let walURL = groupURL.appendingPathComponent(base + "-wal")
+            guard fm.fileExists(atPath: walURL.path) else { continue }
+            let main = groupURL.appendingPathComponent(base)
+            if !fm.fileExists(atPath: main.path) {
+                return walURL
             }
         }
         return nil
@@ -562,4 +606,91 @@ enum LegacyDataMigrator {
     private static func markComplete() {
         UserDefaults(suiteName: appGroupIdentifier)?.set(true, forKey: migrationCompleteKey)
     }
+
+    // MARK: - WAL sidecar recovery
+
+    /// Title of the bucket category created when WAL-frame recovery succeeds. Surfaced
+    /// to the user in the confirmation alert so they know where to look.
+    static let walRecoveryCategoryTitle = "Recovered"
+
+    /// Manual recovery from an orphaned `-wal` file. Pulls text out of WAL frame
+    /// payloads directly via `WALSidecarRecovery`, then writes the phrases into a
+    /// single `walRecoveryCategoryTitle` bucket since category structure is unrecoverable.
+    private static func runWALSidecarRecovery(at walURL: URL, into context: ModelContext) -> RecoveryResult {
+        log.info("runWALSidecarRecovery: parsing \(walURL.path, privacy: .public) (\(fileSize(at: walURL), privacy: .public) bytes)")
+        let phrases = WALSidecarRecovery.extractPhrases(from: walURL)
+        guard !phrases.isEmpty else {
+            log.info("runWALSidecarRecovery: WAL parsed but yielded no recoverable phrases")
+            logOutcome(source: "manual_wal", outcome: "empty_store")
+            return .emptyStore
+        }
+
+        let beforeCount = (try? context.fetch(FetchDescriptor<DittoItem>()).count) ?? 0
+        writeWALPhrases(phrases, into: context)
+
+        do {
+            try context.save()
+        } catch {
+            log.error("runWALSidecarRecovery: save failed: \(error.localizedDescription, privacy: .public)")
+            logOutcome(source: "manual_wal", outcome: "found_unreadable")
+            return .foundButUnreadable(error.localizedDescription)
+        }
+
+        markComplete()
+        let afterCount = (try? context.fetch(FetchDescriptor<DittoItem>()).count) ?? 0
+        let inserted = max(0, afterCount - beforeCount)
+        log.info("runWALSidecarRecovery: inserted \(inserted, privacy: .public) phrases from WAL")
+        logOutcome(
+            source: "manual_wal",
+            outcome: inserted > 0 ? "success" : "no_new_data",
+            categoriesFound: 1,
+            dittosFound: phrases.count,
+            inserted: inserted
+        )
+        return .inserted(inserted)
+    }
+
+    /// Inserts WAL-extracted phrases into a single "Recovered" category, deduplicating
+    /// against anything already in that category.
+    @discardableResult
+    private static func writeWALPhrases(_ phrases: [String], into context: ModelContext) -> Int {
+        let profile: Profile
+        if let existing = (try? context.fetch(FetchDescriptor<Profile>()))?.first {
+            profile = existing
+        } else {
+            profile = Profile()
+            context.insert(profile)
+        }
+
+        let existingByTitle = Dictionary(
+            profile.orderedCategories.map { ($0.title, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        let category: DittoCategory
+        if let existing = existingByTitle[walRecoveryCategoryTitle] {
+            category = existing
+        } else {
+            category = DittoCategory(title: walRecoveryCategoryTitle, profile: profile)
+            category.sortOrder = profile.orderedCategories.count
+            context.insert(category)
+            profile.categories?.append(category)
+        }
+
+        let existingTexts = Set((category.dittos ?? []).map { $0.text })
+        var nextSort = (category.dittos ?? []).count
+        var inserted = 0
+        for phrase in phrases {
+            guard !existingTexts.contains(phrase) else { continue }
+            let item = DittoItem(text: phrase, category: category)
+            item.sortOrder = nextSort
+            nextSort += 1
+            context.insert(item)
+            category.dittos?.append(item)
+            inserted += 1
+        }
+        log.info("writeWALPhrases: inserted \(inserted, privacy: .public) phrases into '\(walRecoveryCategoryTitle, privacy: .public)'")
+        return inserted
+    }
 }
+
+// swiftlint:enable file_length type_body_length
