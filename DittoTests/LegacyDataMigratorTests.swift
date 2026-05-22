@@ -192,11 +192,13 @@ struct LegacyDataMigratorTests {
 
     @Test("extractPhrases drops too-short strings and Core Data internals")
     func walParserFiltersNoise() throws {
+        // "a" → too short (dropped), "Z_PRIMARYKEY" / "Z_METADATA blob" → Core Data
+        // internals (dropped), "real ditto phrase" → kept.
         let wal = makeSyntheticWAL(phrases: [
-            "a",                                 // 1 char → dropped
-            "Z_PRIMARYKEY",                      // Core Data internal → dropped
-            "Z_METADATA blob",                   // Core Data internal prefix → dropped
-            "real ditto phrase"                  // user content → kept
+            "a",
+            "Z_PRIMARYKEY",
+            "Z_METADATA blob",
+            "real ditto phrase"
         ])
         let walURL = try writeTempFile(wal, suffix: ".sqlite-wal")
         defer { try? FileManager.default.removeItem(at: walURL) }
@@ -248,23 +250,27 @@ struct LegacyDataMigratorTests {
         let pageSize = 4096
         var wal = Data()
 
-        // WAL header (32 bytes, big-endian on disk)
-        wal.append(contentsOf: [0x37, 0x7F, 0x06, 0x82])    // magic
-        wal.appendUInt32BE(3_007_000)                       // file format version
-        wal.appendUInt32BE(UInt32(pageSize))                // page size
-        wal.appendUInt32BE(0)                               // checkpoint sequence
-        wal.appendUInt32BE(0)                               // salt-1
-        wal.appendUInt32BE(0)                               // salt-2
-        wal.appendUInt32BE(0)                               // checksum-1
-        wal.appendUInt32BE(0)                               // checksum-2
+        // WAL header (32 bytes, big-endian on disk):
+        // magic, file format version, page size, checkpoint sequence, salt-1, salt-2,
+        // checksum-1, checksum-2.
+        wal.append(contentsOf: [0x37, 0x7F, 0x06, 0x82])
+        wal.appendUInt32BE(3_007_000)
+        wal.appendUInt32BE(UInt32(pageSize))
+        wal.appendUInt32BE(0)
+        wal.appendUInt32BE(0)
+        wal.appendUInt32BE(0)
+        wal.appendUInt32BE(0)
+        wal.appendUInt32BE(0)
 
-        // Frame header (24 bytes)
-        wal.appendUInt32BE(2)                               // page number (>1 to skip DB header)
-        wal.appendUInt32BE(UInt32(phrases.count))           // commit size
-        wal.appendUInt32BE(0)                               // salt-1
-        wal.appendUInt32BE(0)                               // salt-2
-        wal.appendUInt32BE(0)                               // checksum-1
-        wal.appendUInt32BE(0)                               // checksum-2
+        // Frame header (24 bytes):
+        // page number (>1 so the parser doesn't apply page-1's 100-byte DB-header offset),
+        // commit size, salt-1, salt-2, checksum-1, checksum-2.
+        wal.appendUInt32BE(2)
+        wal.appendUInt32BE(UInt32(phrases.count))
+        wal.appendUInt32BE(0)
+        wal.appendUInt32BE(0)
+        wal.appendUInt32BE(0)
+        wal.appendUInt32BE(0)
 
         // Build cells, placing them at the tail of the page (SQLite cell content area).
         var page = [UInt8](repeating: 0, count: pageSize)
@@ -274,7 +280,8 @@ struct LegacyDataMigratorTests {
             let textBytes = Array(phrase.utf8)
             precondition(textBytes.count <= 127, "Synthetic builder only supports short strings")
             let serialType = UInt8(textBytes.count * 2 + 13)
-            let headerLength: UInt8 = 2                     // header_length varint + serial_type varint
+            // header_length varint (1 byte) + serial_type varint (1 byte)
+            let headerLength: UInt8 = 2
             let payloadLength = UInt8(Int(headerLength) + textBytes.count)
             let rowid = UInt8(i + 1)
             let cell: [UInt8] = [payloadLength, rowid, headerLength, serialType] + textBytes
@@ -285,15 +292,17 @@ struct LegacyDataMigratorTests {
             cellOffsets.append(contentCursor)
         }
 
-        // Page header (8 bytes)
-        page[0] = 0x0D                                      // table leaf
-        page[1] = 0; page[2] = 0                            // first freeblock = none
+        // Page header (8 bytes): type (0x0D = table leaf), first-freeblock offset (0 = none),
+        // cell count, cell-content-area start, fragmented free byte count.
+        page[0] = 0x0D
+        page[1] = 0
+        page[2] = 0
         page[3] = UInt8(phrases.count >> 8)
-        page[4] = UInt8(phrases.count & 0xFF)               // cell count
+        page[4] = UInt8(phrases.count & 0xFF)
         let contentStart = UInt16(cellOffsets.last ?? pageSize)
         page[5] = UInt8(contentStart >> 8)
         page[6] = UInt8(contentStart & 0xFF)
-        page[7] = 0                                         // fragmented free bytes
+        page[7] = 0
 
         // Cell pointer array (in rowid/insertion order)
         for (i, offset) in cellOffsets.enumerated() {

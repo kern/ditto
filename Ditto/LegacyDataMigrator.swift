@@ -1,3 +1,10 @@
+// swiftlint:disable file_length type_body_length
+//
+// This type concentrates discovery / read / write / telemetry for the v2 Core Data
+// migration AND the orphan-WAL fallback in one place because they share state
+// (App Group resolution, completion flag, logging category, outcome telemetry).
+// Splitting them would force that state to be passed around or duplicated.
+
 import CoreData
 import Foundation
 import OSLog
@@ -24,7 +31,6 @@ import SwiftData
 /// the model wasn't bundled in the main app, so model-loading silently returned `[]`,
 /// and the migrator interpreted that as "nothing to migrate, safe to clean up" — destroying
 /// the user's data. We will never call `removeItem` on the legacy store, even on success.
-// swiftlint:disable:next type_body_length
 @available(iOS, deprecated: 18.0, message: "Remove once all users have migrated from the v2 Core Data store (target: v4.0)")
 enum LegacyDataMigrator {
 
