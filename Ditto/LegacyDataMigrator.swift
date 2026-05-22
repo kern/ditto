@@ -287,8 +287,41 @@ enum LegacyDataMigrator {
             log.info("legacyStoreURL: matched \(chosen.path, privacy: .public) (\(fileSize(at: chosen), privacy: .public) bytes)")
         } else {
             log.info("legacyStoreURL: no legacy SQLite found at any candidate path")
+            // Look for an orphan WAL/SHM — main .sqlite gone, but the sidecar survived.
+            // We can't open it with the SQLite library alone (the WAL header's salt
+            // values must match a main DB we don't have), but if this bucket is
+            // non-empty in the TestFlight cohort it justifies writing a custom
+            // WAL-frame extractor as a last-resort recovery path.
+            if let walURL = findOrphanWALOrSHM() {
+                // swiftlint:disable:next line_length
+                log.info("legacyStoreURL: orphan WAL/SHM detected at \(walURL.path, privacy: .public) (\(fileSize(at: walURL), privacy: .public) bytes) — no main .sqlite alongside it")
+                logOutcome(source: "discovery", outcome: "wal_orphan")
+            }
         }
         return chosen
+    }
+
+    /// Returns the URL of a `.sqlite-wal` or `.sqlite-shm` file in the App Group
+    /// container that has *no* matching main `.sqlite` alongside it — the situation
+    /// where 3.0.0's cleanup removed the main DB but left a sidecar behind.
+    private static func findOrphanWALOrSHM() -> URL? {
+        let fm = FileManager.default
+        guard let groupURL = fm.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier) else {
+            return nil
+        }
+        let suffixes = ["-wal", "-shm"]
+        let names = ["Ditto.sqlite", "ditto.sqlite", "Ditto.SQLite"]
+        for base in names {
+            for suffix in suffixes {
+                let sidecar = groupURL.appendingPathComponent(base + suffix)
+                guard fm.fileExists(atPath: sidecar.path) else { continue }
+                let main = groupURL.appendingPathComponent(base)
+                if !fm.fileExists(atPath: main.path) {
+                    return sidecar
+                }
+            }
+        }
+        return nil
     }
 
     private static func fileSize(at url: URL) -> Int64 {
