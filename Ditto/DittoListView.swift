@@ -20,6 +20,8 @@ struct DittoListView: View {
     @State private var importResult: String?
     @State private var showSyncSettings = false
     @State private var showKeyboardSetup = false
+    @State private var legacyRecoveryPreview: LegacyDataMigrator.RecoveryPreview?
+    @State private var legacyRecoveryResult: String?
 
     var body: some View {
         NavigationStack {
@@ -84,6 +86,22 @@ struct DittoListView: View {
                                 showKeyboardSetup = true
                             } label: {
                                 Label("Set Up Keyboard", systemImage: KeyboardSetupStatus.hasFullAccess ? "keyboard.fill" : "keyboard")
+                            }
+
+                            if LegacyDataMigrator.hasRecoverableLegacyData {
+                                Button {
+                                    // Show the preview confirmation if we can read the
+                                    // legacy store; otherwise fall straight to the
+                                    // attempt-and-report-result flow so the user sees
+                                    // *why* recovery failed instead of a missing menu.
+                                    if let preview = LegacyDataMigrator.previewRecoverableData() {
+                                        legacyRecoveryPreview = preview
+                                    } else {
+                                        runLegacyRecovery()
+                                    }
+                                } label: {
+                                    Label("Recover Old Dittos", systemImage: "tray.and.arrow.down")
+                                }
                             }
 
                             Button {
@@ -176,6 +194,33 @@ struct DittoListView: View {
             } message: {
                 Text(importResult ?? "")
             }
+            .alert("Recover Old Dittos?", isPresented: .init(
+                get: { legacyRecoveryPreview != nil },
+                set: { if !$0 { legacyRecoveryPreview = nil } }
+            )) {
+                Button("Recover") {
+                    runLegacyRecovery()
+                    legacyRecoveryPreview = nil
+                }
+                Button("Cancel", role: .cancel) {
+                    legacyRecoveryPreview = nil
+                }
+            } message: {
+                if let preview = legacyRecoveryPreview {
+                    Text(
+                        // swiftlint:disable:next line_length
+                        "Found \(preview.dittoCount) dittos across \(preview.categoryCount) categories from your previous version of Ditto. Recovering will merge them into your current library; duplicates will be skipped."
+                    )
+                }
+            }
+            .alert("Recovery Complete", isPresented: .init(
+                get: { legacyRecoveryResult != nil },
+                set: { if !$0 { legacyRecoveryResult = nil } }
+            )) {
+                Button("OK") { legacyRecoveryResult = nil }
+            } message: {
+                Text(legacyRecoveryResult ?? "")
+            }
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
                 store.loadPendingDittos()
             }
@@ -197,6 +242,25 @@ struct DittoListView: View {
             categoryList
         case .ditto:
             dittoList
+        }
+    }
+
+    private func runLegacyRecovery() {
+        let result = LegacyDataMigrator.recoverNow(into: store.modelContext)
+        store.save()
+        switch result {
+        case .nothingOnDisk:
+            // swiftlint:disable:next line_length
+            legacyRecoveryResult = String(localized: "No legacy dittos were found on this device. If you had dittos in an older version, they may have been removed by an earlier 3.0 update.")
+        case .foundButUnreadable(let detail):
+            // swiftlint:disable:next line_length
+            legacyRecoveryResult = String(localized: "Found old data on this device, but couldn't read it. Please send a sysdiagnose so we can investigate.\n\n(\(detail))")
+        case .emptyStore:
+            legacyRecoveryResult = String(localized: "Found an old data file on this device, but it had no dittos in it.")
+        case .inserted(0):
+            legacyRecoveryResult = String(localized: "Your old dittos were already in your current library — nothing new to recover.")
+        case .inserted(let count):
+            legacyRecoveryResult = String(localized: "Recovered \(count) dittos from your previous version.")
         }
     }
 
