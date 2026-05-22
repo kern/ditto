@@ -88,20 +88,20 @@ struct DittoListView: View {
                                 Label("Set Up Keyboard", systemImage: KeyboardSetupStatus.hasFullAccess ? "keyboard.fill" : "keyboard")
                             }
 
-                            if LegacyDataMigrator.hasRecoverableLegacyData {
-                                Button {
-                                    // Show the preview confirmation if we can read the
-                                    // legacy store; otherwise fall straight to the
-                                    // attempt-and-report-result flow so the user sees
-                                    // *why* recovery failed instead of a missing menu.
-                                    if let preview = LegacyDataMigrator.previewRecoverableData() {
-                                        legacyRecoveryPreview = preview
-                                    } else {
-                                        runLegacyRecovery()
-                                    }
-                                } label: {
-                                    Label("Recover Old Dittos", systemImage: "tray.and.arrow.down")
+                            // Always offer the entry point, even when we can't see a
+                            // legacy store on disk. Users whose 2.x data was destroyed
+                            // by the 3.0.0 cleanup will still tap here looking for it;
+                            // runLegacyRecovery() reports the structured result
+                            // (nothingOnDisk / foundButUnreadable / emptyStore / inserted)
+                            // so they get a real explanation instead of a missing menu.
+                            Button {
+                                if let preview = LegacyDataMigrator.previewRecoverableData() {
+                                    legacyRecoveryPreview = preview
+                                } else {
+                                    runLegacyRecovery()
                                 }
+                            } label: {
+                                Label("Recover Old Dittos", systemImage: "tray.and.arrow.down")
                             }
 
                             Button {

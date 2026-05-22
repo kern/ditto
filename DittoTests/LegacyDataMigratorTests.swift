@@ -161,21 +161,6 @@ struct LegacyDataMigratorTests {
         #expect(!LegacyDataMigrator.needsMigration)
     }
 
-    @Test("hasRecoverableLegacyData ignores the completion flag")
-    func hasRecoverableIgnoresFlag() {
-        clearFlag()
-        defer { clearFlag() }
-
-        // The unit test sandbox has no App Group container, so legacyStoreURL is nil.
-        // What we're verifying here is the negative: with no store on disk,
-        // hasRecoverableLegacyData is false regardless of the flag state.
-        appGroupDefaults()?.set(true, forKey: completeKey)
-        #expect(!LegacyDataMigrator.hasRecoverableLegacyData)
-
-        appGroupDefaults()?.removeObject(forKey: completeKey)
-        #expect(!LegacyDataMigrator.hasRecoverableLegacyData)
-    }
-
     @Test("Auto-migration marks the completion flag even when no store is on disk")
     func autoMigrationMarksCompleteWhenNoStore() throws {
         clearFlag()

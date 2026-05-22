@@ -52,14 +52,6 @@ enum LegacyDataMigrator {
         return exists
     }
 
-    /// True if a legacy SQLite file is on disk *anywhere* we know to look, regardless of
-    /// whether we can actually open it. The "Recover Old Dittos" menu item uses this so
-    /// users with an unreadable-but-present store still see the entry point — they get a
-    /// useful error from `recoverNow` instead of a silently-missing menu item.
-    static var hasRecoverableLegacyData: Bool {
-        legacyStoreURL != nil
-    }
-
     /// Snapshot for the confirmation alert.
     struct RecoveryPreview {
         let categoryCount: Int
