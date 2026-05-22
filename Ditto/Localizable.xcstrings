@@ -32,6 +32,19 @@
     "Follow these steps to use Ditto anywhere you type." : {
 
     },
+    "Found %@ dittos across %@ categories from your previous version of Ditto. Recovering will merge them into your current library; duplicates will be skipped." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Found %1$@ dittos across %2$@ categories from your previous version of Ditto. Recovering will merge them into your current library; duplicates will be skipped."
+          }
+        }
+      }
+    },
+    "Found %@ recoverable phrases in a backup file from your previous version of Ditto. The original category structure couldn't be preserved — recovered phrases will be added to a single \"Recovered\" category for you to re-organize." : {
+
+    },
     "If you edit a ditto on two devices before they sync, this setting decides which version to keep." : {
 
     },
