@@ -329,33 +329,104 @@ enum LegacyDataMigrator {
         return (attrs?[.size] as? NSNumber)?.int64Value ?? 0
     }
 
-    /// Walks the App Group container (and the main app sandbox) and logs every file we
-    /// can stat, with its size. Runs at .info level so it appears in Console.app /
-    /// sysdiagnose without enabling debug logging.
+    /// Walks the App Group container and every reachable corner of the main app's
+    /// sandbox, logging every file and directory we can stat. Designed to answer the
+    /// support question "do I have anything anywhere?" with a single sysdiagnose, even
+    /// when the user has uninstalled / reinstalled / migrated between accounts and the
+    /// expected paths come back empty.
+    ///
+    /// Includes hidden files (we don't skip them), empty directories (so you can tell
+    /// whether iOS even gave us a writable Application Support), every search-path
+    /// domain we can think of, and the keys (but never the values) stored in both
+    /// `.standard` and the shared-suite UserDefaults.
     private static func logContainerInventory() {
         let fm = FileManager.default
-        var roots: [(label: String, url: URL)] = []
-        if let groupURL = fm.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier) {
-            roots.append(("appgroup", groupURL))
+
+        // 1) Resolve every search root we know how to ask iOS for, and log whether we
+        //    actually got a URL back. If `appgroup` here logs "<unavailable>", the
+        //    App Group entitlement isn't being honored on this build — most likely a
+        //    signing-team mismatch — and there's no point looking further.
+        struct Root {
+            let label: String
+            let url: URL?
         }
-        for type: FileManager.SearchPathDirectory in [.applicationSupportDirectory, .documentDirectory, .libraryDirectory] {
-            if let url = fm.urls(for: type, in: .userDomainMask).first {
-                roots.append((String(describing: type), url))
+        var roots: [Root] = []
+        roots.append(Root(label: "appgroup", url: fm.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier)))
+        let domains: [(String, FileManager.SearchPathDirectory)] = [
+            ("documents", .documentDirectory),
+            ("library", .libraryDirectory),
+            ("appsupport", .applicationSupportDirectory),
+            ("caches", .cachesDirectory)
+        ]
+        for (label, dir) in domains {
+            roots.append(Root(label: label, url: fm.urls(for: dir, in: .userDomainMask).first))
+        }
+        // Sandbox root and tmp/ aren't in SearchPathDirectory; derive them from home.
+        let sandboxRoot = URL(fileURLWithPath: NSHomeDirectory())
+        roots.append(Root(label: "sandbox", url: sandboxRoot))
+        roots.append(Root(label: "tmp", url: URL(fileURLWithPath: NSTemporaryDirectory())))
+
+        for root in roots {
+            if let url = root.url {
+                log.info("inventory_root[\(root.label, privacy: .public)] \(url.path, privacy: .public)")
+            } else {
+                log.info("inventory_root[\(root.label, privacy: .public)] <unavailable>")
             }
         }
-        for (label, root) in roots {
+
+        // 2) Walk each root recursively. Log every file (with size) and every directory
+        //    (with [dir] tag, so empty directories appear in the dump too).
+        for root in roots {
+            guard let rootURL = root.url else { continue }
+            // Note the root itself first so the dump self-anchors.
+            log.info("inventory[\(root.label, privacy: .public)] [root] \(rootURL.path, privacy: .public)")
             guard let enumerator = fm.enumerator(
-                at: root,
+                at: rootURL,
                 includingPropertiesForKeys: [.fileSizeKey, .isDirectoryKey],
-                options: [.skipsHiddenFiles, .skipsPackageDescendants]
+                // Don't skip hidden files; legacy stores or stray plists can be dotfiles.
+                options: []
             ) else { continue }
             for case let url as URL in enumerator {
                 let isDir = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
-                if isDir { continue }
-                let size = fileSize(at: url)
-                let relative = url.path.replacingOccurrences(of: root.path, with: "")
-                log.info("inventory[\(label, privacy: .public)] \(size, privacy: .public)B \(relative, privacy: .public)")
+                let relative = url.path.replacingOccurrences(of: rootURL.path, with: "")
+                if isDir {
+                    log.info("inventory[\(root.label, privacy: .public)] [dir] \(relative, privacy: .public)/")
+                } else {
+                    let size = fileSize(at: url)
+                    log.info("inventory[\(root.label, privacy: .public)] \(size, privacy: .public)B \(relative, privacy: .public)")
+                }
             }
+        }
+
+        // 3) Dump the keys (only — never the values) of both UserDefaults suites we
+        //    know to look at. Tells us whether ANY legacy NSUserDefaults state
+        //    survived, what type each value has, and how big each entry is.
+        logDefaultsKeys(label: "appgroup_defaults", defaults: UserDefaults(suiteName: appGroupIdentifier))
+        logDefaultsKeys(label: "standard_defaults", defaults: .standard)
+    }
+
+    private static func logDefaultsKeys(label: String, defaults: UserDefaults?) {
+        guard let defaults else {
+            log.info("\(label, privacy: .public): <unavailable>")
+            return
+        }
+        let snapshot = defaults.dictionaryRepresentation()
+        if snapshot.isEmpty {
+            log.info("\(label, privacy: .public): <empty>")
+            return
+        }
+        for key in snapshot.keys.sorted() {
+            let value = snapshot[key]
+            let typeName = value.map { String(describing: type(of: $0)) } ?? "nil"
+            let count: Int
+            switch value {
+            case let s as String: count = s.count
+            case let a as [Any]: count = a.count
+            case let d as [AnyHashable: Any]: count = d.count
+            case let d as Data: count = d.count
+            default: count = 0
+            }
+            log.info("\(label, privacy: .public) key=\(key, privacy: .public) type=\(typeName, privacy: .public) size=\(count, privacy: .public)")
         }
     }
 
