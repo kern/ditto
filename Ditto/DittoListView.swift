@@ -88,9 +88,17 @@ struct DittoListView: View {
                                 Label("Set Up Keyboard", systemImage: KeyboardSetupStatus.hasFullAccess ? "keyboard.fill" : "keyboard")
                             }
 
-                            if let preview = LegacyDataMigrator.previewRecoverableData() {
+                            if LegacyDataMigrator.hasRecoverableLegacyData {
                                 Button {
-                                    legacyRecoveryPreview = preview
+                                    // Show the preview confirmation if we can read the
+                                    // legacy store; otherwise fall straight to the
+                                    // attempt-and-report-result flow so the user sees
+                                    // *why* recovery failed instead of a missing menu.
+                                    if let preview = LegacyDataMigrator.previewRecoverableData() {
+                                        legacyRecoveryPreview = preview
+                                    } else {
+                                        runLegacyRecovery()
+                                    }
                                 } label: {
                                     Label("Recover Old Dittos", systemImage: "tray.and.arrow.down")
                                 }
@@ -191,11 +199,7 @@ struct DittoListView: View {
                 set: { if !$0 { legacyRecoveryPreview = nil } }
             )) {
                 Button("Recover") {
-                    let inserted = LegacyDataMigrator.recoverNow(into: store.modelContext)
-                    store.save()
-                    legacyRecoveryResult = inserted > 0
-                        ? String(localized: "Recovered \(inserted) dittos from your previous version.")
-                        : String(localized: "No new dittos to recover — they already exist in your library.")
+                    runLegacyRecovery()
                     legacyRecoveryPreview = nil
                 }
                 Button("Cancel", role: .cancel) {
@@ -238,6 +242,25 @@ struct DittoListView: View {
             categoryList
         case .ditto:
             dittoList
+        }
+    }
+
+    private func runLegacyRecovery() {
+        let result = LegacyDataMigrator.recoverNow(into: store.modelContext)
+        store.save()
+        switch result {
+        case .nothingOnDisk:
+            // swiftlint:disable:next line_length
+            legacyRecoveryResult = String(localized: "No legacy dittos were found on this device. If you had dittos in an older version, they may have been removed by an earlier 3.0 update.")
+        case .foundButUnreadable(let detail):
+            // swiftlint:disable:next line_length
+            legacyRecoveryResult = String(localized: "Found old data on this device, but couldn't read it. Please send a sysdiagnose so we can investigate.\n\n(\(detail))")
+        case .emptyStore:
+            legacyRecoveryResult = String(localized: "Found an old data file on this device, but it had no dittos in it.")
+        case .inserted(0):
+            legacyRecoveryResult = String(localized: "Your old dittos were already in your current library — nothing new to recover.")
+        case .inserted(let count):
+            legacyRecoveryResult = String(localized: "Recovered \(count) dittos from your previous version.")
         }
     }
 

@@ -52,9 +52,10 @@ enum LegacyDataMigrator {
         return exists
     }
 
-    /// True if a legacy store is on disk *regardless* of the completion flag. Powers the
-    /// manual "Recover Old Dittos" menu item so users who already silently no-op'd on a
-    /// previous 3.0.x build can still recover after updating.
+    /// True if a legacy SQLite file is on disk *anywhere* we know to look, regardless of
+    /// whether we can actually open it. The "Recover Old Dittos" menu item uses this so
+    /// users with an unreadable-but-present store still see the entry point — they get a
+    /// useful error from `recoverNow` instead of a silently-missing menu item.
     static var hasRecoverableLegacyData: Bool {
         legacyStoreURL != nil
     }
@@ -66,7 +67,8 @@ enum LegacyDataMigrator {
     }
 
     /// Reads the legacy store (without mutating it) and returns how many categories /
-    /// dittos would be imported. Returns nil if there's no recoverable store on disk.
+    /// dittos would be imported. Returns nil if there's no recoverable store on disk
+    /// or the file is present but unreadable.
     static func previewRecoverableData() -> RecoveryPreview? {
         guard let url = legacyStoreURL else { return nil }
         guard let legacy = try? readLegacyStore(at: url), !legacy.isEmpty else { return nil }
@@ -74,6 +76,21 @@ enum LegacyDataMigrator {
             categoryCount: legacy.count,
             dittoCount: legacy.reduce(0) { $0 + $1.dittos.count }
         )
+    }
+
+    /// Outcome of a manual recovery attempt. Surfaced in the UI so users see *why* nothing
+    /// was recovered, rather than a silent "0 dittos imported".
+    enum RecoveryResult {
+        /// No SQLite candidate file exists anywhere we know to look.
+        case nothingOnDisk
+        /// A file exists but Core Data couldn't open or read it (corruption, file
+        /// protection, schema mismatch). The `localizedDescription` is human-readable.
+        case foundButUnreadable(String)
+        /// The store opened cleanly but contained no Profile/Category data.
+        case emptyStore
+        /// Successful import. `inserted` is the number of *new* dittos added; duplicates
+        /// already present in the SwiftData store were skipped.
+        case inserted(Int)
     }
 
     // MARK: - Auto migration
@@ -93,20 +110,43 @@ enum LegacyDataMigrator {
     }
 
     /// Manually re-runs the migration from a user-tapped menu item. Ignores the completion
-    /// flag. Never marks the legacy store as deletable. Returns the number of *new* dittos
-    /// inserted (duplicates already in the SwiftData store are skipped).
-    @discardableResult
-    static func recoverNow(into context: ModelContext) -> Int {
+    /// flag. Never deletes the legacy store. Returns a structured result so the UI can
+    /// distinguish "nothing on disk" from "file present but unreadable" from "successfully
+    /// imported N dittos".
+    static func recoverNow(into context: ModelContext) -> RecoveryResult {
         guard let storeURL = legacyStoreURL else {
             log.info("recoverNow: no legacy store on disk")
-            return 0
+            return .nothingOnDisk
+        }
+
+        let legacy: [LegacyCategory]
+        do {
+            legacy = try readLegacyStore(at: storeURL)
+        } catch {
+            log.error("recoverNow: read failed: \(error.localizedDescription, privacy: .public)")
+            return .foundButUnreadable(error.localizedDescription)
+        }
+
+        guard !legacy.isEmpty else {
+            log.info("recoverNow: legacy store opened but empty")
+            return .emptyStore
         }
 
         let beforeCount = (try? context.fetch(FetchDescriptor<DittoItem>()).count) ?? 0
-        _ = runMigration(at: storeURL, into: context, source: "manual", markCompleteOnEmpty: false)
-        let afterCount = (try? context.fetch(FetchDescriptor<DittoItem>()).count) ?? 0
+        writeMigratedData(legacy, into: context)
 
-        return max(0, afterCount - beforeCount)
+        do {
+            try context.save()
+        } catch {
+            log.error("recoverNow: save failed: \(error.localizedDescription, privacy: .public)")
+            return .foundButUnreadable(error.localizedDescription)
+        }
+
+        markComplete()
+        let afterCount = (try? context.fetch(FetchDescriptor<DittoItem>()).count) ?? 0
+        let inserted = max(0, afterCount - beforeCount)
+        log.info("recoverNow: inserted \(inserted, privacy: .public) new dittos")
+        return .inserted(inserted)
     }
 
     // MARK: - Migration core
@@ -160,25 +200,87 @@ enum LegacyDataMigrator {
 
     /// Returns the URL of the legacy 2.x Core Data store if one exists on disk.
     /// The 2.0.1 source put it at `<App Group container>/Ditto.sqlite`; we also probe
-    /// a couple of other common pre-`NSPersistentContainer` locations as a safety net.
+    /// other common pre-`NSPersistentContainer` locations and case variants as a safety net.
     private static var legacyStoreURL: URL? {
         let fm = FileManager.default
+
+        // Walk the App Group container and the main app sandbox listing every file we
+        // can see (with size and name), so support sysdiagnoses contain enough info to
+        // tell whether the 3.0.0 cleanup actually deleted anything for this user — even
+        // when it silently `try?`'d the error.
+        logContainerInventory()
+
+        let nameVariants = ["Ditto.sqlite", "ditto.sqlite", "Ditto.SQLite"]
         var candidates: [URL] = []
 
         if let groupURL = fm.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier) {
-            candidates.append(groupURL.appendingPathComponent(legacyStoreFilename))
-            candidates.append(groupURL.appendingPathComponent("Library/Application Support/" + legacyStoreFilename))
-            candidates.append(groupURL.appendingPathComponent("Library/Application Support/Ditto/" + legacyStoreFilename))
+            for name in nameVariants {
+                candidates.append(groupURL.appendingPathComponent(name))
+                candidates.append(groupURL.appendingPathComponent("Library/Application Support/" + name))
+                candidates.append(groupURL.appendingPathComponent("Library/Application Support/Ditto/" + name))
+                candidates.append(groupURL.appendingPathComponent("Documents/" + name))
+            }
         }
         if let appSupport = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            candidates.append(appSupport.appendingPathComponent(legacyStoreFilename))
-            candidates.append(appSupport.appendingPathComponent("Ditto/" + legacyStoreFilename))
+            for name in nameVariants {
+                candidates.append(appSupport.appendingPathComponent(name))
+                candidates.append(appSupport.appendingPathComponent("Ditto/" + name))
+            }
         }
         if let docs = fm.urls(for: .documentDirectory, in: .userDomainMask).first {
-            candidates.append(docs.appendingPathComponent(legacyStoreFilename))
+            for name in nameVariants {
+                candidates.append(docs.appendingPathComponent(name))
+            }
         }
 
-        return candidates.first { fm.fileExists(atPath: $0.path) }
+        // Pick the largest matching file. The 3.0.0 cleanup may have left a zero-byte
+        // truncated copy at one path while the real data lives at another; prefer the
+        // one with content.
+        let existing = candidates.filter { fm.fileExists(atPath: $0.path) }
+        let chosen = existing.max { lhs, rhs in
+            fileSize(at: lhs) < fileSize(at: rhs)
+        }
+        if let chosen {
+            log.info("legacyStoreURL: matched \(chosen.path, privacy: .public) (\(fileSize(at: chosen), privacy: .public) bytes)")
+        } else {
+            log.info("legacyStoreURL: no legacy SQLite found at any candidate path")
+        }
+        return chosen
+    }
+
+    private static func fileSize(at url: URL) -> Int64 {
+        let attrs = try? FileManager.default.attributesOfItem(atPath: url.path)
+        return (attrs?[.size] as? NSNumber)?.int64Value ?? 0
+    }
+
+    /// Walks the App Group container (and the main app sandbox) and logs every file we
+    /// can stat, with its size. Runs at .info level so it appears in Console.app /
+    /// sysdiagnose without enabling debug logging.
+    private static func logContainerInventory() {
+        let fm = FileManager.default
+        var roots: [(label: String, url: URL)] = []
+        if let groupURL = fm.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier) {
+            roots.append(("appgroup", groupURL))
+        }
+        for type: FileManager.SearchPathDirectory in [.applicationSupportDirectory, .documentDirectory, .libraryDirectory] {
+            if let url = fm.urls(for: type, in: .userDomainMask).first {
+                roots.append((String(describing: type), url))
+            }
+        }
+        for (label, root) in roots {
+            guard let enumerator = fm.enumerator(
+                at: root,
+                includingPropertiesForKeys: [.fileSizeKey, .isDirectoryKey],
+                options: [.skipsHiddenFiles, .skipsPackageDescendants]
+            ) else { continue }
+            for case let url as URL in enumerator {
+                let isDir = (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false
+                if isDir { continue }
+                let size = fileSize(at: url)
+                let relative = url.path.replacingOccurrences(of: root.path, with: "")
+                log.info("inventory[\(label, privacy: .public)] \(size, privacy: .public)B \(relative, privacy: .public)")
+            }
+        }
     }
 
     // MARK: - Read legacy store
