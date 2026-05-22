@@ -28,6 +28,13 @@ can pull it into 3.0.2 with one tap.
 Open the App Store, search for Ditto, and install the latest version. Make sure
 the version says **3.0.2** or later in Settings → General → iPhone Storage → Ditto.
 
+> 💡 **If you're installing 3.0.2 from a TestFlight invite instead:** open the
+> TestFlight invite link and tap **Install** (or **Update**) on the Ditto entry.
+> **Do not delete the existing App Store version first.** TestFlight replaces
+> the App Store build in place, which keeps the shared container — and any
+> legacy data that 3.0.2 needs to recover — intact. Deleting the app first
+> would wipe the per-app container and would likely make recovery impossible.
+
 ### 2. Open Ditto and look for the menu item
 
 Open Ditto, tap the menu button (the three-dot circle in the top-left of the main

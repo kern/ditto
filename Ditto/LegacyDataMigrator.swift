@@ -103,6 +103,7 @@ enum LegacyDataMigrator {
             // No store on disk. Mark complete so we don't re-scan every cold launch.
             log.info("migrateIfNeeded: no legacy store on disk, marking complete")
             markComplete()
+            logOutcome(source: "auto", outcome: "nothing_on_disk")
             return false
         }
 
@@ -116,6 +117,7 @@ enum LegacyDataMigrator {
     static func recoverNow(into context: ModelContext) -> RecoveryResult {
         guard let storeURL = legacyStoreURL else {
             log.info("recoverNow: no legacy store on disk")
+            logOutcome(source: "manual", outcome: "nothing_on_disk")
             return .nothingOnDisk
         }
 
@@ -124,14 +126,17 @@ enum LegacyDataMigrator {
             legacy = try readLegacyStore(at: storeURL)
         } catch {
             log.error("recoverNow: read failed: \(error.localizedDescription, privacy: .public)")
+            logOutcome(source: "manual", outcome: "found_unreadable")
             return .foundButUnreadable(error.localizedDescription)
         }
 
         guard !legacy.isEmpty else {
             log.info("recoverNow: legacy store opened but empty")
+            logOutcome(source: "manual", outcome: "empty_store")
             return .emptyStore
         }
 
+        let totalDittos = legacy.reduce(0) { $0 + $1.dittos.count }
         let beforeCount = (try? context.fetch(FetchDescriptor<DittoItem>()).count) ?? 0
         writeMigratedData(legacy, into: context)
 
@@ -139,6 +144,7 @@ enum LegacyDataMigrator {
             try context.save()
         } catch {
             log.error("recoverNow: save failed: \(error.localizedDescription, privacy: .public)")
+            logOutcome(source: "manual", outcome: "found_unreadable")
             return .foundButUnreadable(error.localizedDescription)
         }
 
@@ -146,6 +152,13 @@ enum LegacyDataMigrator {
         let afterCount = (try? context.fetch(FetchDescriptor<DittoItem>()).count) ?? 0
         let inserted = max(0, afterCount - beforeCount)
         log.info("recoverNow: inserted \(inserted, privacy: .public) new dittos")
+        logOutcome(
+            source: "manual",
+            outcome: inserted > 0 ? "success" : "no_new_data",
+            categoriesFound: legacy.count,
+            dittosFound: totalDittos,
+            inserted: inserted
+        )
         return .inserted(inserted)
     }
 
@@ -167,12 +180,14 @@ enum LegacyDataMigrator {
             // fetch. Do NOT mark complete, do NOT touch the SQLite file. The user can try
             // again on the next launch or via the menu item.
             log.error("runMigration(\(source, privacy: .public)): read failed: \(error.localizedDescription, privacy: .public)")
+            logOutcome(source: source, outcome: "found_unreadable")
             return false
         }
 
         guard !legacy.isEmpty else {
             log.info("runMigration(\(source, privacy: .public)): legacy store opened but empty")
             if markCompleteOnEmpty { markComplete() }
+            logOutcome(source: source, outcome: "empty_store")
             return false
         }
 
@@ -188,12 +203,40 @@ enum LegacyDataMigrator {
             try context.save()
         } catch {
             log.error("runMigration(\(source, privacy: .public)): save failed: \(error.localizedDescription, privacy: .public)")
+            logOutcome(source: source, outcome: "found_unreadable")
             return false
         }
 
         markComplete()
         log.info("runMigration(\(source, privacy: .public)): inserted \(inserted, privacy: .public) new dittos")
+        logOutcome(
+            source: source,
+            outcome: inserted > 0 ? "success" : "no_new_data",
+            categoriesFound: legacy.count,
+            dittosFound: totalDittos,
+            inserted: inserted
+        )
         return inserted > 0
+    }
+
+    /// Single-line, grep-friendly telemetry tag. Emitted at every terminal exit of an
+    /// auto- or manual-migration attempt so a TestFlight sysdiagnose collection can be
+    /// aggregated with a one-liner:
+    ///
+    ///     log show ... | grep migration_outcome
+    ///
+    /// All fields are `.public` (no user content — just counts and outcome codes).
+    private static func logOutcome(
+        source: String,
+        outcome: String,
+        categoriesFound: Int = 0,
+        dittosFound: Int = 0,
+        inserted: Int = 0
+    ) {
+        log.info(
+            // swiftlint:disable:next line_length
+            "migration_outcome source=\(source, privacy: .public) outcome=\(outcome, privacy: .public) categories=\(categoriesFound, privacy: .public) dittos=\(dittosFound, privacy: .public) inserted=\(inserted, privacy: .public)"
+        )
     }
 
     // MARK: - Store discovery
