@@ -60,6 +60,7 @@
 		FAFCAE7219F90BA6000F0318 /* DittoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7119F90BA6000F0318 /* DittoStore.swift */; };
 		FAFCAE7419F98CF7000F0318 /* NewItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCAE7319F98CF7000F0318 /* NewItemView.swift */; };
 		FAFD8AC81B685182000B2364 /* Ditto.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */; };
+		FAFD8AC91B685182000B2365 /* Ditto.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = E82B6DFE1B5E120C00FDCE3A /* Ditto.xcdatamodeld */; };
 		FAFD8ACA1B6856FA000B2364 /* DittoCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD8AC91B6856FA000B2364 /* DittoCategory.swift */; };
 		FAFD8ACB1B6856FA000B2364 /* DittoCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD8AC91B6856FA000B2364 /* DittoCategory.swift */; };
 		FAFD8ACD1B6856FA000B2364 /* DittoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFD8ACC1B6856FA000B2364 /* DittoItem.swift */; };
@@ -493,6 +494,7 @@
 			files = (
 				FA70EAB819F5A49D00960EE2 /* Images.xcassets in Resources */,
 				CC000001AAAA00000000001A /* Localizable.xcstrings in Resources */,
+				FAFD8AC91B685182000B2365 /* Ditto.xcdatamodeld in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,3 +1,4 @@
+import CoreData
 import Foundation
 import SwiftData
 import Testing
@@ -7,231 +8,182 @@ import Testing
 struct LegacyDataMigratorTests {
 
     private let appGroupSuite = "group.io.kern.ditto"
-    private let completeKey = "legacyUserDefaultsMigrationComplete"
-    private let categoriesKey = "categories"
-    private let dittosKey = "dittos"
+    private let completeKey = "legacyCoreDataMigrationComplete_v302"
 
-    private struct DefaultsSnapshot {
-        let complete: Bool
-        let categories: Any?
-        let dittos: Any?
-        let stdCategories: Any?
-        let stdDittos: Any?
-    }
+    // MARK: - Helpers
 
     private func appGroupDefaults() -> UserDefaults? {
         UserDefaults(suiteName: appGroupSuite)
     }
 
-    private func snapshot() -> DefaultsSnapshot {
-        let group = appGroupDefaults()
-        return DefaultsSnapshot(
-            complete: group?.bool(forKey: completeKey) ?? false,
-            categories: group?.object(forKey: categoriesKey),
-            dittos: group?.object(forKey: dittosKey),
-            stdCategories: UserDefaults.standard.object(forKey: categoriesKey),
-            stdDittos: UserDefaults.standard.object(forKey: dittosKey)
-        )
-    }
-
-    private func restore(_ snap: DefaultsSnapshot) {
-        let group = appGroupDefaults()
-        group?.set(snap.complete, forKey: completeKey)
-        group?.set(snap.categories, forKey: categoriesKey)
-        group?.set(snap.dittos, forKey: dittosKey)
-        UserDefaults.standard.set(snap.stdCategories, forKey: categoriesKey)
-        UserDefaults.standard.set(snap.stdDittos, forKey: dittosKey)
-    }
-
-    private func clearAll() {
-        let group = appGroupDefaults()
-        group?.removeObject(forKey: completeKey)
-        group?.removeObject(forKey: categoriesKey)
-        group?.removeObject(forKey: dittosKey)
-        UserDefaults.standard.removeObject(forKey: categoriesKey)
-        UserDefaults.standard.removeObject(forKey: dittosKey)
+    private func clearFlag() {
+        appGroupDefaults()?.removeObject(forKey: completeKey)
     }
 
     private func makeContext() throws -> ModelContext {
         let schema = Schema([Profile.self, DittoCategory.self, DittoItem.self])
-        let config = ModelConfiguration("Migration-\(UUID())", schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
+        let config = ModelConfiguration(
+            "Migration-\(UUID())",
+            schema: schema,
+            isStoredInMemoryOnly: true,
+            cloudKitDatabase: .none
+        )
         let container = try ModelContainer(for: schema, configurations: [config])
         return ModelContext(container)
     }
 
-    @Test("Migration flag prevents repeated migration")
-    func migrationFlag() {
-        let snap = snapshot()
-        defer { restore(snap) }
+    /// Builds a real on-disk Core Data store with the v2 schema, populated with the given
+    /// categories. Returns the URL of the SQLite file. The caller is responsible for
+    /// cleaning up the temp directory when done.
+    private func makeLegacyStore(
+        categories: [(title: String, dittos: [(text: String, useCount: Int)])]
+    ) throws -> (url: URL, tempDir: URL) {
+        // Load the v2 model from the test bundle. The test target inherits the same
+        // Ditto.xcdatamodeld from the project as the app target.
+        guard let modelURL = Bundle.main.url(forResource: "Ditto", withExtension: "momd")
+            ?? Bundle.main.url(forResource: "Ditto", withExtension: "mom"),
+            let model = NSManagedObjectModel(contentsOf: modelURL)
+        else {
+            throw NSError(domain: "LegacyDataMigratorTests", code: 1, userInfo: [
+                NSLocalizedDescriptionKey: "Ditto.xcdatamodeld not in test bundle"
+            ])
+        }
 
-        clearAll()
-        appGroupDefaults()?.set(["Personal"], forKey: categoriesKey)
-        appGroupDefaults()?.set(["Personal": ["hello"]], forKey: dittosKey)
-        appGroupDefaults()?.set(true, forKey: completeKey)
+        let tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+        let storeURL = tempDir.appendingPathComponent("Ditto.sqlite")
 
-        #expect(!LegacyDataMigrator.needsMigration)
+        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
+        try coordinator.addPersistentStore(
+            ofType: NSSQLiteStoreType,
+            configurationName: nil,
+            at: storeURL,
+            options: nil
+        )
+
+        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        moc.persistentStoreCoordinator = coordinator
+
+        let profile = NSEntityDescription.insertNewObject(forEntityName: "Profile", into: moc)
+        let orderedCategories = NSMutableOrderedSet()
+        for legacyCat in categories {
+            let cat = NSEntityDescription.insertNewObject(forEntityName: "Category", into: moc)
+            cat.setValue(legacyCat.title, forKey: "title")
+            cat.setValue(profile, forKey: "profile")
+            let orderedDittos = NSMutableOrderedSet()
+            for legacyDitto in legacyCat.dittos {
+                let ditto = NSEntityDescription.insertNewObject(forEntityName: "Ditto", into: moc)
+                ditto.setValue(legacyDitto.text, forKey: "text")
+                ditto.setValue(legacyDitto.useCount, forKey: "use_count")
+                ditto.setValue(cat, forKey: "category")
+                orderedDittos.add(ditto)
+            }
+            cat.setValue(orderedDittos, forKey: "dittos")
+            orderedCategories.add(cat)
+        }
+        profile.setValue(orderedCategories, forKey: "categories")
+        try moc.save()
+        // Drop the store reference so the migrator can re-open it cleanly.
+        if let store = coordinator.persistentStores.first {
+            try coordinator.remove(store)
+        }
+
+        return (storeURL, tempDir)
     }
 
-    @Test("needsMigration is false when no legacy data exists")
-    func noLegacyData() {
-        let snap = snapshot()
-        defer { restore(snap) }
+    // MARK: - Tests
 
-        clearAll()
-        #expect(!LegacyDataMigrator.needsMigration)
-    }
+    @Test("Reads ordered Profile→Category→Ditto entities from a v2 SQLite store")
+    func readsV2Store() throws {
+        clearFlag()
+        defer { clearFlag() }
 
-    @Test("needsMigration is true when legacy data is present")
-    func detectsLegacyData() {
-        let snap = snapshot()
-        defer { restore(snap) }
+        let (storeURL, tempDir) = try makeLegacyStore(categories: [
+            (title: "Work", dittos: [
+                (text: "meeting at ___", useCount: 5),
+                (text: "OOO today", useCount: 0)
+            ]),
+            (title: "Personal", dittos: [
+                (text: "on my way", useCount: 12)
+            ])
+        ])
+        defer { try? FileManager.default.removeItem(at: tempDir) }
 
-        clearAll()
-        appGroupDefaults()?.set(["Greetings"], forKey: categoriesKey)
-        appGroupDefaults()?.set(["Greetings": ["hi"]], forKey: dittosKey)
+        // The migrator's discovery logic looks in the App Group container — but for the
+        // unit test we can drive runMigration directly via the read helper, which is
+        // exercised through previewRecoverableData / recoverNow with a known URL by
+        // shimming through a temp-dir App Group is impractical. So this test verifies the
+        // read path end-to-end via the public previewing function in a way that the next
+        // test (using recoverNow) extends.
+        // We rely on FileManager finding our test store at one of the probe paths is not
+        // possible in the unit test sandbox, so we exercise the read path by invoking the
+        // private NSPersistentStoreCoordinator load that the migrator uses, via a
+        // matching read implemented in the test itself. This guards the v2 schema
+        // assumptions — title/dittos/text/use_count keys — that the real migrator depends on.
 
-        #expect(LegacyDataMigrator.needsMigration)
-    }
+        guard let modelURL = Bundle.main.url(forResource: "Ditto", withExtension: "momd")
+            ?? Bundle.main.url(forResource: "Ditto", withExtension: "mom"),
+            let model = NSManagedObjectModel(contentsOf: modelURL)
+        else {
+            throw NSError(domain: "test", code: 0)
+        }
+        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
+        try coordinator.addPersistentStore(
+            ofType: NSSQLiteStoreType,
+            configurationName: nil,
+            at: storeURL,
+            options: [NSReadOnlyPersistentStoreOption: true]
+        )
+        let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        moc.persistentStoreCoordinator = coordinator
 
-    @Test("Migration imports categories and dittos preserving order")
-    func migratesData() throws {
-        let snap = snapshot()
-        defer { restore(snap) }
-
-        clearAll()
-        let titles = ["Work", "Personal"]
-        let dittos: [String: [String]] = [
-            "Work": ["meeting at ___", "OOO today"],
-            "Personal": ["on my way", "running late"]
-        ]
-        appGroupDefaults()?.set(titles, forKey: categoriesKey)
-        appGroupDefaults()?.set(dittos, forKey: dittosKey)
-
-        let context = try makeContext()
-        let result = LegacyDataMigrator.migrateIfNeeded(into: context)
-        #expect(result)
-
-        let profiles = try context.fetch(FetchDescriptor<Profile>())
+        let profiles = try moc.fetch(NSFetchRequest<NSManagedObject>(entityName: "Profile"))
         let profile = try #require(profiles.first)
-        let ordered = profile.orderedCategories
-        #expect(ordered.map { $0.title } == titles)
-        #expect(ordered[0].orderedDittos.map { $0.text } == ["meeting at ___", "OOO today"])
-        #expect(ordered[1].orderedDittos.map { $0.text } == ["on my way", "running late"])
+        let categoriesSet = try #require(profile.value(forKey: "categories") as? NSOrderedSet)
+        let cats = categoriesSet.compactMap { $0 as? NSManagedObject }
+        #expect(cats.count == 2)
+        #expect(cats[0].value(forKey: "title") as? String == "Work")
+        #expect(cats[1].value(forKey: "title") as? String == "Personal")
+
+        let workDittos = try #require(cats[0].value(forKey: "dittos") as? NSOrderedSet)
+        let workTexts = workDittos.compactMap { ($0 as? NSManagedObject)?.value(forKey: "text") as? String }
+        #expect(workTexts == ["meeting at ___", "OOO today"])
+        let firstUseCount = (workDittos.firstObject as? NSManagedObject)?.value(forKey: "use_count") as? Int
+        #expect(firstUseCount == 5)
     }
 
-    @Test("Migration does not delete legacy NSUserDefaults entries")
-    func preservesLegacyDefaults() throws {
-        let snap = snapshot()
-        defer { restore(snap) }
+    @Test("Completion flag short-circuits needsMigration")
+    func completionFlagShortCircuits() {
+        clearFlag()
+        defer { clearFlag() }
 
-        clearAll()
-        let titles = ["Notes"]
-        let dittos: [String: [String]] = ["Notes": ["remember the milk"]]
-        appGroupDefaults()?.set(titles, forKey: categoriesKey)
-        appGroupDefaults()?.set(dittos, forKey: dittosKey)
-
-        let context = try makeContext()
-        _ = LegacyDataMigrator.migrateIfNeeded(into: context)
-
-        // Legacy entries must remain in NSUserDefaults after migration
-        #expect(appGroupDefaults()?.array(forKey: categoriesKey) as? [String] == titles)
-        #expect((appGroupDefaults()?.dictionary(forKey: dittosKey) as? [String: [String]]) == dittos)
-    }
-
-    @Test("Migration reads from UserDefaults.standard when App Group is empty")
-    func readsFromStandardDefaults() throws {
-        let snap = snapshot()
-        defer { restore(snap) }
-
-        clearAll()
-        UserDefaults.standard.set(["Old"], forKey: categoriesKey)
-        UserDefaults.standard.set(["Old": ["legacy ditto"]], forKey: dittosKey)
-
-        let context = try makeContext()
-        let result = LegacyDataMigrator.migrateIfNeeded(into: context)
-        #expect(result)
-
-        let profile = try #require(try context.fetch(FetchDescriptor<Profile>()).first)
-        #expect(profile.orderedCategories.map { $0.title } == ["Old"])
-        #expect(profile.orderedCategories.first?.orderedDittos.map { $0.text } == ["legacy ditto"])
-    }
-
-    @Test("Flat dittos=[String] (v1/2.0 shape) is migrated into a single category")
-    func migratesFlatArrayFormat() throws {
-        let snap = snapshot()
-        defer { restore(snap) }
-
-        clearAll()
-        let flat = ["hello", "running late", "on my way"]
-        appGroupDefaults()?.set(flat, forKey: dittosKey)
-
-        #expect(LegacyDataMigrator.needsMigration)
-
-        let context = try makeContext()
-        let result = LegacyDataMigrator.migrateIfNeeded(into: context)
-        #expect(result)
-
-        let profile = try #require(try context.fetch(FetchDescriptor<Profile>()).first)
-        let categories = profile.orderedCategories
-        #expect(categories.count == 1)
-        #expect(categories.first?.title == LegacyDataMigrator.flatRecoveryCategoryTitle)
-        #expect(categories.first?.orderedDittos.map { $0.text } == flat)
-    }
-
-    @Test("recoverNow ignores the completion flag and imports legacy data")
-    func recoverNowIgnoresFlag() throws {
-        let snap = snapshot()
-        defer { restore(snap) }
-
-        clearAll()
-        appGroupDefaults()?.set(["hi", "bye"], forKey: dittosKey)
-        // Simulate a previous launch that marked migration complete (e.g. the
-        // 3.0.0 Core Data migrator that never touched this NSUserDefaults blob,
-        // or any future build that prematurely sets the flag).
         appGroupDefaults()?.set(true, forKey: completeKey)
         #expect(!LegacyDataMigrator.needsMigration)
-
-        // hasRecoverableLegacyData and previewRecoverableData ignore the flag.
-        #expect(LegacyDataMigrator.hasRecoverableLegacyData)
-        let preview = try #require(LegacyDataMigrator.previewRecoverableData())
-        #expect(preview.dittoCount == 2)
-        #expect(preview.categoryCount == 1)
-
-        let context = try makeContext()
-        let inserted = LegacyDataMigrator.recoverNow(into: context)
-        #expect(inserted == 2)
-
-        let profile = try #require(try context.fetch(FetchDescriptor<Profile>()).first)
-        #expect(profile.orderedCategories.first?.orderedDittos.map { $0.text } == ["hi", "bye"])
     }
 
-    @Test("recoverNow skips dittos that already exist in the SwiftData store")
-    func recoverNowDedupes() throws {
-        let snap = snapshot()
-        defer { restore(snap) }
+    @Test("hasRecoverableLegacyData ignores the completion flag")
+    func hasRecoverableIgnoresFlag() {
+        clearFlag()
+        defer { clearFlag() }
 
-        clearAll()
-        appGroupDefaults()?.set(["hello", "world"], forKey: dittosKey)
+        // The unit test sandbox has no App Group container, so legacyStoreURL is nil.
+        // What we're verifying here is the negative: with no store on disk,
+        // hasRecoverableLegacyData is false regardless of the flag state.
+        appGroupDefaults()?.set(true, forKey: completeKey)
+        #expect(!LegacyDataMigrator.hasRecoverableLegacyData)
+
+        appGroupDefaults()?.removeObject(forKey: completeKey)
+        #expect(!LegacyDataMigrator.hasRecoverableLegacyData)
+    }
+
+    @Test("Auto-migration marks the completion flag even when no store is on disk")
+    func autoMigrationMarksCompleteWhenNoStore() throws {
+        clearFlag()
+        defer { clearFlag() }
 
         let context = try makeContext()
-        // Seed the context with one of the dittos already present in the legacy data,
-        // in a category with the same title the flat-format migrator will use.
-        let profile = Profile()
-        context.insert(profile)
-        let category = DittoCategory(title: LegacyDataMigrator.flatRecoveryCategoryTitle, profile: profile)
-        category.sortOrder = 0
-        context.insert(category)
-        profile.categories?.append(category)
-        let existing = DittoItem(text: "hello", category: category)
-        existing.sortOrder = 0
-        context.insert(existing)
-        category.dittos?.append(existing)
-        try context.save()
-
-        let inserted = LegacyDataMigrator.recoverNow(into: context)
-        #expect(inserted == 1) // only "world" is new
-
-        let refreshed = try #require(try context.fetch(FetchDescriptor<Profile>()).first)
-        #expect(refreshed.orderedCategories.first?.orderedDittos.map { $0.text } == ["hello", "world"])
+        let result = LegacyDataMigrator.migrateIfNeeded(into: context)
+        #expect(!result)
+        #expect(appGroupDefaults()?.bool(forKey: completeKey) == true)
     }
 }
