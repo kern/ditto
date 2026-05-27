@@ -40,6 +40,9 @@ struct SubscriptionView: View {
             return "Yearly plan"
         } else if subscriptionManager.purchasedProductIDs.contains(SubscriptionManager.proMonthlyProductID) {
             return "Monthly plan"
+        } else if subscriptionManager.purchasedProductIDs.contains(SubscriptionManager.legacyYearlyProductID)
+            || subscriptionManager.purchasedProductIDs.contains(SubscriptionManager.legacyMonthlyProductID) {
+            return "Lifetime access"
         }
         return "You're subscribed"
     }

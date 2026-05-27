@@ -6,8 +6,12 @@ import StoreKit
 @Observable
 final class SubscriptionManager {
 
-    static let proMonthlyProductID = "io.kern.ditto.monthly"
-    static let proYearlyProductID = "io.kern.ditto.yearly"
+    static let proMonthlyProductID = "io.kern.ditto.prosub.monthly"
+    static let proYearlyProductID = "io.kern.ditto.prosub.yearly"
+
+    // Legacy one-time IAP IDs — users who purchased these get lifetime Pro access.
+    static let legacyMonthlyProductID = "io.kern.ditto.monthly"
+    static let legacyYearlyProductID = "io.kern.ditto.yearly"
 
     private static let log = Logger(subsystem: "io.kern.ditto", category: "SubscriptionManager")
 

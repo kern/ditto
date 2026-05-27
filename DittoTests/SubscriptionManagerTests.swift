@@ -21,7 +21,9 @@ struct SubscriptionManagerTests {
 
     @Test("Product IDs are defined")
     func productIDs() {
-        #expect(SubscriptionManager.proMonthlyProductID == "io.kern.ditto.monthly")
-        #expect(SubscriptionManager.proYearlyProductID == "io.kern.ditto.yearly")
+        #expect(SubscriptionManager.proMonthlyProductID == "io.kern.ditto.prosub.monthly")
+        #expect(SubscriptionManager.proYearlyProductID == "io.kern.ditto.prosub.yearly")
+        #expect(SubscriptionManager.legacyMonthlyProductID == "io.kern.ditto.monthly")
+        #expect(SubscriptionManager.legacyYearlyProductID == "io.kern.ditto.yearly")
     }
 }
