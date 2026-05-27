@@ -9,6 +9,9 @@ final class SubscriptionManager {
     static let proMonthlyProductID = "io.kern.ditto.prosub.monthly"
     static let proYearlyProductID = "io.kern.ditto.prosub.yearly"
 
+    // Lifetime access granted via offer code — not purchasable in-app.
+    static let lifetimeProductID = "io.kern.ditto.lifetime"
+
     // Legacy one-time IAP IDs — users who purchased these get lifetime Pro access.
     static let legacyMonthlyProductID = "io.kern.ditto.monthly"
     static let legacyYearlyProductID = "io.kern.ditto.yearly"

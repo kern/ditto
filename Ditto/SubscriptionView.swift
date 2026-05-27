@@ -36,13 +36,15 @@ struct SubscriptionView: View {
     }
 
     private var subscribedPlanLabel: String {
-        if subscriptionManager.purchasedProductIDs.contains(SubscriptionManager.proYearlyProductID) {
-            return "Yearly plan"
-        } else if subscriptionManager.purchasedProductIDs.contains(SubscriptionManager.proMonthlyProductID) {
-            return "Monthly plan"
-        } else if subscriptionManager.purchasedProductIDs.contains(SubscriptionManager.legacyYearlyProductID)
-            || subscriptionManager.purchasedProductIDs.contains(SubscriptionManager.legacyMonthlyProductID) {
+        let ids = subscriptionManager.purchasedProductIDs
+        if ids.contains(SubscriptionManager.lifetimeProductID)
+            || ids.contains(SubscriptionManager.legacyYearlyProductID)
+            || ids.contains(SubscriptionManager.legacyMonthlyProductID) {
             return "Lifetime access"
+        } else if ids.contains(SubscriptionManager.proYearlyProductID) {
+            return "Yearly plan"
+        } else if ids.contains(SubscriptionManager.proMonthlyProductID) {
+            return "Monthly plan"
         }
         return "You're subscribed"
     }
